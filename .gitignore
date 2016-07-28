@@ -1,6 +1,6 @@
 *.pem
 node_modules/
 .idea/
-uploads/thumbs/*
-uploads/tmp/*
-uploads/video/*
+prometeo/uploads/thumbs/*
+prometeo/uploads/tmp/*
+prometeo/uploads/video/*
