@@ -1,0 +1,11 @@
+.movie-wrapper {
+  width: 80%;
+  height: 80%;
+  margin: 0 auto; }
+  .movie-wrapper .movie-container {
+    padding-top: 4em;
+    width: 100%;
+    height: 100%;
+    background: #000; }
+
+/*# sourceMappingURL=movie.css.map */

@@ -1,0 +1,68 @@
+
+<div class="container">
+
+    <div class="row head">
+
+        <div class="col-sm-6">
+            <h2>Le miei filmati</h2>
+        </div>
+
+        <div class="col-sm-6 text-right">
+            <a href="/editor/new" data-navigo class="btn btn-primary"><i class="fi-plus"></i> Crea un nuovo filmato</a>
+        </div>
+
+    </div>
+
+
+    {{#if lessons.length }}
+
+        <div class="row">
+            {{#each lessons}}
+
+                <div class="col-sm-4">
+                    <div class="movie">
+
+                        {{# if this.published }}
+                            <div class="label label-lg label-success"><i class="fi-check"></i> Pubblicato</div>
+                        {{/if}}
+
+                        <div class="actions">
+
+                            <div class="dropup">
+                                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fi-widget"></i>
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                    <li><span class="date text-muted">Modificato {{ this.modified }}</span></li>
+                                    <li role="separator" class="divider"></li>
+                                    <li><a href="/editor/{{ this.id }}" data-navigo><i class="fi-pencil"></i> Modifica</a></li>
+                                    <li><a href="#" class="delete-movie" data-id="{{ this.id }}"><i class="fi-trash"></i> Elimina</a></li>
+                                </ul>
+                            </div>
+
+                        </div>
+
+                        <span class="duration">{{ this.duration }}</span>
+
+                        <a href="/editor/{{ this.id }}" data-navigo class="movie-cover va-wrap">
+                            <span class="va-middle">{{ this.name }}</span>
+                        </a>
+
+                    </div>
+                </div>
+
+            {{/each}}
+        </div>
+
+    {{else}}
+
+        <div class="hero text-center">
+            <p>Non hai ancora creato nessuna lezione, inizia ora!</p>
+            <a href="/editor/new" data-navigo class="btn btn-lg btn-primary">Crea una lezione</a>
+        </div>
+
+    {{/if}}
+
+
+</div>

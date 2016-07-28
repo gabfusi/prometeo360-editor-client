@@ -1,0 +1,86 @@
+<!-- movie info bar -->
+<div class="infobar">
+    <div class="row">
+
+        <div class="col-sm-8 left">
+
+            <form action="#" id="movie_form">
+                <div class="title-wrap hint--bottom" aria-label="Rinomina">
+                    <input type="text" name="movie-name" id="movie_name" placeholder="Filmato senza titolo">
+                    <i class="fi-pencil"></i>
+                </div>
+                <div class="movie-save-status" id="movie_save_status"></div>
+            </form>
+
+        </div>
+
+        <div class="col-sm-4 right">
+            <div class="btn btn-default hint--bottom-left" id="movie_publish"></div>
+        </div>
+
+    </div>
+</div>
+
+<!-- main wrap -->
+<div class="editor-inner">
+
+    <div class="inner">
+
+        <!-- toolbar -->
+        <aside class="toolbar">
+            <ul class="area-list" id="area_list">
+                {{#each config.availableAreas}}
+                    <li data-type="{{@key}}">
+                        <i class="fi-{{@key}}"></i>
+                        <span>{{this}}</span>
+                    </li>
+                {{/each}}
+            </ul>
+        </aside>
+
+        <!-- video container -->
+        <div class="movie-wrapper">
+
+            <div class="movie-container">
+
+                <div class="movie" id="movie">
+                    <div class="movie-area">
+                        <div class="inner"></div>
+                    </div>
+                    <div class="movie-bg"></div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- timeline -->
+        <div class="panel timeline">
+            <div class="head row">
+                <div class="col-sm-6">
+                    <i class="fi-graph-horizontal"></i> Timeline
+                </div>
+                <div class="col-sm-6 current-frame"></div>
+            </div>
+            <div id="timeline"></div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- editbar - element property -->
+<aside class="panel editbar">
+    <div class="header">
+        <div class="row">
+            <div class="col-xs-8">
+                <div class="area-title" id="area_title"></div>
+            </div>
+            <div class="col-xs-4 actions">
+                <div class="remove-area hint--bottom-left" aria-label="Rimuovi dal filmato"><i class="fi-trash"></i></div>
+                <div class="close-panel hint--bottom-left" aria-label="Chiudi il pannello di modifica"><i class="fi-x"></i></div>
+            </div>
+        </div>
+    </div>
+    <div class="properties-wrap"></div>
+</aside>

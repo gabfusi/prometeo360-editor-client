@@ -1,0 +1,24 @@
+
+{{#each this}}
+
+    <div class="col-sm-4">
+        <div class="thumbnail">
+            <img src="{{ thumbnails.[0] }}" alt="{{filename}}" class="img-responsive">
+            <div class="caption">
+                <h5>{{ filename }}</h5>
+                <p>
+                    {{ duration }}
+                </p>
+                <p>
+                    <span data-filename="{{filename}}" data-duration="{{duration}}" class="btn btn-primary btn-block select-video">Inserisci</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+{{else}}
+
+    <div class="alert">Nessun video presente</div>
+
+{{/each}}
+

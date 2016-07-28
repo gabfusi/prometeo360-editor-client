@@ -1,0 +1,122 @@
+
+// editbar
+
+.editbar{
+
+  top: 4em;
+  right: 2em;
+  min-width: 320px;
+  width: 320px;
+  transform: translateX(3000px);
+  transition: opacity 118ms $swift-out;
+  border: 1px solid $grey-shade-4;
+  box-shadow: 0 0 10px 0 rgba(0,0,0,.18);
+  opacity: .01;
+  z-index: 200;
+
+  &.shown {
+    transform: translateX(0);
+    opacity:1;
+  }
+
+  &.QuestionArea{
+    width: 460px;
+  }
+
+  // header
+
+  .header{
+    background: $grey-shade-3;
+    padding: .25em .5em;
+    border-bottom: 1px solid $grey-shade-4;
+    color: $white;
+    cursor: move;
+
+    .area-title{
+      i{ margin-right: 9px; }
+    }
+
+    .actions{
+      text-align: right;
+      div{
+        display: inline-block;
+        vertical-align: middle;
+        cursor: pointer;
+        margin-left: .25em;
+        &:hover{
+          color: darken($white, 10);
+        }
+      }
+    }
+  }
+
+  // main properties wrap
+
+  .properties-wrap{
+    padding: 1em 0 50px;
+
+    .properties > .inner > div {
+      padding: 0 1em;
+    }
+
+    .ui-slider{
+      margin: 10px 10px 20px;
+    }
+
+  }
+
+  // Footer with x, y height, width
+
+  .foot-bar{
+    position: absolute;
+    bottom:0;
+    left:0;
+    right:0;
+    width:100%;
+    padding: .5em;
+    font-size: .875em;
+    border-top: 1px solid $grey-shade-4;
+    background: $grey-shade-3;
+
+    .form-group{
+      margin:0;
+
+      &, label, input{
+        display: inline-block;
+        vertical-align: top;
+      }
+
+      label{
+        margin: 0 .25em 0 0;
+        line-height: 40px;
+      }
+      input{
+        width: 45px;
+        padding: 2px 5px;
+        line-height: 20px;
+        margin-top: 7px;
+        height: 26px;
+        margin-right: 2px;
+        font-size: 12px;
+      }
+    }
+  }
+
+  // QuestionArea
+
+  .answers-list{
+    margin-top: 1em;
+
+    .answer{
+      padding-bottom: .25em;
+    }
+  }
+
+  .empty-placeholder{
+    text-align: center;
+    padding: 1.5em;
+    border: 1px dashed $grey-shade-3;
+    color: $grey-shade-1;
+  }
+
+}

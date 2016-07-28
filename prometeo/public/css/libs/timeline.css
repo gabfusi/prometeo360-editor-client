@@ -1,0 +1,96 @@
+
+.gscroll{
+    position: relative;
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+}
+
+.gtimeline{
+    position: relative;
+    height: calc(100% - 3em);
+    margin: 2em 2em 0;
+}
+
+/* rulers */
+
+.gtimeline .rulers,
+.gtimeline .elements{
+    position: absolute;
+    height: 100%;
+    left:0; right:0; bottom:0; top:0;
+}
+
+.gtimeline .rulers{
+    position: relative;
+    z-index: 1;
+    background: #666;
+}
+.gtimeline .rulers .ruler{
+    width: 1px;
+    height: 100%;
+    position: relative;
+    background: #ccc;
+    float: left;
+}
+
+.gtimeline .rulers .ruler .label{
+    position: absolute;
+    bottom: 1em;
+    color: #fff;
+    font-size: 10px;
+}
+.gtimeline .rulers .ruler:last-child{
+    margin-right: 0;
+}
+
+/* track */
+
+.gtimeline .track{
+    position: absolute !important;
+    z-index: 10;
+    width: 1px;
+    background: #ac2925;
+    top: -.5em !important;
+    bottom: 0;
+}
+.gtimeline .track:before{
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #ac2925;
+}
+
+
+/* elements */
+
+.gtimeline .elements{
+    width: 100%;
+    z-index: 2;
+}
+
+.gtimeline .elements .element{
+    position: absolute;
+    text-align: left;
+    background: #1b6d85;
+    color: #fff;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 30px;
+    line-height: 25px;
+    padding: 0 5px;
+    border-top: 5px solid #666;
+    cursor: default;
+}
+.gtimeline .elements .element:active{
+    cursor: move;
+    cursor: -webkit-grabbing;
+}
+
+.gtimeline .elements .element.selected{
+    background: #22accb;
+}

@@ -1,0 +1,65 @@
+
+
+// input
+input[type="text"], input[type="number"], select, textarea{
+  color: $white;
+  border: 1px solid $grey-shade-3;
+  background: $input-bg;
+
+  &:hover{
+    background: $input-bg-hover;
+  }
+  &:focus{
+    outline: none;
+    box-shadow: none;
+    background: $input-bg-focus;
+  }
+}
+
+.input-group{
+  input[type="text"]{
+    border-top-color: $grey-shade-4;
+    border-bottom-color: $grey-shade-4;
+  }
+}
+
+.input-group-addon{
+  border: 1px solid $grey-shade-4;
+  background: $input-bg;
+  color: $white;
+}
+
+.ui-state-highlight{
+  background: $highlight;
+}
+
+// slider
+.ui-widget-content{
+  background: $input-bg-focus;
+  border: 1px solid $grey-shade-4;
+  > .ui-slider-handle{
+    background: $grey-shade-3;
+    border: 1px solid $grey-shade-4;
+    outline: none;
+    cursor: pointer;
+  }
+}
+
+// buttons
+.btn-default{
+  background: $grey-shade-3;
+  color: $white;
+  border-color: darken($grey-shade-3, 10);
+  &:hover, &:focus, &:active{
+    background: darken($grey-shade-3, 10);
+  }
+}
+
+.btn-primary{
+  background: $primary;
+  color: $white;
+  border-color: darken($primary, 10);
+  &:hover, &:focus, &:active{
+    background: darken($primary, 10);
+  }
+}

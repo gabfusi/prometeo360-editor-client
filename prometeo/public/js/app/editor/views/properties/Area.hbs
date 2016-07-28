@@ -1,0 +1,63 @@
+
+<div class="foot-bar">
+
+    <div class="form-group">
+        <label for="p_x">x:</label>
+        <input type="number" min="0" id="p_x" name="x" value="{{ x }}" class="form-control change-listener">
+    </div>
+
+    <div class="form-group">
+        <label for="p_y">y:</label>
+        <input type="number" min="0" id="p_y" name="y" value="{{ y }}" class="form-control change-listener">
+    </div>
+
+    <div class="form-group">
+        <label for="p_width">W:</label>
+        <input type="number" min="1" id="p_width" name="width" value="{{ width }}" class="form-control change-listener">
+    </div>
+
+    <div class="form-group">
+        <label for="p_height">H:</label>
+        <input type="number" min="1" id="p_height" name="height" value="{{ height }}" class="form-control change-listener">
+    </div>
+
+</div>
+
+
+<div class="form-group">
+    <label for="p_zindex">Livello</label>
+    <div id="p_zindex_slider"></div>
+</div>
+
+<div class="form-group">
+    <label for="p_background">Sfondo</label>
+    <input type="text" id="p_background" name="background" class="colorpicker form-control change-listener" value="{{ background }}">
+</div>
+
+<div class="row">
+
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label for="p_text_color">Colore testo</label>
+            <input type="text" id="p_text_color" name="text_color" class="colorpicker form-control change-listener" value="{{ text_color }}">
+        </div>
+    </div>
+
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label for="p_text_size">Dimensione testo</label>
+            <input type="number" min="4" id="p_text_size" name="text_size" class="form-control change-listener" value="{{ text_size }}">
+        </div>
+    </div>
+
+</div>
+
+<div class="form-group">
+    <label for="p_pause_movie">Comportamento sulla comparsa</label>
+    <select id="p_pause_movie" name="pause_movie" class="form-control change-listener bool">
+        <option value="0" {{#unless pause_movie }}selected{{/unless}}>Continua la riproduzione</option>
+        <option value="1" {{#if pause_movie }}selected{{/if}}>Metti in pausa il filmato</option>
+    </select>
+</div>
+
+

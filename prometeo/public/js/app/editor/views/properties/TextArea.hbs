@@ -1,0 +1,14 @@
+<div class="properties textarea">
+    <form class="inner">
+
+        {{> TimelineElement }}
+
+        {{> Area }}
+
+        <div class="form-group">
+            <label for="p_text">Testo</label>
+            <textarea id="p_text" name="text" class="form-control live-listener">{{ @root.text }}</textarea>
+        </div>
+
+    </form>
+</div>

@@ -1,0 +1,114 @@
+
+.section {
+  width: 100%;
+  overflow: hidden;
+  position: fixed;
+  top:0;
+  left:0;
+  bottom:0;
+  right: 0;
+  transition: all 300ms $swift-out;
+  background: $light-grey;
+  transform: perspective(500px) translate3d(0, 0px, 0px);
+  z-index: 10;
+
+  &.hided{
+    opacity: 0.05;
+    transition: all 218ms $swift-in;
+    z-index: 1;
+  }
+}
+
+.movies-list{
+  top: $adminbar-expanded-height;
+  overflow-y: auto;
+  transform: translateZ(0); // scroll hw acceleration on certain browsers
+
+  .head{
+    h2{ margin:0; }
+    margin-top: 32px;
+    margin-bottom: 32px;
+  }
+
+  .movie{
+    position: relative;
+    margin-bottom: 18px;
+
+    .label, .duration, .actions{
+      position: absolute;
+    }
+
+    .label{
+      top: 9px;
+      right: 9px;
+    }
+
+    .duration{
+      bottom: 9px;
+      left: 9px;
+      color: $white;
+    }
+
+    .actions{
+      bottom:9px;
+      right:9px;
+    }
+
+    .date{
+      padding: 3px 20px;
+      display: block;
+      white-space: nowrap;
+    }
+
+
+  }
+
+  .movie-cover{
+    width: 100%;
+    background: $black;
+    color: $white;
+    height: 250px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 1.5em;
+    &:hover{
+      box-shadow: inset 0 0 50px 0 #666;
+    }
+  }
+
+}
+
+.editor{
+  top: $adminbar-height;
+
+  & > .editor-inner{
+    height: 100%;
+    width: 100%;
+    padding-top: $infobar-height; // infobar
+    position: relative;
+    z-index: 9;
+
+    & > .inner{
+      position: relative;
+      height: 100%;
+      width: 100%;
+    }
+
+  }
+
+  // forms
+  @import "forms";
+
+  // movie wrapper
+  @import "movie";
+
+  // panels
+  @import "panels";
+  @import "toolbar";
+  @import "infobar";
+  @import "editbar";
+  @import "timeline";
+
+}
+
+@import "video-picker";

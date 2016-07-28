@@ -1,0 +1,58 @@
+
+// toolbar
+
+.infobar{
+
+  padding: 0 $infobar-height/6;
+  background: $grey;
+  color: $white;
+  border-bottom: $black;
+  height: $infobar-height;
+  position: absolute;
+  top: 0;
+  left:0;
+  right:0;
+  z-index: 10;
+
+  .left > * {
+    float: left;
+  }
+
+  .title-wrap{
+    position: relative;
+    margin: $infobar-height/6 $infobar-height/2 $infobar-height/6 0;
+    width: 250px;
+    display: inline-block;
+
+    input[type="text"] {
+      height: $infobar-height/3*2;
+      padding: .25em .5em;
+      font-size: 1.5em;
+    }
+
+    .fi-pencil{
+      position: absolute;
+      right: 12px;
+      top: 14px;
+      opacity: .6;
+      pointer-events: none;
+      display: none;
+    }
+
+    &:hover .fi-pencil{
+      display: block;
+    }
+
+  }
+
+
+  .right {
+    text-align: right;
+    line-height: $infobar-height;
+  }
+
+  .movie-save-status{
+    display: inline-block;
+  }
+
+}

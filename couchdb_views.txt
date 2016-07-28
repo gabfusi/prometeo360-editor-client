@@ -1,0 +1,16 @@
+Video Views
+--------------
+
+{
+   "_id": "_design/videos",
+   "_rev": "4-48ca98221ed1b29b95f53f3cdac08637",
+   "language": "javascript",
+   "views": {
+       "get_by_id": {
+           "map": "function(doc) {\n  emit(doc._id, doc);\n}"
+       },
+       "get_by_date": {
+           "map": "function(doc) {\n  emit(doc.created, doc);\n}"
+       }
+   }
+}

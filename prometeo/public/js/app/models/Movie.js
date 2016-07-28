@@ -1,0 +1,231 @@
+define([], function() {
+    "use strict";
+
+    /**
+     *
+     * @constructor
+     */
+    function Movie() {
+
+        /**
+         *
+         * Model Attributes
+         * @private
+         */
+        var _id = null,
+            _name = '',
+            _published = false,
+            _duration = 0,
+            _timelineElements = [];
+
+        /**
+         *
+         * @returns {*}
+         */
+        this.getId = function () {
+            return _id;
+        };
+
+        /**
+         *
+         * @param id
+         */
+        this.setId = function (id) {
+            _id = id;
+        };
+
+        /**
+         *
+         * @returns {string}
+         */
+        this.getName = function () {
+            return _name;
+        };
+
+        /**
+         *
+         * @param name
+         */
+        this.setName = function (name) {
+            _name = name;
+        };
+
+        /**
+         *
+         * @returns {boolean}
+         */
+        this.isPublished = function () {
+            return _published;
+        };
+
+        /**
+         *
+         * @param bool
+         */
+        this.setPublished = function (bool) {
+            _published = bool;
+        };
+
+        /**
+         *
+         * @returns {number}
+         */
+        this.getDuration = function() {
+            return _duration;
+        };
+
+        /**
+         *
+         * @param duration
+         */
+        this.setDuration = function(duration) {
+            _duration = duration;
+        };
+
+        /**
+         *
+         * @param element
+         * @returns {Number}
+         */
+        this.addTimelineElement = function (element) {
+            return _timelineElements.push(element);
+        };
+
+        /**
+         *
+         * @param element_id
+         */
+        this.removeTimelineElement = function (element_id) {
+            var element_index = _getTimelineElementIndex(element_id);
+
+            if(element_index >= 0) {
+                _timelineElements.splice(element_index, 1);
+            }
+        };
+
+
+        /**
+         * Returns TimelineElements matching given frame
+         * @param frame
+         * @returns {Array}
+         */
+        this.getTimelineElementsAt = function (frame) {
+
+            var i = 0,
+                l = _timelineElements.length,
+                elements = [];
+
+            for( ; i < l; i++) {
+
+                if(_timelineElements[i].getFrame() <= frame && frame <= _timelineElements[i].getEndFrame()) {
+                    elements[elements.length] = _timelineElements[i];
+                }
+
+            }
+
+            return elements;
+        };
+
+        /**
+         * Get an element by id
+         * @param element_id
+         * @returns {*}
+         */
+        this.getElement = function (element_id) {
+            var index = _getTimelineElementIndex(element_id);
+            return _timelineElements[index];
+        };
+
+        /**
+         * Returns all timeline elements
+         * @returns {Array}
+         */
+        this.getElements = function() {
+            return _timelineElements;
+        };
+
+        /**
+         *
+         * @param element_id
+         * @returns {*}
+         * @private
+         */
+        var _getTimelineElementIndex = function (element_id) {
+
+            for(var i = 0; i < _timelineElements.length; i++) {
+                if(_timelineElements[i].getId() === element_id) {
+                    return i;
+                }
+            }
+
+            return false;
+        };
+
+        /**
+         * Calculates movie duration
+         * @returns {number}
+         * @private
+         */
+        var _calculateDuration = function() {
+
+            var maxFrame = 0,
+                currentElFrame;
+
+            // get last element appearing in the movie
+            for(var i = 0; i < _timelineElements.length; i++) {
+                currentElFrame = _timelineElements[i].getEndFrame();
+                if(currentElFrame > maxFrame) {
+                    maxFrame = currentElFrame;
+                }
+            }
+
+            return maxFrame;
+        };
+
+        /**
+         * Return Movie model object
+         *
+         * @returns {{id: *, name: string, elements: Array}}
+         */
+        this.toObject = function(){
+
+            return {
+                "id" : this.getId(),
+                "name" : this.getName(),
+                "published" : this.isPublished(),
+                "duration" : _calculateDuration(),
+                "elements" : _timelineElements
+            }
+        };
+
+        /**
+         * Return Movie model serialized object
+         * This function is used to save Movie model via xhr
+         *
+         * @returns {{id: *, name: string, elements: Array}}
+         */
+        this.serialize = function(){
+
+            var obj = {
+                "id" : this.getId(),
+                "name" : this.getName(),
+                "published" : this.isPublished(),
+                "duration" : _calculateDuration(),
+                "elements" : []
+            };
+
+            for(var i = 0; i < _timelineElements.length; i++) {
+                obj.elements[obj.elements.length] = _timelineElements[i].toObject();
+            }
+
+            return obj;
+        };
+
+
+    }
+
+    /**
+     * Export module
+     */
+    return Movie;
+});

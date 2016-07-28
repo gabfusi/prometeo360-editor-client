@@ -1,0 +1,67 @@
+
+ ssh -i "isrs-ubuntu-key.pem" ubuntu@ec2-54-194-254-66.eu-west-1.compute.amazonaws.com
+
+------------------------------------------------------------------------------------------------------------
+0) init ubuntu server
+------------------------------------------------------------------------------------------------------------
+
+https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-14-04
+
+------------------------------------------------------------------------------------------------------------
+1) install nodejs
+------------------------------------------------------------------------------------------------------------
+
+https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-an-ubuntu-14-04-server
+
+Because of a conflict with another package,
+the executable from the Ubuntu repositories is called nodejs instead of node.
+Keep this in mind as you are running software.
+
+------------------------------------------------------------------------------------------------------------
+2) install couchdb & futon
+------------------------------------------------------------------------------------------------------------
+
+https://www.digitalocean.com/community/tutorials/how-to-install-couchdb-and-futon-on-ubuntu-14-04
+
+------------------------------------------------------------------------------------------------------------
+3) Create a new database
+------------------------------------------------------------------------------------------------------------
+
+curl -X PUT localhost:5984/prometeo_db
+
+couchdb admin user:
+admin
+1q2w3e4r
+
+------------------------------------------------------------------------------------------------------------
+4) nodejs on port 80
+------------------------------------------------------------------------------------------------------------
+
+http://stackoverflow.com/questions/16573668/best-practices-when-running-node-js-with-port-80-ubuntu-linode
+
+redirect port 80 to port 3000 with this command:
+> sudo iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 3000
+
+> insert it on startup
+sudo nano /etc/rc.local
+add: iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 3000
+
+
+------------------------------------------------------------------------------------------------------------
+5) run node script with forever!
+------------------------------------------------------------------------------------------------------------
+
+sudo npm install forever -g
+forever start index.js
+
+# extra
+forever list
+forever restartall
+forever logs
+
+
+------------------------------------------------------------------------------------------------------------
+6) Install ffmpeg
+------------------------------------------------------------------------------------------------------------
+
+http://trac.ffmpeg.org/wiki/CompilationGuide/Ubuntu

@@ -1,0 +1,72 @@
+
+.adminbar{
+  height: $adminbar-height;
+  line-height: $adminbar-height;
+  background: $grey-shade-4;
+  color: $white;
+  border-bottom: 1px solid $grey-shade-3;
+  position: absolute;
+  top: 0;
+  left:0;
+  right:0;
+  z-index: 100;
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  transition: all 118ms $swift-out;
+
+  .logo, .main-nav{
+    float: left;
+  }
+
+  .logo {
+    height: $adminbar-height;
+    padding: 2px 9px;
+    width: 38px;
+    transition: all 118ms $swift-out;
+
+    .prometeo-logo{
+      width: 100%;
+      height: 100%;
+      background-image: url(../img/prometeo-logo.svg);
+      background-size: cover;
+      background-position: center center;
+    }
+
+  }
+
+  .main-nav{
+    padding-left: 9px;
+    ul{ display: block; }
+    li{
+      padding: 0 5px;
+      float: left;
+    }
+    a{
+      color: $white;
+    }
+  }
+
+  .profile-nav{
+    padding: 0 9px;
+  }
+
+}
+
+.status-movies-list{
+
+  .main-content{
+    padding-top: $adminbar-expanded-height;
+  }
+
+  .adminbar{
+    height: $adminbar-expanded-height;
+    line-height: $adminbar-expanded-height;
+
+    .logo{
+      height: $adminbar-expanded-height;
+      width: 40px;
+    }
+
+  }
+
+}

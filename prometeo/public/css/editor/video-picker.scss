@@ -1,0 +1,63 @@
+
+#video_picker{
+  border-radius: 0;
+
+  .modal-dialog{
+    width: auto;
+    margin: 5% 5% 0;
+    height: 90%;
+  }
+
+  .modal-content{
+    height: 100%;
+  }
+
+  .modal-body{
+    position: absolute;
+    width: 100%;
+    bottom: 3px;
+    top: 4em;
+    padding: 1em 0;
+  }
+
+  .row{
+    margin: 0;
+  }
+
+  .picker-actions{
+    height: 4em;
+  }
+
+  // progress bar
+  .progress{
+    display: none;
+    margin: 20% 20% 0;
+    .progress-bar{
+      text-align: center;
+    }
+  }
+
+
+  .video-list{
+    display: block;
+    height: calc(100% - 5em);
+    position: absolute;
+    top: 5em;
+    bottom: 0;
+    right: 1px;
+  }
+
+  &.loading{
+
+    .progress{
+      display: block;
+    }
+
+    .video-list,
+    .picker-actions{
+      display: none;
+    }
+
+  }
+
+}

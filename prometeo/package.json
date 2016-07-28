@@ -1,0 +1,26 @@
+{
+  "name": "prometeo",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "local-start": "node ./bin/www",
+    "start": "forever start ./bin/www",
+    "old-start": "node ./bin/www",
+    "run": "PORT=3000 DEBUG=prometeo:* npm start"
+  },
+  "dependencies": {
+    "body-parser": "~1.15.1",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.2.0",
+    "express": "~4.13.4",
+    "fluent-ffmpeg": "^2.1.0",
+    "hbs": "~4.0.0",
+    "morgan": "~1.7.0",
+    "nano": "~6.2.0",
+    "node-plupload": "0.0.6",
+    "path": "^0.12.7",
+    "serve-favicon": "~2.3.0",
+    "socket.io": "^1.4.8",
+    "uuid-lib": "0.0.6"
+  }
+}

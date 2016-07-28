@@ -1,0 +1,15 @@
+
+.scrollable{
+  height: 100%;
+  overflow-y:auto;
+  overflow-x: hidden;
+}
+
+.va-wrap{
+  display: table;
+}
+
+.va-middle{
+  vertical-align: middle;
+  display: table-cell;
+}

@@ -1,0 +1,171 @@
+
+$movie-title-height: 1.25em;
+
+.movie-wrapper {
+
+  width: 100%;
+  height: 70%;
+  display: table;
+  transition: all 218ms $swift-out;
+
+  .movie-container {
+    // align movie by height
+    vertical-align: middle;
+    display: table-cell;
+    background: $light-grey;
+  }
+
+  .title{
+    height: $movie-title-height;
+    margin-top: -$movie-title-height;
+    position: relative;
+    transition: all 218ms $swift-out;
+  }
+
+
+  .movie {
+    position: relative;
+    margin: 0 auto;
+    transition: all 218ms $swift-out;
+
+    // aspect ratio 3:2
+    width: 720px;
+    height: 480px;
+
+    .movie-area{
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      z-index: 2;
+      > .inner{
+        width: 100%;
+        height: 100%;
+        position: relative;
+      }
+    }
+
+    .movie-bg{
+      width: 100%;
+      padding-bottom: 66.66%;
+      background: #000;
+      z-index: 1;
+    }
+
+  }
+
+}
+
+.movie-area{
+
+  .area{
+    min-width: 10px;
+    min-height: 10px;
+    position: absolute;
+    overflow: hidden;
+    font-size: 14px;
+
+    &.selected{
+      box-shadow: 0 0 5px 1px $highlight;
+    }
+
+    .inner{
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    .ui-resizable-handle{
+      opacity: .2;
+    }
+
+    &.selected .ui-resizable-handle{
+      opacity: 1;
+    }
+
+  }
+
+  .va-wrap{
+    display: table;
+    .va-middle{
+      vertical-align: middle;
+      display: table-cell;
+    }
+  }
+
+  // question
+  .questionarea {
+    font-size: 2em;
+
+    .inner{
+      padding: 0 6%;
+    }
+
+    .question {
+      padding: 5% 0;
+    }
+
+    .answers{
+      padding: 0 5%;
+
+      > .answer{
+        margin-bottom: 1em;
+      }
+    }
+
+  }
+
+
+  // video
+  .video {
+
+    .placeholder{
+      width: 100%;
+      height: 100%;
+      background: #ccc;
+      font-size: 5em;
+      text-align: center;
+    }
+
+    .player{
+      width: 100%;
+      height: 100%;
+    }
+
+  }
+
+  // textarea
+  .textarea,
+  .linkarea,
+  .jumparea{
+    .inner{
+      padding: 5%;
+    }
+    .text{
+      text-align: left;
+      font-size: 1em;
+      line-height: 1.25em;
+    }
+  }
+
+  // grabbing cursor
+  .textarea:active,
+  .linkarea:active,
+  .jumparea:active,
+  .questionarea:active {
+    cursor: move;
+    cursor: -webkit-grabbing;
+  }
+
+
+}
+
+
+// video preview
+.video-preview{
+
+  img{
+    position: relative;
+  }
+
+
+}

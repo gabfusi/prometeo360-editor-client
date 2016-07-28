@@ -1,0 +1,39 @@
+
+// colors
+$white: #ffffff;
+$black: #000000;
+$light-grey: #fafafa;
+$light-grey-1: #cccccc;
+$light-grey-2: #d5d5d5;
+
+$primary: #3c99f6;
+$grey: #556270;
+$grey-shade-1: #BFDDFC;
+$grey-shade-2: #8FA5BC;
+$grey-shade-3: #5F6D7D;
+$grey-shade-4: #424C56;
+$highlight: #FCFABC;
+$green-shade: #5E7D73;
+$red: #A13C29;
+
+$input-bg: rgb(70,80,93);
+$input-bg-hover: rgb(63,73,83);
+$input-bg-focus: rgb(56,65,74);
+
+// animations
+$swift-out: cubic-bezier(0,0,.58,1);
+$swift-in: cubic-bezier(.42,0,1,1);
+
+
+body{
+  background: $grey;
+}
+
+// normalize everything inside prometeo player
+.prometeo-player{
+  @import "viewer/normalize";
+}
+@import "viewer/spinner";
+@import "viewer/player";
+@import "viewer/movie";
+@import "viewer/fullscreen";

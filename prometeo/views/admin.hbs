@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <title>Prometeo - Sezione di amministrazione</title>
+    <meta name="description" content="Prometeo è un editor di filmati dedicato all'e-learning.">
+
+    <link rel="stylesheet" href="/css/libs/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/libs/foundation-icons.css" />
+    <link rel="stylesheet" href="/css/libs/timeline.css" />
+    <link rel="stylesheet" href="/css/libs/hint.min.css" />
+    <link rel="stylesheet" href="/js/libs/jquery-ui/jquery-ui.min.css" />
+    <link rel="stylesheet" href="/js/libs/colorpicker/minicolors.css" />
+    <link rel="stylesheet" href="/js/libs/pnotify/pnotify.custom.min.css" />
+    <link rel="stylesheet" href="/css/main.css" />
+
+</head>
+<body>
+
+<header class="adminbar">
+
+    <div class="pull-left">
+
+        <div class="logo">
+            <div class="prometeo-logo"></div>
+        </div>
+
+        <nav class="main-nav">
+            <ul>
+                <li><a href="/list" data-navigo>Tutti i Filmati</a></li>
+            </ul>
+        </nav>
+
+    </div>
+
+    <div class="pull-right">
+
+        <div class="profile-nav">
+            <!-- this is just a fake! -->
+            <i class="fi-male"></i> Admin
+        </div>
+
+    </div>
+
+</header>
+
+<main class="main-content">
+
+    <section id="editor" class="section editor">
+        <!-- async loading -->
+    </section>
+
+    <section id="movies_list" class="section movies-list">
+        <!-- async loading -->
+    </section>
+
+</main>
+
+
+<div id="main_preloader" class="spinner-wrapper">
+    <div class="spinner">
+        <div class="double-bounce1"></div>
+        <div class="double-bounce2"></div>
+    </div>
+</div>
+
+<!-- scripts -->
+<script data-main="/js/app-editor" src="/js/libs/requirejs.min.js"></script>
+
+</body>
+</html>
+
