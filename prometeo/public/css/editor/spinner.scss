@@ -7,8 +7,30 @@
   left:0;
   right:0;
   bottom:0;
-  background: $white;
+  background-color: $grey;
   z-index: 9999;
+  color: $white;
+  transition: all 218ms $swift-out;
+
+  &.hided{
+    opacity:0;
+    background-color: $white;
+  }
+
+  .va-wrap{
+    width: 100%;
+    height: 100%;
+  }
+
+  .spinner-intro{
+    width: 320px;
+    margin: 15px auto 110px;
+    height: 80px;
+    svg{
+      width: 100%;
+      height: auto;
+    }
+  }
 }
 
 .spinner {
@@ -16,14 +38,14 @@
   height: 40px;
 
   position: relative;
-  margin: 100px auto;
+  margin: 0 auto;
 }
 
 .double-bounce1, .double-bounce2 {
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background-color: #333;
+  background-color: $white;
   opacity: 0.6;
   position: absolute;
   top: 0;

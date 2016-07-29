@@ -61,7 +61,7 @@ define([], function () {
     };
 
     Session.prototype.isQuestionAlreadyAnswered = function (answer_id) {
-        return this._answered.indexOf(answer_id) !== false;
+        return this._answered.indexOf(answer_id) !== -1;
     };
 
     /**

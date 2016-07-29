@@ -220,6 +220,11 @@ define([
                     elementModel.setText(utilities.nl2br(value));
                     break;
 
+                // linkarea
+                case 'link':
+                    elementModel.setUrl(value);
+                    break;
+
                 // jumparea
                 case 'jump_to_frame':
                     elementModel.setJumpToFrame(value);

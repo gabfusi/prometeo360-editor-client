@@ -49,7 +49,9 @@ define([
         }
 
         // on document ready
-        $(function () {
+        $(document).ready(function () {
+
+            var $preloader =  $('#main_preloader');
 
             router.init('/admin');
 
@@ -62,7 +64,11 @@ define([
             });
 
             // remove global spinner
-            $('#main_preloader').hide();
+            $preloader.addClass('hided');
+            var t = setTimeout(function() {
+                $preloader[0].style.display = 'none';
+                clearTimeout(t); t = null;
+            }, 218);
 
         });
     });

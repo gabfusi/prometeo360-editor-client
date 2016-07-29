@@ -205,8 +205,8 @@ define(['lib/utilities'], function(utilities) {
 
             case 'JumpArea':
 
-                if(typeof objectModel.url !== 'undefined') {
-                    this.setUrl(objectModel.url);
+                if(typeof objectModel.jump_to_frame !== 'undefined') {
+                    this.setJumpToFrame(objectModel.jump_to_frame);
                 }
 
                 break;

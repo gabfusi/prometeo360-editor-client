@@ -12,7 +12,7 @@ define([
      * @returns {*}
      */
     var loadSession = function () {
-        var session = localStorage.getItem(config.sessionLocalStorageKey);
+        var session = window.localStorage.getItem(config.sessionLocalStorageKey);
         return new Session(Session.unserialize(session));
     };
 
@@ -21,7 +21,7 @@ define([
      * @param session
      */
     var saveSession = function (session) {
-        localStorage.setItem(config.sessionLocalStorageKey, session.serialize());
+        window.localStorage.setItem(config.sessionLocalStorageKey, session.serialize());
     };
 
     var session;

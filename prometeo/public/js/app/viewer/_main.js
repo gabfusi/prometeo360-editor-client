@@ -15,7 +15,7 @@ define([
             players = [];
 
         // on document ready
-        $(function () {
+        $(document).ready(function () {
 
             var $el;
 
@@ -40,6 +40,7 @@ define([
 
                     players[i] = new PlayerController({
                         target  : $el,
+                        width   : $el.data('width'),
                         id      : $el.data('id')
                     });
 

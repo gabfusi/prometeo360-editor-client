@@ -111,12 +111,26 @@
     &.linkarea,
     &.jumparea{
       .inner{
-        padding: 5%;
+        padding: 12px;
       }
       .text{
         text-align: left;
         font-size: 1em;
         line-height: 1.25em;
+      }
+    }
+
+
+    &.linkarea,
+    &.jumparea {
+      a {
+        text-decoration: none;
+        display: block;
+        color: inherit;
+        &:hover, &:focus, &:active{
+          text-decoration: none;
+          outline: none;
+        }
       }
     }
 
@@ -132,9 +146,16 @@
     color: $white;
     cursor: pointer;
     text-align: center;
+    transition: all 218ms $swift-in;
+
     &.disabled{
       pointer-events: none;
       cursor: not-allowed;
+    }
+
+    &:hover{
+      background: rgba(0,0,0,.86);
+      border: 1px solid rgba(0,0,0,.98);
     }
   }
 

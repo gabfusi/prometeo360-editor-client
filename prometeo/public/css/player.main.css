@@ -258,7 +258,14 @@ body {
   background: #000000;
   font-size: 11px;
   line-height: 1.3;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  overflow: hidden; }
+  .prp-player.prp-player-resized {
+    width: 100%;
+    height: auto; }
+    .prp-player.prp-player-resized .prp-movie {
+      transform-origin: 0 0;
+      margin: 0; }
   .prp-player * {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -470,11 +477,18 @@ body {
       .prp-movie .prp-area.video .prp-video-preview img {
         position: relative; }
     .prp-movie .prp-area.textarea .inner, .prp-movie .prp-area.linkarea .inner, .prp-movie .prp-area.jumparea .inner {
-      padding: 5%; }
+      padding: 12px; }
     .prp-movie .prp-area.textarea .text, .prp-movie .prp-area.linkarea .text, .prp-movie .prp-area.jumparea .text {
       text-align: left;
       font-size: 1em;
       line-height: 1.25em; }
+    .prp-movie .prp-area.linkarea a, .prp-movie .prp-area.jumparea a {
+      text-decoration: none;
+      display: block;
+      color: inherit; }
+      .prp-movie .prp-area.linkarea a:hover, .prp-movie .prp-area.linkarea a:focus, .prp-movie .prp-area.linkarea a:active, .prp-movie .prp-area.jumparea a:hover, .prp-movie .prp-area.jumparea a:focus, .prp-movie .prp-area.jumparea a:active {
+        text-decoration: none;
+        outline: none; }
   .prp-movie .prp-action-btn {
     border: 1px solid rgba(0, 0, 0, 0.78);
     display: inline-block;
@@ -484,10 +498,14 @@ body {
     border-radius: 2px;
     color: #ffffff;
     cursor: pointer;
-    text-align: center; }
+    text-align: center;
+    transition: all 218ms cubic-bezier(0.42, 0, 1, 1); }
     .prp-movie .prp-action-btn.disabled {
       pointer-events: none;
       cursor: not-allowed; }
+    .prp-movie .prp-action-btn:hover {
+      background: rgba(0, 0, 0, 0.86);
+      border: 1px solid rgba(0, 0, 0, 0.98); }
   .prp-movie .va-wrap {
     display: table; }
     .prp-movie .va-wrap .va-middle {

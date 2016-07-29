@@ -58,18 +58,6 @@ define([
         this.hasPausedMovie = false;
     };
 
-    LinkAreaController.prototype.onPlay = function() {
-
-    };
-
-    LinkAreaController.prototype.onPause = function() {
-
-    };
-
-    LinkAreaController.prototype.seek = function() {
-
-    };
-
 
     return LinkAreaController;
 

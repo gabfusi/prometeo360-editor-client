@@ -15,6 +15,7 @@ define([
 
         var defaultOptions = {
             target: '.prometeo-movie',  // target element selector or node
+            width: 720,
             id: null                // movie id
         };
 
@@ -32,6 +33,9 @@ define([
             this.currentFrame = 0;
             this.isFullscreen = false;
             this.movieController = null;
+
+            // set container width
+            this.$target.width(this.options.width);
 
             this.$movieArea = null;
 
@@ -136,9 +140,16 @@ define([
                         self.isFullscreen = false;
                         self.onFullscreenExit();
                     }
-
                 });
 
+                // on parent element resize
+                $(window).on('resize', function () {
+                    self.onResize();
+                });
+
+
+
+                self.onResize();
             },
 
             /**
@@ -182,13 +193,13 @@ define([
                     if (elementModel.getType() === 'QuestionArea') {
 
                         // force stop on every frame
-                        var t = setTimeout(function() {
+                        var t = setTimeout(function () {
                             self.pause();
                             clearTimeout(t);
                             t = null;
                         }, 1);
 
-                        if(elementModel.isAnswerRequired()) {
+                        if (elementModel.isAnswerRequired()) {
                             // this is the case where a question is mandatory
                             self.blockControls();
                         }
@@ -206,11 +217,14 @@ define([
                 });
 
                 // if some areas request the movie to pause
-                dispatcher.on(dispatcher.doMovieSeekAndPlay, function (e, seekDelta) {
-                    self.movieController.setPlaying(true);
-                    self.seek(self.currentFrame + seekDelta);
-                    self.play();
-                    self.releaseControls();
+                dispatcher.on(dispatcher.doMovieSeekAndPlay, function (e, frame, isRelative) {
+                    var t = setTimeout(function () {
+                        self.movieController.setPlaying(true);
+                        self.seek(isRelative ? self.currentFrame + frame : frame);
+                        self.releaseControls();
+                        clearTimeout(t);
+                        t = null;
+                    }, 10);
                 });
 
                 // on user exp increased
@@ -286,7 +300,7 @@ define([
                 if (this.movieController.isPlaying()) {
 
                     this.movieController.goToFrame(frame, function onMovieReadyToPlay() {
-                        self.movieController.startTicker();
+                        self.play();
                     });
 
                 } else {
@@ -333,7 +347,7 @@ define([
              * @param totalExp
              * @param eventExp
              */
-            updateExp: function(totalExp, eventExp) {
+            updateExp: function (totalExp, eventExp) {
                 var self = this,
                     spotExpClass = 'prp-earned',
                     t;
@@ -342,9 +356,9 @@ define([
 
                 this.$totalExp.addClass('prp-update')[0].innerHTML = totalExp + ' exp';
 
-                if(typeof eventExp !== 'undefined') {
+                if (typeof eventExp !== 'undefined') {
 
-                    if(eventExp < 0) {
+                    if (eventExp < 0) {
                         spotExpClass = 'prp-lost';
                     } else {
                         eventExp = '+' + eventExp;
@@ -352,7 +366,7 @@ define([
 
                     this.$spotExp.addClass(spotExpClass + ' prp-shown')[0].innerHTML = eventExp + ' exp';
 
-                    t = setTimeout(function() {
+                    t = setTimeout(function () {
                         self.$totalExp.removeClass('prp-update');
                         self.$spotExp.removeClass(spotExpClass + ' prp-shown');
                         clearTimeout(t);
@@ -370,7 +384,7 @@ define([
             getFrameFromProgressPosition: function (positionX) {
                 // positionX : 720 = x : movieDuration
                 // x = positionX*movieDuration / 720;
-                var width = this.isFullscreen ? this.$player.width() : this.movieOptions.width;
+                var width = this.$player.width();
                 return positionX * this.movieController.getModel().getDuration() / width;
             },
 
@@ -430,45 +444,76 @@ define([
              */
             onFullscreenResize: function () {
 
+                var windowW = screen.width,
+                    windowH = screen.height - this.$controlsBar.height();
+
+                this._resizeTo(windowW, windowH);
+
+            },
+
+            /**
+             * On parent element resize
+             * This makes the player responsive by css scaling it.
+             */
+            onResize: function () {
+
                 var self = this,
-                    windowW = screen.width,
-                    windowH = screen.height - this.$controlsBar.height(),
+                    targetWidth = this.$target.width(),
+                    targetHeight,
+                    controlBarHeight,
+                    zoom;
+
+                // if container width doesn't match default movie width
+                if (targetWidth < this.movieOptions.width) {
+
+                    controlBarHeight = this.$controlsBar.height();
+                    targetHeight = this.$target.height() + controlBarHeight;
+
+                    if (!this.$player.hasClass('prp-player-resized')) {
+                        this.$player.addClass('prp-player-resized')
+                    }
+
+                    zoom = this._resizeTo(targetWidth, targetHeight);
+
+                    requestAnimationFrame(function () {
+                        self.$player.height((zoom * self.movieOptions.height) + controlBarHeight);
+                        self.$player.width(zoom * self.movieOptions.width);
+                    });
+
+                } else {
+
+                    if (this.$player.hasClass('prp-player-resized')) {
+                        this.$player.removeClass('prp-player-resized');
+                        this.$player.removeAttr('style');
+                    }
+
+                }
+
+            },
+
+            _resizeTo: function (width, height) {
+
+                var self = this,
                     zoom,
                     ratio;
 
                 // calc ratio
-                ratio = windowW / windowH;
+                ratio = width / height;
 
                 if (ratio > this.movieOptions.width / this.movieOptions.height) {
                     // if viewport ratio greater than movie ratio, use height
-                    zoom = 1 / this.movieOptions.height * windowH;
+                    zoom = 1 / this.movieOptions.height * height;
                 } else {
                     // otherwise, use width
-                    zoom = 1 / this.movieOptions.width * windowW;
+                    zoom = 1 / this.movieOptions.width * width;
                 }
-
-                console.log(windowW, windowH, ratio, '> ', this.movieOptions.width, this.movieOptions.height);
 
                 // update Movie size
                 requestAnimationFrame(function () {
                     self.$movieArea.css({'transform': 'scale(' + zoom + ')'});
                 });
 
-            },
-
-
-            onResize: function() {
-
-                var targetWidth = this.$target.width();
-
-                // if container width doesn't match default movie width
-                if( targetWidth !== this.movieOptions.width) {
-
-                    // let's resize this guy!
-
-                    // TODO
-
-                }
+                return zoom;
 
             }
 
