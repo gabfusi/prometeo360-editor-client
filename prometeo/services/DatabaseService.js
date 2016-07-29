@@ -16,7 +16,7 @@ var DatabaseService = function(_database_id) {
 
 
     /**
-     *
+     * Add a document to db
      * @param id
      * @param data
      * @param callback
@@ -34,7 +34,7 @@ var DatabaseService = function(_database_id) {
     };
 
     /**
-     *
+     * Update a document on db
      * @param document_id
      * @param data
      * @param callback
@@ -64,7 +64,7 @@ var DatabaseService = function(_database_id) {
     };
 
     /**
-     *
+     * Get a document from db
      * @param document_id
      * @param callback
      */
@@ -83,7 +83,11 @@ var DatabaseService = function(_database_id) {
 
     };
 
-
+    /**
+     * Delete a document from db
+     * @param document_id
+     * @param callback
+     */
     this.delete = function(document_id, callback) {
         var self = this;
 

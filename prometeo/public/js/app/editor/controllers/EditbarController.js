@@ -104,7 +104,7 @@ define([
                 if(self.currentElementModel.getType() === 'Video') {
                     self.updateElement(self.currentElementModel, 'filename', filename);
                     self.updateElement(self.currentElementModel, 'duration', duration);
-                    self.loadElement(self.currentElementModel); // refresh panel
+                    self.loadElement(self.currentElementModel, true); // force panel refresh
                 }
             });
 
@@ -257,8 +257,9 @@ define([
         /**
          * Load an element edit panel
          * @param elementModel
+         * @param force
          */
-        loadElement: function(elementModel) {
+        loadElement: function(elementModel, force) {
 
             var self = this,
                 html,
@@ -266,7 +267,7 @@ define([
                 elementType = elementModel.getType(),
                 elementModelObject = elementModel.toObject();
 
-            if(this.currentElementModel && this.currentElementModel.getId() === elementModel.getId()) {
+            if(!force && (this.currentElementModel && this.currentElementModel.getId() === elementModel.getId()) ) {
                 return;
             }
 

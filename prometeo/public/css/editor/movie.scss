@@ -63,6 +63,7 @@ $movie-title-height: 1.25em;
     position: absolute;
     overflow: hidden;
     font-size: 14px;
+    cursor: default;
 
     &.selected{
       box-shadow: 0 0 5px 1px $highlight;

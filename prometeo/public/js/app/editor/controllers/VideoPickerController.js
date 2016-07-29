@@ -189,7 +189,7 @@ define([
             updateProgressBar : function(percent) {
                 if(percent == 100) {
                     // 100% means that video is uploaded but not converted yet
-                    this.$progressBar.text('Converto e normalizzo il video...')[0].style.width = percent + '%';
+                    this.$progressBar.text('Converto e comprimo il video...')[0].style.width = percent + '%';
                 } else {
                     this.$progressBar.text(percent + '%')[0].style.width = percent + '%';
                 }

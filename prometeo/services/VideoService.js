@@ -18,10 +18,22 @@ var VideoService = {
         return this.db.list('videos', 'get_by_date', { descending: true }, callback);
     },
 
+    /**
+     * Get a video
+     * @param video_id
+     * @param callback
+     * @returns {*}
+     */
     getVideo: function(video_id, callback) {
         return this.db.get(video_id, callback);
     },
 
+    /**
+     * Insert a video in db
+     * @param video_filename
+     * @param metadata
+     * @param callback
+     */
     addVideo: function(video_filename, metadata, callback) {
 
         if( typeof metadata.created === 'undefined' ) {
@@ -34,9 +46,17 @@ var VideoService = {
 
     },
 
+    /**
+     * Compress and covert video to mp4 format
+     * @param input
+     * @param output_path
+     * @param filename
+     * @param callback
+     */
     convertVideo: function(input, output_path, filename, callback) {
 
         var mp4Filename = path.join(output_path, filename) + '.mp4';
+        var mp4FilenameMobile = path.join(output_path, filename) + '-low.mp4';
 
         console.log('Converting video "', input, '" to -> ', mp4Filename);
 
@@ -70,8 +90,9 @@ var VideoService = {
 
             })
             .input(input)
+            .output(mp4Filename)            // output to (720p)
             .withVideoCodec('libx264')      // use libx264
-            .withVideoBitrate(1024)         // enforce a costant video bitrate
+            .withVideoBitrate(1000)         // enforce a costant video bitrate
             .audioBitrate('128k')           // enforce a constant audio bitrate
             .audioChannels(2)               // stereo!
             .size('720x?')                  // resize to width
@@ -79,12 +100,24 @@ var VideoService = {
             .withFps(29.7)                  // enforce 29.7 fps
             .autopad('black')               // autopad video (adds black space to fit viewport)
             .toFormat('mp4')                // convert to mp4 (cross browser)
-            .output(mp4Filename)            // output to
-            .run()
+
+
+            .output(mp4FilenameMobile)      // output to (360p)
+            .withVideoBitrate(300)          // enforce a costant video bitrate
+            .size('360x?')                  // resize to width
+
+            .run()                          // run tasks
         ;
 
     },
 
+    /**
+     * Generate video thumbnails
+     * @param video_input
+     * @param thumb_folder
+     * @param number
+     * @param callback
+     */
     generateThumbnails : function(video_input, thumb_folder, number, callback) {
 
         if(!number) {
@@ -95,9 +128,9 @@ var VideoService = {
             .input(video_input)
             .screenshots({
                 count: number,              // eg. 4 -> Will take screens at 20%, 40%, 60% and 80% of the video
-                filename: '%f-%i.png',      // eg. mio-video-1.png
+                filename: '%f-%i.png',      // eg. nomeVideo-1.png
                 folder: thumb_folder,
-                size: '720x?'
+                size: '400x?'
             })
 
             // on process end

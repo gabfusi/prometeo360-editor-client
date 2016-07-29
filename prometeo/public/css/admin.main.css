@@ -278,7 +278,8 @@ ul, li {
     min-height: 10px;
     position: absolute;
     overflow: hidden;
-    font-size: 14px; }
+    font-size: 14px;
+    cursor: default; }
     .editor .movie-area .area.selected {
       box-shadow: 0 0 5px 1px #FCFABC; }
     .editor .movie-area .area .inner {
