@@ -43,6 +43,8 @@ define([
             this.movieInterval = null;
             // is video playing?
             this.playing = false;
+            // was movie playing before internal pause event?
+            this.wasPlaying = false;
             // movie duration
             this.movieDuration = 0;
             // current frame
@@ -54,9 +56,6 @@ define([
             // is movie scaled down?
             this.movieScaled = false;
 
-
-            // rendering
-            this.willShowSoon = [];  // list of elements to be rendered soon
             this.zoom = 1;
 
             this.bindListeners();
@@ -75,6 +74,7 @@ define([
                 var self = this;
 
                 dispatcher.on(dispatcher.videoBufferingStart, function() {
+                    self.wasPlaying = self.isPlaying();
                     dispatcher.trigger(dispatcher.movieBufferingStart);
                     self.stopTicker();
                 });
@@ -235,8 +235,7 @@ define([
 
                     dispatcher.trigger(dispatcher.movieBufferingStart);
 
-                    dispatcher.one(dispatcher.videoSeekEnd, function () {
-                        dispatcher.trigger(dispatcher.movieBufferingEnd);
+                    dispatcher.one(dispatcher.movieBufferingEnd, function () {
                         if (callback) callback();
                     });
 
@@ -302,25 +301,18 @@ define([
                     return;
                 }
 
-                console.log(this.currentFrame);
+                console.debug('Frame', this.currentFrame, 'contains some actions...');
 
                 var self = this,
                 // if customElements is defined, render customElements
                 // else render ticker elements defined on movieTimeline
                     actions = customElements || this.movieTimeline[this.currentFrame];
 
-                this.willShowSoon = null;
-                this.willShowSoon = [];
                 this.willMovieStop = false;
 
                 // parse actions
                 for (var i = 0, l = actions.length; i < l; i++) {
                     this.performAction(actions[i]);
-                }
-
-                // render new areas
-                if (this.willShowSoon.length) {
-                    self.renderElements(self.willShowSoon);
                 }
 
                 // if an area required a movie pause
@@ -355,8 +347,6 @@ define([
                         this.setPlaying(false, true);
                     }
 
-                } else {
-                    console.debug(actionElement.pause, actionElement.api.hasPausedMovie);
                 }
 
                 // render element
@@ -364,8 +354,8 @@ define([
 
                     console.log('Showing element', actionElement.api.getModel());
 
-                    // this elements will be rendered soon
-                    this.willShowSoon[this.willShowSoon.length] = actionElement.api.getDomElement();
+                    // attach element to dom
+                    this.$container.append(actionElement.api.getDomElement());
 
                     // on element shown
                     actionElement.api.onShow();

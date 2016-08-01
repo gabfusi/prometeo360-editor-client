@@ -80,6 +80,7 @@ define([
                 this.$spotExp = this.$player.find('.prp-exp-notifier');
                 this.$playCover = this.$player.find('.prp-play-cover');
                 this.$resumeCover = this.$player.find('.prp-resume-cover');
+                this.$notFoundCover = this.$player.find('.prp-not-found-cover');
 
                 // instantiate new movie controller
                 this.movieOptions = {
@@ -200,15 +201,18 @@ define([
 
                 // on movie buffering start
                 dispatcher.on(dispatcher.movieBufferingStart, function () {
-                    wasPlayingBeforeBuffering = self.movieController.isPlaying();
+                    console.debug('video buffering start');
                     self.$loader[0].style.display = 'block';
                 });
 
                 // on movie buffering end
                 dispatcher.on(dispatcher.movieBufferingEnd, function () {
+                    console.debug('video buffering end');
                     self.$loader[0].style.display = 'none';
-                    if(wasPlayingBeforeBuffering) {
+                    if(self.movieController.wasPlaying) {
+                        console.debug('movie was playing... so let\'s play!');
                         self.play();
+                        self.movieController.wasPlaying = false;
                     }
                 });
 
@@ -288,6 +292,7 @@ define([
 
                     if (err) {
                         console.error('Prometeo Player: movie not found.');
+                        self.$notFoundCover[0].style.display = 'block';
                         return;
                     }
 
@@ -328,8 +333,6 @@ define([
             seek: function (frame) {
                 var self = this;
 
-                console.log('is playing? ', this.movieController.isPlaying());
-
                 this.currentFrame = frame;
 
                 if (this.movieController.isPlaying()) {
@@ -339,9 +342,7 @@ define([
                     });
 
                 } else {
-
                     this.movieController.goToFrame(frame);
-
                 }
 
             },

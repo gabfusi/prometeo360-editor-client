@@ -98,6 +98,14 @@
 .prp-resume-cover{
   background: rgba(0,0,0,.4);
 }
+.prp-not-found-cover{
+  background: $black;
+  cursor: default;
+  .prp-movie-title{
+    margin:0;
+  }
+}
+
 
 // controls
 .prp-controls {

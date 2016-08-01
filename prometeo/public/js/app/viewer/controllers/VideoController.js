@@ -55,8 +55,6 @@ define([
 
             videoFilename = this.model.getFilename();
 
-            console.debug('rendering video, scaled:', this.movieScaled);
-
             if(this.movieScaled) {
                 videoFilename = videoFilename.replace('.mp4', '-low.mp4');
             }
@@ -82,21 +80,16 @@ define([
     VideoController.prototype.attachListeners = function() {
         var self = this;
 
-        // on video seeked
-        $(this.video).on('seeked', function() {
-            console.debug('seeked', self.model.getId());
-            dispatcher.trigger(dispatcher.videoSeekEnd, this);
-        });
-
         // on video buffering
         $(this.video).on('waiting', function() {
-            console.debug('waiting', self.model.getId());
+            console.debug('video waiting');
             self.isBuffering = true;
             dispatcher.trigger(dispatcher.videoBufferingStart, this);
         });
 
-        // if video is ready
-        $(this.video).on('canplaythrough', function() {
+        // if video is ready to be played
+        $(this.video).on('canplaythrough', function(e) {
+            console.debug('video canplaythrough');
             if(self.video.readyState === 4) {
                 console.debug('video buffered!');
                 dispatcher.trigger(dispatcher.videoBufferingEnd, this);
@@ -104,13 +97,12 @@ define([
             }
         });
 
-        // video playing ---> this isn't consistent across browsers (specially chrome for android)
-        /**
-        $(this.video).on('playing', function() {
-            console.debug('playing', self.model.getId());
+        // video seeked and ready to be played
+        $(this.video).on('seeked', function(e) {
+            console.debug('video seeked');
+            dispatcher.trigger(dispatcher.videoBufferingEnd, this);
             self.isBuffering = false;
-            dispatcher.trigger(dispatcher.videoPlayingStart, this);
-        });*/
+        });
 
     };
 
@@ -161,29 +153,9 @@ define([
             // workaround for chrome android error: Failed to execute 'play' on 'HTMLMediaElement': API can only be initiated by a user gesture.
             promise.catch(function(err){
                 dispatcher.trigger(dispatcher.videoPlayRejected, self);
-                console.debug('promise fail',err)
+                console.warn('promise fail', err)
             })
         }
-
-        /*
-        var t = setTimeout(function() { // some slow browsers can't play hidden HTMLVideoElement
-
-            var promise = self.video.play();
-
-            if(promise) {
-
-                // workaround for chrome android error: Failed to execute 'play' on 'HTMLMediaElement': API can only be initiated by a user gesture.
-                promise.catch(function(err){
-                    dispatcher.trigger(dispatcher.videoPlayRejected);
-                    console.debug('promise fail',err)
-                })
-            }
-
-
-            clearTimeout(t);
-            t = null;
-        },1);
-        */
 
     };
 
@@ -191,9 +163,7 @@ define([
      * Pause video
      */
     VideoController.prototype.onPause = function() {
-        console.log('Video: pause! ');
         this.video.pause();
-
     };
 
     /**
@@ -201,9 +171,22 @@ define([
      * @param frame
      */
     VideoController.prototype.onSeek = function(frame) {
-        var videoSeekFrame = frame - this.model.getFrame();
+        var self = this,
+            videoSeekFrame = frame - this.model.getFrame();
+
         console.log('Video: seeking to ', frame, videoSeekFrame);
-        this.video.currentTime = videoSeekFrame/1000;
+
+        try{
+            this.video.currentTime = videoSeekFrame/1000;
+        } catch(e) {
+            // prevent firefox error
+            // InvalidStateError: An attempt was made to use an object that is not, or is no longer, usable
+            var t = setTimeout(function(){
+                self.video.currentTime = videoSeekFrame/1000;
+                clearTimeout(t);
+                t = null;
+            }, 10)
+        }
     };
 
 

@@ -326,6 +326,12 @@
 .prp-resume-cover {
   background: rgba(0, 0, 0, 0.4); }
 
+.prp-not-found-cover {
+  background: #000000;
+  cursor: default; }
+  .prp-not-found-cover .prp-movie-title {
+    margin: 0; }
+
 .prp-controls {
   position: absolute;
   bottom: 0;

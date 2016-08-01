@@ -59,7 +59,6 @@ define(["jquery"], function ($) {
         trigger: function () {
             var args = Array.prototype.slice.call(arguments),
                 eventName = args.splice(0, 1);
-            //console.debug('Dispatcher: triggered ', arguments);
             $(document).trigger(eventName + '.prmt', args);
         }
 

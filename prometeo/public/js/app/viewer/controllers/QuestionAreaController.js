@@ -159,7 +159,7 @@ define([
             // hide question
             this.onHide();
             // play movie
-            dispatcher.trigger(dispatcher.doMovieSeekAndPlay, this.model.getDuration() + 30, true);
+            dispatcher.trigger(dispatcher.doMovieSeekAndPlay, this.model.getFrame() + this.model.getDuration() + 30);
         };
 
         /**
