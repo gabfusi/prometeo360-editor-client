@@ -51,6 +51,9 @@ define([
             this.currentElements = {};
             // if some elements required a movie pause
             this.willMovieStop = false;
+            // is movie scaled down?
+            this.movieScaled = false;
+
 
             // rendering
             this.willShowSoon = [];  // list of elements to be rendered soon
@@ -72,14 +75,16 @@ define([
                 var self = this;
 
                 dispatcher.on(dispatcher.videoBufferingStart, function() {
-                    self.stopTicker();
                     dispatcher.trigger(dispatcher.movieBufferingStart);
+                    self.stopTicker();
                 });
 
-                dispatcher.on(dispatcher.videoPlayingStart, function() {
-                    self.startTicker();
+                dispatcher.on(dispatcher.videoBufferingEnd, function() {
                     dispatcher.trigger(dispatcher.movieBufferingEnd);
+                });
 
+                dispatcher.on(dispatcher.movieScaled, function(e, isScaled) {
+                    self.movieScaled = isScaled;
                 });
 
             },
@@ -113,7 +118,7 @@ define([
                     switch (data.elements[i].type) {
 
                         case 'Video' :
-                            api = new VideoController(data.elements[i]);
+                            api = new VideoController(data.elements[i], this.movieScaled);
                             break;
 
                         case 'TextArea' :
@@ -249,8 +254,6 @@ define([
              */
             startTicker: function () {
                 var self = this;
-
-                console.log('start tick')
 
                 if(this.movieInterval !== null) // video already started
                     return;

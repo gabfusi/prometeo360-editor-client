@@ -10,6 +10,11 @@ define([
 
     function ($, dispatcher, utilities, notification, MovieController) {
 
+        var getEmbedCode = function(movie_id) {
+            return '<div class="prometeo-player" data-width="100%" data-id="' + movie_id + '"></div>' +
+                   '<script async defer data-main="http://prometeo.duesottozero.com/js/app-viewer" src="http://prometeo.duesottozero.com/js/libs/requirejs.min.js"></script>';
+        };
+
         // Inforbar Controller
         var InforbarController = {
 
@@ -23,6 +28,8 @@ define([
                 this.$movieName = this.$inforbar.find('#movie_name');
                 this.$movieSaveStatus = this.$inforbar.find('#movie_save_status');
                 this.$moviePublishedBtn = this.$inforbar.find('#movie_publish');
+                this.$movieEmbedBtn = this.$inforbar.find('#movie_embed');
+                this.$moviePlayBtn = this.$inforbar.find('#movie_play');
                 this.initListeners();
             },
 
@@ -94,6 +101,43 @@ define([
 
                 });
 
+                this.$movieEmbedBtn.on('click', function() {
+
+                    var movie_id = MovieController.getModel().getId();
+
+                    notification.popup("Codice per incorporare il filmato",
+                        '<p>Utilizza questo codice per incorparare il filmato sul tuo sito web.<br>' +
+                        'Puoi specificare la larghezza del player attraverso l\'attributo <code>data-width</code>.<br>' +
+                        'Ricorda che puoi incorporare un solo filmato per pagina web.</p>' +
+                        '<textarea class="form-control" rows="8" readonly onclick="this.focus();this.select();">' +
+                        getEmbedCode(movie_id) + '</textarea>');
+
+                });
+
+                // video preview
+                this.$moviePlayBtn.on('click', function() {
+
+                    var movie_id = MovieController.getModel().getId(),
+                        $overlay =
+                                    $('<div class="movie-preview">' +
+                                      '<div class="va-wrap">' +
+                                        '<div class="va-middle">' +
+                                        '<div class="preview-box">' +
+                                            '<div class="close-preview"><i class="fi-x"></i></div>' +
+                                            '<iframe src="/admin/player/' + movie_id + '" scrolling="no" allowfullscreen="no"></iframe>' +
+                                        '</div>' +
+                                        '</div>' +
+                                      '</div>' +
+                                      '</div>');
+
+                    $overlay.on('click', '.close-preview', function() {
+                        $overlay.fadeOut(300, function(){
+                            $overlay.remove();
+                        })
+                    }).appendTo('body');
+
+                });
+
             },
 
             editMovieName: function(name) {
@@ -109,12 +153,16 @@ define([
 
                 if(published) {
 
+                    this.$movieEmbedBtn.add(this.$moviePlayBtn).show();
+
                     this.$moviePublishedBtn
                         .removeClass('btn-primary').addClass('btn-default')
                         .text('Nascondi')
                         .attr("aria-label", "Il filmato ora è pubblicato e sarà visibile a chiunque, fai click per nasconderlo.");
 
                 } else {
+
+                    this.$movieEmbedBtn.add(this.$moviePlayBtn).hide();
 
                     this.$moviePublishedBtn
                         .removeClass('btn-default').addClass('btn-primary')

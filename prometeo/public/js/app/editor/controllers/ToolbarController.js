@@ -2,12 +2,13 @@
 
 define([
         "jquery",
+        "lib/notifications",
         "controller/MovieController",
         "controller/TimelineElementController",
         "controller/TimelineController"
 ],
 
-    function($, MovieController, TimelineElementController, TimelineController) {
+    function($, notification, MovieController, TimelineElementController, TimelineController) {
 
     // Toolbar Controller
     var ToolbarController = {
@@ -115,18 +116,30 @@ define([
          */
         canAddElement: function(elementType) {
             var canAdd = true;
+            var $elements = MovieController.getVisibleElements(TimelineController.getCurrentFrame());
+            var i;
 
             if(elementType === 'Video') {
                 // I can't overlap 2 videos
 
-                var $elements = MovieController.getVisibleElements(TimelineController.getCurrentFrame());
 
-                for(var i = 0; i < $elements.length; i++) {
+                for(i = 0; i < $elements.length; i++) {
                     if($elements[i].data('model').getType() === 'Video') {
-                        alert('Non puoi inserire due video nella stessa posizione.');
+                        notification.error('Non puoi inserire due Video nella stessa posizione.');
                         return false;
                     }
                 }
+            }
+
+            if(elementType === 'QuestionArea') {
+
+                for(i = 0; i < $elements.length; i++) {
+                    if($elements[i].data('model').getType() === 'QuestionArea') {
+                        notification.error('Non puoi inserire due Domande nella stessa posizione.');
+                        return false;
+                    }
+                }
+
             }
 
             return canAdd;

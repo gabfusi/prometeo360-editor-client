@@ -1,0 +1,51 @@
+
+.movie-preview{
+  position: fixed;
+  top:0;
+  left:0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,.9);
+  z-index: 9999;
+
+  .va-wrap{
+    width: 100%;
+    height: 100%;
+  }
+
+  .va-middle{
+    text-align: center;
+  }
+
+  .preview-box{
+    padding: 10px;
+    background: $grey;
+    border-radius: 2px;
+    position: relative;
+    margin: 0 auto;
+    width: 740px;
+    height: 536px;
+  }
+
+  .close-preview{
+    position: absolute;
+    top:-12px;
+    right:-12px;
+    background: $grey-shade-3;
+    color: $white;
+    font-size: 16px;
+    line-height: 32px;
+    height: 32px;
+    width: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  iframe{
+    display: block;
+    width:100%;
+    height: 100%;
+    border: none;
+    margin: 0 auto;
+  }
+}

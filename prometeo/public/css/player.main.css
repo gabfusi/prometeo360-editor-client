@@ -1,9 +1,7 @@
 @charset "UTF-8";
-body {
-  background: #556270; }
-
 .prometeo-player {
-  /*# sourceMappingURL=normalize.min.css.map */ }
+  /*# sourceMappingURL=normalize.min.css.map */
+  background: #000000; }
   .prometeo-player progress, .prometeo-player sub, .prometeo-player sup {
     vertical-align: baseline; }
   .prometeo-player button, .prometeo-player hr, .prometeo-player input {
@@ -108,6 +106,11 @@ body {
   .prometeo-player ::-webkit-file-upload-button {
     -webkit-appearance: button;
     font: inherit; }
+  .prometeo-player .va-wrap {
+    display: table; }
+  .prometeo-player .va-middle {
+    vertical-align: middle;
+    display: table-cell; }
 
 .prp-loader {
   margin: 100px auto;
@@ -287,7 +290,8 @@ body {
   transform-origin: 50% 50%;
   margin: 0 auto; }
 
-.prp-movie-loading {
+.prp-movie-loading,
+.prp-cover {
   position: absolute;
   top: 0;
   left: 0;
@@ -295,10 +299,32 @@ body {
   height: 100%;
   z-index: 2;
   background: rgba(0, 0, 0, 0.6);
-  display: none; }
-  .prp-movie-loading > div {
+  display: block; }
+  .prp-movie-loading > div,
+  .prp-cover > div {
     width: 100%;
     height: 100%; }
+
+.prp-cover {
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 100;
+  display: none;
+  cursor: pointer;
+  text-align: center; }
+  .prp-cover .prp-play-cover-icon {
+    margin: 0 auto;
+    width: 64px;
+    height: 64px;
+    background: #556270;
+    border-radius: 50%; }
+  .prp-cover .prp-movie-title {
+    margin-bottom: 24px;
+    font-size: 21px;
+    color: #ffffff;
+    margin-top: -36px; }
+
+.prp-resume-cover {
+  background: rgba(0, 0, 0, 0.4); }
 
 .prp-controls {
   position: absolute;

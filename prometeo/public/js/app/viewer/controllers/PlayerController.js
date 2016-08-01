@@ -33,6 +33,7 @@ define([
             this.currentFrame = 0;
             this.isFullscreen = false;
             this.movieController = null;
+            this.movieScaled = false;
 
             // set container width
             this.$target.width(this.options.width);
@@ -77,6 +78,8 @@ define([
                 this.$controlsBar = this.$player.find('.prp-controls');
                 this.$totalExp = this.$player.find('.prp-exp-counter');
                 this.$spotExp = this.$player.find('.prp-exp-notifier');
+                this.$playCover = this.$player.find('.prp-play-cover');
+                this.$resumeCover = this.$player.find('.prp-resume-cover');
 
                 // instantiate new movie controller
                 this.movieOptions = {
@@ -142,11 +145,25 @@ define([
                     }
                 });
 
+                // play cover
+                this.$player.on('click', '.prp-play-cover', function() {
+                    self.play();
+                    self.$playCover[0].style.display = 'none';
+                });
+
+                // resume cover
+                this.$player.on('click', '.prp-resume-cover', function() {
+                    if(self.videoElementRejectedToPlay) {
+                        self.videoElementRejectedToPlay.video.play();
+                    }
+                    self.$resumeCover[0].style.display = 'none';
+                    self.$loader[0].style.display = 'block';
+                });
+
                 // on parent element resize
                 $(window).on('resize', function () {
                     self.onResize();
                 });
-
 
 
                 self.onResize();
@@ -156,12 +173,16 @@ define([
              * Bind global listeners
              */
             initGlobalListeners: function () {
-                var self = this;
+                var self = this,
+                    wasPlayingBeforeBuffering = true;
 
                 // on movie loaded
                 dispatcher.on(dispatcher.movieLoaded, function (e, movie) {
                     var duration = self.movieController.getModel().getDuration();
+                    self.$playCover.find('.prp-movie-title').text(self.movieController.getModel().getName());
                     self.$timeDuration.text(_formatTime(duration));
+                    self.$loader[0].style.display = 'none';
+                    self.$playCover[0].style.display = 'block';
                 });
 
                 // on movie progress
@@ -179,12 +200,16 @@ define([
 
                 // on movie buffering start
                 dispatcher.on(dispatcher.movieBufferingStart, function () {
+                    wasPlayingBeforeBuffering = self.movieController.isPlaying();
                     self.$loader[0].style.display = 'block';
                 });
 
                 // on movie buffering end
                 dispatcher.on(dispatcher.movieBufferingEnd, function () {
                     self.$loader[0].style.display = 'none';
+                    if(wasPlayingBeforeBuffering) {
+                        self.play();
+                    }
                 });
 
                 // if some areas request the movie to pause
@@ -237,6 +262,20 @@ define([
                     self.updateExp(totalExp, -expLost);
                 });
 
+                // on video play rejected
+                dispatcher.on(dispatcher.videoPlayRejected, function(e, videoElement) {
+                    self.$resumeCover[0].style.display = 'block';
+                    self.videoElementRejectedToPlay = videoElement;
+                    self.pause();
+
+                    dispatcher.one(dispatcher.videoPlayingStart, function() {
+                        self.videoElementRejectedToPlay = null;
+                        self.$loader[0].style.display = 'none';
+                        self.play();
+                    });
+                });
+
+
             },
 
             /**
@@ -253,10 +292,6 @@ define([
                     }
 
                     self.movieController.load(data);
-
-                    // autoplay
-                    self.play();
-
                 });
 
             },
@@ -460,13 +495,14 @@ define([
                 var self = this,
                     targetWidth = this.$target.width(),
                     targetHeight,
-                    controlBarHeight,
+                    controlBarHeight = this.$controlsBar.height(),
+                    wasMovieScaled = this.movieScaled,
                     zoom;
 
                 // if container width doesn't match default movie width
                 if (targetWidth < this.movieOptions.width) {
+                    this.movieScaled = targetWidth < this.movieOptions.width - 100;
 
-                    controlBarHeight = this.$controlsBar.height();
                     targetHeight = this.$target.height() + controlBarHeight;
 
                     if (!this.$player.hasClass('prp-player-resized')) {
@@ -481,12 +517,19 @@ define([
                     });
 
                 } else {
+                    this.movieScaled = false;
 
                     if (this.$player.hasClass('prp-player-resized')) {
                         this.$player.removeClass('prp-player-resized');
                         this.$player.removeAttr('style');
+                        this._resizeTo(this.movieOptions.width, this.movieOptions.height + controlBarHeight)
                     }
 
+                }
+
+                if(wasMovieScaled !== this.movieScaled) {
+                    console.debug('movie scaled!', wasMovieScaled, this.movieScaled);
+                    dispatcher.trigger(dispatcher.movieScaled, this.movieScaled);
                 }
 
             },

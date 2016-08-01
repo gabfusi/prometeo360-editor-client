@@ -24,22 +24,22 @@ $input-bg-focus: rgb(56,65,74);
 $swift-out: cubic-bezier(0,0,.58,1);
 $swift-in: cubic-bezier(.42,0,1,1);
 
-// normalize everything inside prometeo player
-.prometeo-player{
-  @import "viewer/normalize";
-  background: $black;
 
-  .va-wrap{
-    display: table;
-  }
-
-  .va-middle{
-    vertical-align: middle;
-    display: table-cell;
-  }
+body{
 
 }
-@import "viewer/spinner";
-@import "viewer/player";
-@import "viewer/movie";
-@import "viewer/fullscreen";
+
+.main-movie{
+  width: 720px;
+  margin: 0 auto;
+}
+
+
+@media all and (max-width: 768px) {
+
+  .main-movie{
+    width: 100%;
+  }
+
+
+}

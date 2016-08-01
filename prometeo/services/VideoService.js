@@ -92,8 +92,8 @@ var VideoService = {
             .input(input)
             .output(mp4Filename)            // output to (720p)
             .withVideoCodec('libx264')      // use libx264
-            .withVideoBitrate(1000)         // enforce a costant video bitrate
-            .audioBitrate('128k')           // enforce a constant audio bitrate
+            .withVideoBitrate(600)          // enforce a video bitrate
+            .audioBitrate('96k')            // enforce a constant audio bitrate
             .audioChannels(2)               // stereo!
             .size('720x?')                  // resize to width
             .withAspect('3:2')              // enforce a ratio

@@ -16,6 +16,7 @@ define(["jquery"], function ($) {
         movieBufferingEnd: 'movieBufferingEnd',
         increasedUserExp: 'increasedUserExp',
         decreasedUserExp: 'decreasedUserExp',
+        movieScaled: 'movieScaled',
 
         // movie events that triggers actions
         doMoviePlay: 'moviePlay',
@@ -29,7 +30,9 @@ define(["jquery"], function ($) {
         videoSeekStart: 'videoSeekStart',
         videoSeekEnd: 'videoSeekEnd',
         videoBufferingStart: 'videoBufferingStart',
+        videoBufferingEnd: 'videoBufferingEnd',
         videoPlayingStart: 'videoPlayingStart',
+        videoPlayRejected: 'videoPlayRejected', // on chrome android video play fail (requires user gesture to play a video)
 
         /**
          * Attach an event handler function for one or more events to the selected elements.

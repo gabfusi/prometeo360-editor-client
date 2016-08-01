@@ -3,7 +3,7 @@
      style="left:0; top:0; right:0; bottom:0; height: 100%; width: 100%; z-index: -1;">
     <div class="inner prp-video-preview">
         {{# if video }}
-            <video class="prp-video-element" tabindex="-1" preload="auto">
+            <video class="prp-video-element" tabindex="-1" preload="none">
                 <source src="{{ video }}" type="video/mp4"/>
             </video>
         {{else}}

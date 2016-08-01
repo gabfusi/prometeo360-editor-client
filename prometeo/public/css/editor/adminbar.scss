@@ -46,8 +46,16 @@
     }
   }
 
-  .profile-nav{
+  .badges{
     padding: 0 9px;
+    a{
+      display: inline-block;
+      vertical-align: middle;
+    }
+  }
+
+  .w3c-badge{
+    width: 70px;
   }
 
 }

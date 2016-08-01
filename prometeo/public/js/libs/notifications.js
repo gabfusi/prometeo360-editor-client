@@ -7,12 +7,14 @@ define(['pnotify'], function(PNotify) {
 
     PNotify.prototype.options.styling = "bootstrap3";
 
-    function notify(type, title, text) {
+    function notify(type, title, text, duration) {
 
         if(title && !text) {
             text = title;
             title = false;
         }
+
+        duration = typeof duration !== 'undefined' ? duration : 5000;
 
         new PNotify({
             title: title || '',
@@ -20,7 +22,7 @@ define(['pnotify'], function(PNotify) {
             type: type,
             icon: false,
             cornerclass: 'ui-pnotify-sharp',
-            delay: 5000,
+            delay: duration,
             buttons: {
                 closer: true,
                 sticker: false,
@@ -28,6 +30,31 @@ define(['pnotify'], function(PNotify) {
                     closer:  'fi-x'
                 }
             }
+        });
+    }
+
+    function dialog(title, content) {
+
+        new PNotify({
+            title: title || '',
+            text: content || '',
+            icon: false,
+            hide: false,
+            width: 560,
+            cornerclass: 'ui-pnotify-sharp',
+            buttons: {
+                closer: true,
+                sticker: false,
+                classes: {
+                    closer:  'fi-x'
+                }
+            },
+            confirm:{
+                confirm: true,
+                buttons: []
+            },
+            addclass: 'stack-modal',
+            stack: {'dir1': 'down', 'dir2': 'right', 'modal': true}
         });
     }
 
@@ -73,6 +100,14 @@ define(['pnotify'], function(PNotify) {
     }
 
     return {
+
+        dialog: function(title, content) {
+            dialog(title, content);
+        },
+
+        popup: function(title, text) {
+            notify('notice', title, text, 0);
+        },
 
         notice: function(title, text) {
             notify('notice', title, text);

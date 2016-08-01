@@ -32,8 +32,11 @@
   .progress{
     display: none;
     margin: 20% 20% 0;
+    height: 42px;
+    line-height: 42px;
     .progress-bar{
       text-align: center;
+      line-height: 42px;
     }
   }
 

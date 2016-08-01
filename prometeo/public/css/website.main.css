@@ -1,0 +1,9 @@
+.main-movie {
+  width: 720px;
+  margin: 0 auto; }
+
+@media all and (max-width: 768px) {
+  .main-movie {
+    width: 100%; } }
+
+/*# sourceMappingURL=website.main.css.map */

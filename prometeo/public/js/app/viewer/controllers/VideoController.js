@@ -15,7 +15,9 @@ define([
      * @returns {VideoController}
      * @constructor
      */
-    function VideoController(objectModel) {
+    function VideoController(objectModel, movieScaledDown) {
+
+        var self = this;
 
         TimelineElementController.call(this);
 
@@ -23,6 +25,7 @@ define([
         this.$el = null;
         this.video = null;
         this.playing = false;
+        this.movieScaled = movieScaledDown;
 
 
         if(objectModel) {
@@ -45,11 +48,21 @@ define([
      */
     VideoController.prototype.render = function() {
 
-        var elementModelObject = this.model.toObject();
+        var elementModelObject = this.model.toObject(),
+            videoFilename;
 
         if(this.model.getFilename().length) {
+
+            videoFilename = this.model.getFilename();
+
+            console.debug('rendering video, scaled:', this.movieScaled);
+
+            if(this.movieScaled) {
+                videoFilename = videoFilename.replace('.mp4', '-low.mp4');
+            }
+
             // add video & thumbnails urls
-            elementModelObject.video = config.api.getVideo + elementModelObject.filename;
+            elementModelObject.video = config.api.getVideo + videoFilename;
             elementModelObject.thumbnail = config.api.getVideoScreenShot + elementModelObject.filename +  '-1.png';
         }
 
@@ -82,12 +95,22 @@ define([
             dispatcher.trigger(dispatcher.videoBufferingStart, this);
         });
 
-        // video playing
+        // if video is ready
+        $(this.video).on('canplaythrough', function() {
+            if(self.video.readyState === 4) {
+                console.debug('video buffered!');
+                dispatcher.trigger(dispatcher.videoBufferingEnd, this);
+                self.isBuffering = false;
+            }
+        });
+
+        // video playing ---> this isn't consistent across browsers (specially chrome for android)
+        /**
         $(this.video).on('playing', function() {
             console.debug('playing', self.model.getId());
             self.isBuffering = false;
             dispatcher.trigger(dispatcher.videoPlayingStart, this);
-        });
+        });*/
 
     };
 
@@ -104,8 +127,9 @@ define([
      */
     VideoController.prototype.onShow = function() {
         console.debug('Video: show!', this.model.getId());
-        this.$el[0].style.display = 'block';
         this.attachListeners();
+        $(this.video).attr('preload', 'auto');
+        this.$el[0].style.display = 'block';
     };
 
     /**
@@ -115,7 +139,9 @@ define([
         console.debug('Video: hide/pause! ', this.model.getId());
         this.video.pause();
         this.video.currentTime = 0; // seek to start
+        $(this.video).attr('preload', 'none');
         this.$el[0].style.display = 'none';
+        this.$el.detach();
         this.detachListeners();
     };
 
@@ -126,11 +152,38 @@ define([
         console.debug('Video: play! ', this.model.getId());
         var self = this;
 
+        this.detectPlaying();
+
+        var promise = self.video.play();
+
+        if(promise) {
+
+            // workaround for chrome android error: Failed to execute 'play' on 'HTMLMediaElement': API can only be initiated by a user gesture.
+            promise.catch(function(err){
+                dispatcher.trigger(dispatcher.videoPlayRejected, self);
+                console.debug('promise fail',err)
+            })
+        }
+
+        /*
         var t = setTimeout(function() { // some slow browsers can't play hidden HTMLVideoElement
-            self.video.play();
+
+            var promise = self.video.play();
+
+            if(promise) {
+
+                // workaround for chrome android error: Failed to execute 'play' on 'HTMLMediaElement': API can only be initiated by a user gesture.
+                promise.catch(function(err){
+                    dispatcher.trigger(dispatcher.videoPlayRejected);
+                    console.debug('promise fail',err)
+                })
+            }
+
+
             clearTimeout(t);
             t = null;
-        },1)
+        },1);
+        */
 
     };
 
@@ -152,6 +205,39 @@ define([
         console.log('Video: seeking to ', frame, videoSeekFrame);
         this.video.currentTime = videoSeekFrame/1000;
     };
+
+
+    /**
+     * I found that HTMLMediaElement 'playing' event is not consistent across browsers...
+     * This little function polyfills this issue.
+     */
+    VideoController.prototype.detectPlaying = function() {
+        var self = this,
+            prevTime = this.video.currentTime,
+            t;
+
+        t = setInterval(function checkIfVideoIsPlaying() {
+
+            if(self.video.currentTime !== prevTime) {
+                console.debug('video is really playing!', self.video.currentTime);
+
+                self.isBuffering = false;
+                dispatcher.trigger(dispatcher.videoPlayingStart, self);
+
+                clearInterval(t);
+                t = null;
+            }
+
+            console.log('video is not playing yet...',  prevTime, self.video.currentTime);
+
+            prevTime = self.video.currentTime;
+
+        }, 5);
+
+
+    };
+
+
 
 
     return VideoController;
