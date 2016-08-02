@@ -1,15 +1,26 @@
 
 #video_picker{
   border-radius: 0;
+  -webkit-font-smoothing: antialiased;
 
   .modal-dialog{
     width: auto;
     margin: 5% 5% 0;
-    height: 90%;
+    height: 85%;
+  }
+
+  .modal-header{
+    border-bottom: 1px solid $grey-shade-4;
+    .close{
+      color: $white;
+      text-shadow: none;
+    }
   }
 
   .modal-content{
     height: 100%;
+    background: $grey;
+    color: $white;
   }
 
   .modal-body{
@@ -40,9 +51,18 @@
     }
   }
 
+  .thumbnail{
+    background: $grey-shade-3;
+    border:none;
+    .caption{
+      color: $white;
+    }
+  }
+
 
   .video-list{
     display: block;
+    width: 100%;
     height: calc(100% - 5em);
     position: absolute;
     top: 5em;

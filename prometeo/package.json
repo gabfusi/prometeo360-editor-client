@@ -20,7 +20,11 @@
     "node-plupload": "0.0.6",
     "path": "^0.12.7",
     "serve-favicon": "~2.3.0",
-    "socket.io": "^1.4.8",
     "uuid-lib": "0.0.6"
+  },
+  "devDependencies": {
+    "almond": "^0.3.2",
+    "grunt": "~0.4.5",
+    "grunt-contrib-requirejs": "*"
   }
 }

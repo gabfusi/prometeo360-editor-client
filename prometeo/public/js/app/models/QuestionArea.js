@@ -10,6 +10,8 @@ define(['model/Area', 'model/Answer'], function(Area, Answer) {
      */
     var QuestionArea = function() {
 
+        Area.call(this);
+
         this._type = "QuestionArea";
 
         // area overrides

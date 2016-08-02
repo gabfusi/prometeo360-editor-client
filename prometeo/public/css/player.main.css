@@ -1,7 +1,7 @@
 @charset "UTF-8";
+@import "https://fonts.googleapis.com/css?family=Open+Sans";
 .prometeo-player {
-  /*# sourceMappingURL=normalize.min.css.map */
-  background: #000000; }
+  /*# sourceMappingURL=normalize.min.css.map */ }
   .prometeo-player progress, .prometeo-player sub, .prometeo-player sup {
     vertical-align: baseline; }
   .prometeo-player button, .prometeo-player hr, .prometeo-player input {
@@ -106,6 +106,10 @@
   .prometeo-player ::-webkit-file-upload-button {
     -webkit-appearance: button;
     font: inherit; }
+  .prometeo-player * {
+    font-family: 'Open Sans', sans-serif;
+    margin: 0;
+    padding: 0; }
   .prometeo-player .va-wrap {
     display: table; }
   .prometeo-player .va-middle {
@@ -467,7 +471,11 @@
         .prp-movie .prp-area.questionarea .answers .answer {
           margin-bottom: 1em; }
           .prp-movie .prp-area.questionarea .answers .answer label {
-            cursor: pointer; }
+            cursor: pointer;
+            display: block;
+            font-weight: normal;
+            margin: 0;
+            padding: 0; }
           .prp-movie .prp-area.questionarea .answers .answer input, .prp-movie .prp-area.questionarea .answers .answer span {
             display: block; }
           .prp-movie .prp-area.questionarea .answers .answer input {

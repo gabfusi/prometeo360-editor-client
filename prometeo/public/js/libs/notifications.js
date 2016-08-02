@@ -41,6 +41,7 @@ define(['pnotify'], function(PNotify) {
             icon: false,
             hide: false,
             width: 560,
+            delay: 60000,
             cornerclass: 'ui-pnotify-sharp',
             buttons: {
                 closer: true,
@@ -106,7 +107,7 @@ define(['pnotify'], function(PNotify) {
         },
 
         popup: function(title, text) {
-            notify('notice', title, text, 0);
+            notify('notice', title, text, 60000);
         },
 
         notice: function(title, text) {

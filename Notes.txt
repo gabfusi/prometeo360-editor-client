@@ -1,5 +1,5 @@
-
- ssh -i "isrs-ubuntu-key.pem" ubuntu@ec2-54-194-254-66.eu-west-1.compute.amazonaws.com
+## connect to dev server
+ssh -i "isrs-ubuntu-key.pem" ubuntu@ec2-54-194-254-66.eu-west-1.compute.amazonaws.com
 
 ------------------------------------------------------------------------------------------------------------
 0) init ubuntu server

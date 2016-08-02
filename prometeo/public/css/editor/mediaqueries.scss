@@ -1,0 +1,37 @@
+// editor timeline scaling
+
+$window-heights: (899, 280),
+        (799, 240),
+        (699, 200),
+        (599, 160),
+        (399, 120);
+
+@each $breakpoint, $timeline-height in $window-heights {
+
+  @media screen and (max-height: #{$breakpoint}px) {
+
+    .movie-wrapper {
+      height: calc(100% - #{$timeline-height}px);
+    }
+
+    .timeline {
+      height: #{$timeline-height}px;
+    }
+
+  }
+
+}
+
+@media screen and (min-height: 900px) {
+
+  $timeline-height: 320;
+
+  .movie-wrapper {
+    height: calc(100% - #{$timeline-height}px);
+  }
+
+  .timeline {
+    height: #{$timeline-height}px;
+  }
+
+}

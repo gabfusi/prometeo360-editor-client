@@ -1,6 +1,7 @@
 "use strict";
 
 define([
+        "config",
         "jquery",
         "dispatcher",
         "lib/utilities",
@@ -8,11 +9,11 @@ define([
         "controller/MovieController"
     ],
 
-    function ($, dispatcher, utilities, notification, MovieController) {
+    function (config, $, dispatcher, utilities, notification, MovieController) {
 
         var getEmbedCode = function(movie_id) {
             return '<div class="prometeo-player" data-width="100%" data-id="' + movie_id + '"></div>' +
-                   '<script async defer data-main="http://prometeo.duesottozero.com/js/app-viewer" src="http://prometeo.duesottozero.com/js/libs/requirejs.min.js"></script>';
+                   '<script async defer src="' + config.embedJsUrl + '"></script>';
         };
 
         // Inforbar Controller
@@ -106,7 +107,7 @@ define([
                     var movie_id = MovieController.getModel().getId();
 
                     notification.popup("Codice per incorporare il filmato",
-                        '<p>Utilizza questo codice per incorparare il filmato sul tuo sito web.<br>' +
+                        '<p>Utilizza questo codice per incorporare il filmato sul tuo sito web.<br>' +
                         'Puoi specificare la larghezza del player attraverso l\'attributo <code>data-width</code>.<br>' +
                         'Ricorda che puoi incorporare un solo filmato per pagina web.</p>' +
                         '<textarea class="form-control" rows="8" readonly onclick="this.focus();this.select();">' +
@@ -124,7 +125,7 @@ define([
                                         '<div class="va-middle">' +
                                         '<div class="preview-box">' +
                                             '<div class="close-preview"><i class="fi-x"></i></div>' +
-                                            '<iframe src="/admin/player/' + movie_id + '" scrolling="no" allowfullscreen="no"></iframe>' +
+                                            '<iframe src="/player/' + movie_id + '" scrolling="no" allowfullscreen="no"></iframe>' +
                                         '</div>' +
                                         '</div>' +
                                       '</div>' +

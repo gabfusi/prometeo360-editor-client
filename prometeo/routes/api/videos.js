@@ -34,6 +34,10 @@ router.get('/', function(req, res, next) {
 router.get('/:filename', function(req, res, next) {
     var filename = req.params.filename;
 
+    // enable cors for this resource (can be requested by player embed)
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
     res.sendFile(path.join(VIDEO_PATH, filename));
 });
 

@@ -221,7 +221,7 @@ define([
                     break;
 
                 // linkarea
-                case 'link':
+                case 'url':
                     elementModel.setUrl(value);
                     break;
 

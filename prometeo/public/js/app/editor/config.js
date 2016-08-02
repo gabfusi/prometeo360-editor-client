@@ -14,6 +14,7 @@ define(function() {
         baseUrl : baseUrl,
         apiUrl : apiUrl ,
         publicJs: baseUrl + '/js/app/editor/',
+        embedJsUrl: baseUrl + '/min/player.min.js',
 
         api: {
 

@@ -2,23 +2,25 @@
  * Viewer startup
  */
 requirejs.config({
-    "baseUrl": "/js",
+    //"baseUrl": "/js",
+    "baseUrl": "http://prometeo.duesottozero.com",
     "paths": {
-        "app": "app",
-        "lib": "libs",
-        "config": "app/viewer/config",
-        "api": "app/viewer/api",
-        "dispatcher": "app/viewer/dispatcher",
-        "model": "app/models",
-        "controller": "app/viewer/controllers",
-        "view": "app/viewer/views",
-        "jquery": "libs/jquery.min",
-        "handlebars" : "libs/hbs/handlebars.min",
-        "text" : "libs/hbs/text"
+        "app": "js/app",
+        "lib": "js/libs",
+        "config": "js/app/viewer/config",
+        "api": "js/app/viewer/api",
+        "dispatcher": "js/app/viewer/dispatcher",
+        "model": "js/app/models",
+        "controller": "js/app/viewer/controllers",
+        "view": "js/app/viewer/views",
+        "jquery": "js/libs/jquery.min",
+        "handlebars" : "js/libs/hbs/handlebars.min",
+        "text" : "js/libs/hbs/text"
     },
     "hbs": {
+        base: "http://prometeo.duesottozero.com",
         templateExtension: ".hbs",
-        compilerPath: "libs/hbs/handlebars.min"
+        compilerPath: "js/libs/hbs/handlebars.min"
     },
     "shim": {
         handlebars: {
@@ -28,7 +30,7 @@ requirejs.config({
     "packages": [
         {
             name: 'hbs',
-            location: 'libs/hbs',
+            location: 'js/libs/hbs',
             main: 'hbs'
         }
     ]

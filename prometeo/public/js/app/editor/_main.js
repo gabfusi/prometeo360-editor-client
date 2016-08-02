@@ -57,9 +57,9 @@ define([
 
             router.setRoutes({
                 '/editor/:id': loadEditor,
-                '/list': loadList,
+                '/': loadList,
                 '*' : function() {
-                    router.navigateUri('/list');
+                    router.navigateUri('/');
                 }
             });
 

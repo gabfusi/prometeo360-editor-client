@@ -47,6 +47,8 @@ define([
                 this.$editbar = this.$editor.find('.panel.editbar');
                 this.$timeline = this.$editor.find('.panel.timeline');
                 this.$infobar = this.$editor.find('.infobar');
+                this.$editorInner = this.$editor.find('.editor-inner>.inner');
+                this.$movieWrapper = this.$editor.find('.movie-wrapper');
                 this.$movieContainer = this.$editor.find('.movie-container');
                 this.timeline = null;
                 this.router = router;
@@ -108,8 +110,10 @@ define([
                 // on resize (debounced)
                 $(window).on('resize', utilities.debounce(function () {
                     MovieController.onResize();
+                    self.onResize();
                 }, 50));
 
+                self.onResize();
 
                 // Initialize listeners to movie updates
                 // proxies all movie & elements change events to movieEdited event
@@ -218,6 +222,9 @@ define([
                 dispatcher.trigger(dispatcher.movieUnloaded);
             },
 
+            /**
+             * Save current movie
+             */
             saveMovie: function () {
 
                 var self = EditorController,
@@ -273,6 +280,30 @@ define([
 
                 }
 
+
+            },
+
+            /**
+             * On window resize
+             */
+            onResize: function() {
+
+                return;
+
+                console.debug('onresize');
+
+                var editorHeight = this.$editorInner.height(),
+                    movieHeight = editorHeight - timelineHeight;
+
+                // resize timeline according to window height
+
+                if(editorHeight < 300) {
+
+                } else {
+
+                }
+
+                this.$movieWrapper.height(movieHeight);
 
             }
 

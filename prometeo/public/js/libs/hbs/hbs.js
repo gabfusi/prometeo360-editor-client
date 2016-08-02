@@ -1,4 +1,4 @@
-define(["handlebars"], function (Handlebars) {
+define(["js/libs/hbs/handlebars.min"], function (Handlebars) {
     Handlebars = Handlebars || this.Handlebars;
     var templateExtension = ".hbs";
 
@@ -28,7 +28,7 @@ define(["handlebars"], function (Handlebars) {
 
     return {
 
-        pluginBuilder: "./hbs-builder",
+        //pluginBuilder: "./hbs-builder",
 
         // http://requirejs.org/docs/plugins.html#apiload
         load: function (name, parentRequire, onload, config) {

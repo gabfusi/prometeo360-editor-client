@@ -2,32 +2,32 @@
  * App startup
  */
 requirejs.config({
-    "baseUrl": "/js",
+    "baseUrl": "http://prometeo.duesottozero.com",
     "paths": {
-        "app": "app",
-        "lib": "libs",
-        "config": "app/editor/config",
-        "router": "app/editor/router",
-        "api": "app/editor/api",
-        "dispatcher": "app/editor/dispatcher",
-        //"socket": "app/editor/socket",
-        "model": "app/models",
-        "controller": "app/editor/controllers",
-        "view": "app/editor/views",
-        "navigo": "libs/navigo",
-        "bootstrap" : "libs/bootstrap.min",
-        "jquery": "libs/jquery.min",
-        "jqueryui" : "libs/jquery-ui/ui",
-        "pnotify" : "libs/pnotify/pnotify.custom.min",
-        "handlebars" : "libs/hbs/handlebars.min",
-        "text" : "libs/hbs/text",
-        "plupload": "libs/plupload/plupload.full.min",
-        // "diff" : "libs/jsondiffpatch",
-        "colorpicker" : "libs/colorpicker/minicolors.min"
+        "app": "js/app",
+        "lib": "js/libs",
+        "config": "js/app/editor/config",
+        "router": "js/app/editor/router",
+        "api": "js/app/editor/api",
+        "dispatcher": "js/app/editor/dispatcher",
+        //"socket": "js/app/editor/socket",
+        "model": "js/app/models",
+        "controller": "js/app/editor/controllers",
+        "view": "js/app/editor/views",
+        "navigo": "js/libs/navigo",
+        "bootstrap" : "js/libs/bootstrap.min",
+        "jquery": "js/libs/jquery.min",
+        "jqueryui" : "js/libs/jquery-ui/ui",
+        "pnotify" : "js/libs/pnotify/pnotify.custom.min",
+        "handlebars" : "js/libs/hbs/handlebars.min",
+        "text" : "js/libs/hbs/text",
+        "plupload": "js/libs/plupload/plupload.full.min",
+        // "diff" : "js/libs/jsondiffpatch",
+        "colorpicker" : "js/libs/colorpicker/minicolors.min"
     },
     "hbs": {
         templateExtension: ".hbs",
-        compilerPath: "libs/hbs/handlebars.min"
+        compilerPath: "js/libs/hbs/handlebars.min"
     },
     "shim": {
         "bootstrap" : {
@@ -43,7 +43,7 @@ requirejs.config({
     "packages": [
         {
             name: 'hbs',
-            location: 'libs/hbs',
+            location: 'js/libs/hbs',
             main: 'hbs'
         }
     ]
@@ -52,5 +52,5 @@ requirejs.config({
 // Load the main app module to start the app
 requirejs([
     "bootstrap",
-    "app/editor/_main"
+    "js/app/editor/_main"
 ]);

@@ -24,6 +24,10 @@ router.get('/:lesson_id', function(req, res, next) {
 
     var lesson_id = req.params.lesson_id;
 
+    // enable cors for this resource (can be requested by player embed)
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
     LessonsService.getLesson(lesson_id, function(err, data) {
 
         if(!err) {

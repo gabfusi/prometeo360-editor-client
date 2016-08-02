@@ -1,31 +1,30 @@
 
-$movie-title-height: 1.25em;
-
 .movie-wrapper {
 
   width: 100%;
   height: 70%;
-  display: table;
-  transition: all 218ms $swift-out;
+  display: block;
+
+  * {
+    font-family: 'Open Sans', sans-serif;
+    margin:0;
+    padding:0;
+  }
 
   .movie-container {
-    // align movie by height
-    vertical-align: middle;
-    display: table-cell;
-    background: $light-grey;
-  }
-
-  .title{
-    height: $movie-title-height;
-    margin-top: -$movie-title-height;
+    display: block;
+    height: 100%;
+    width: 100%;
     position: relative;
-    transition: all 218ms $swift-out;
   }
-
 
   .movie {
-    position: relative;
-    margin: 0 auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -360px;
+    margin-top: -240px;
+    transform-origin: center center;
     transition: all 218ms $swift-out;
 
     // aspect ratio 3:2

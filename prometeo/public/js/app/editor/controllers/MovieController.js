@@ -404,6 +404,7 @@ define([
                     elementModel,
                     i, l;
 
+                console.log($elements);
 
                 requestAnimationFrame(function() {
 

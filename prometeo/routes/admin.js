@@ -6,13 +6,12 @@ var LessonsService = require('../services/LessonsService.js');
 
 /**
  *  GET lessons list.
- *  /admin//list
+ *  /admin/
  *
  **/
-router.get('/list', function(req, res, next) {
+router.get('/', function(req, res, next) {
     res.render('admin');
 });
-
 
 /**
  *  GET lessons editor.
@@ -21,17 +20,6 @@ router.get('/list', function(req, res, next) {
  **/
 router.get('/editor/:lesson_id', function(req, res, next) {
     res.render('admin');
-});
-
-/**
- *  GET lesson player.
- *  /admin/player/:lesson_id
- *
- **/
-router.get('/player/:lesson_id', function(req, res, next) {
-    res.render('player', {
-        movie_id: req.params.lesson_id
-    });
 });
 
 module.exports = router;

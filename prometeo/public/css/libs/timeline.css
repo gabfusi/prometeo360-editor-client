@@ -36,7 +36,7 @@
 
 .gtimeline .rulers .ruler .label{
     position: absolute;
-    bottom: 1em;
+    top: -17px;
     color: #fff;
     font-size: 10px;
 }

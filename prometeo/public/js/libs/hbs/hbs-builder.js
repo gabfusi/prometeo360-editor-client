@@ -1,4 +1,4 @@
-define(["handlebars-compiler"], function (Handlebars) {
+define(["js/libs/hbs/handlebars.min"], function (Handlebars) {
     var buildMap = {},
         templateExtension = ".hbs";
 
@@ -12,7 +12,7 @@ define(["handlebars-compiler"], function (Handlebars) {
 
             // Load the Handlebars library using the path provided by the configuration.
             if (!Handlebars) {
-                var handlebarsPath = parentRequire.toUrl((config.hbs && config.hbs.compilerPath) || "handlebars");
+                var handlebarsPath = parentRequire.toUrl((config.hbs && config.hbs.compilerPath) || "js/libs/hbs/handlebars.min");
 
                 // Add the extension if not present.
                 if (handlebarsPath.indexOf(".js", handlebarsPath.length - 3) < 0) {
@@ -29,10 +29,11 @@ define(["handlebars-compiler"], function (Handlebars) {
 
             // Use node.js file system module to load the template.
             // Sorry, no Rhino support.
-            var fsPath = parentRequire.toUrl(name.substr(8) + ext);
+            var fsPath = parentRequire.toUrl(name + ext);
+            //var fsPath = parentRequire.toUrl(name.substr(8) + ext);
 
             buildMap[name] = fs.readFileSync(fsPath).toString();
-            parentRequire(["handlebars"], function () {
+            parentRequire(["js/libs/hbs/handlebars.min"], function () {
                 onload();
             });
         },
@@ -49,14 +50,14 @@ define(["handlebars-compiler"], function (Handlebars) {
                 partialAlias = partialAlias[partialAlias.length-1];
 
                 write(
-                    "define('hbs!" + name + "', ['handlebars'], function(Handlebars){ \n" +
+                    "define('hbs!" + name + "', ['js/libs/hbs/handlebars.min'], function(Handlebars){ \n" +
                     "Handlebars = Handlebars || this.Handlebars;\n" +
                     "return Handlebars.registerPartial('" + partialAlias + "', Handlebars.template(" + compiled.toString() + ")); \n" +
                     "});\n"
                 );
             } else {
                 write(
-                    "define('hbs!" + name + "', ['handlebars'], function(Handlebars){ \n" +
+                    "define('hbs!" + name + "', ['js/libs/hbs/handlebars.min'], function(Handlebars){ \n" +
                     "Handlebars = Handlebars || this.Handlebars;\n" +
                     "return Handlebars.template(" + compiled.toString() + ");\n" +
                     "});\n"

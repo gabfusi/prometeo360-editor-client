@@ -4,8 +4,6 @@ Prometeo è un applicazione web che consente di arricchire video con elementi in
  - L'editor consente il montaggio dei filmati.
  - Il player consente la fruizione dei filmati.
 
-Questo software è concesso in licenza [creative commons CC BY-NC-ND 3.0](https://creativecommons.org/licenses/by-nc-nd/3.0/it/deed.it)
-
 ### Legenda
  - Video: Un file video
  - Filmato: (o Lezione) L'output di Prometeo, ovvero una sequenza di zero o più video arricchiti con zero o più elementi interattivi, chiamati *Aree* o *Elementi*.
@@ -54,6 +52,10 @@ Dato che la posizione delle Aree interattive all'interno del Filmato utilizza co
 Il player è stato testato su più dispositivi android utilizzando chrome, dando risultati abbastanza soddisfacenti. Infatti dalla seconda metà del 2015 le versioni di chrome per android non consentono la riproduzione 'forzata' di elementi multimediali (MediaElements); per questa ragione ogni video per essere riprodotto ha bisogno di un'azione (touch) da parte del fruitore, quindi ad ogni 'stacco' tra un video e l'altro viene mostrato un overlay che consente di riprendere la riproduzione del Filmato.
 
 
+
+### Licenza
+Lo scopo di tale software è puramente didattico, il creatore non si assume nessuna responsabilità per quanto riguarda malfunzionamenti legati al suo utilizzo.
+Prometeo è concesso in licenza [creative commons CC BY-NC-ND 3.0](https://creativecommons.org/licenses/by-nc-nd/3.0/it/deed.it)
 
 
 

@@ -162,9 +162,7 @@ define([
                 });
 
                 // on parent element resize
-                $(window).on('resize', function () {
-                    self.onResize();
-                });
+                $(window).on('resize', this._debounce(this.onResize, 20, false, this));
 
 
                 self.onResize();
@@ -290,12 +288,20 @@ define([
 
                 Api.getMovie(this.movieId, function (err, data) {
 
+                    // movie not found
                     if (err) {
                         console.error('Prometeo Player: movie not found.');
                         self.$notFoundCover[0].style.display = 'block';
                         return;
                     }
 
+                    // movie not published
+                    if(typeof data.published !== 'undefined' && !data.published) {
+                        self.$notFoundCover[0].style.display = 'block';
+                        return;
+                    }
+
+                    // movie found ad published
                     self.movieController.load(data);
                 });
 
@@ -463,8 +469,16 @@ define([
              */
             onFullscreenEnter: function () {
                 var self = this;
+
                 this.$player.addClass('prp-fullscreen');
+
+                if (this.$player.hasClass('prp-player-resized')) {
+                    this.$player.removeClass('prp-player-resized');
+                    this.$player.removeAttr('style');
+                }
+
                 self.onFullscreenResize();
+
             },
 
             /**
@@ -483,6 +497,8 @@ define([
                 var windowW = screen.width,
                     windowH = screen.height - this.$controlsBar.height();
 
+                console.log('fullscreen resize to ', windowW, windowH);
+
                 this._resizeTo(windowW, windowH);
 
             },
@@ -492,6 +508,11 @@ define([
              * This makes the player responsive by css scaling it.
              */
             onResize: function () {
+
+                if(this.isFullscreen)
+                    return;
+
+                console.debug('resize triggered')
 
                 var self = this,
                     targetWidth = this.$target.width(),
@@ -559,6 +580,33 @@ define([
 
                 return zoom;
 
+            },
+
+            /**
+             * Debouncer
+             * @param func
+             * @param wait
+             * @param immediate
+             * @param context
+             * @returns {Function}
+             * @private
+             */
+            _debounce: function (func, wait, immediate, context) {
+                var timeout;
+                return function () {
+                    var _context = context || this,
+                        args = arguments;
+
+                    var later = function () {
+                        timeout = null;
+                        if (!immediate) func.apply(context, args);
+                    };
+
+                    var callNow = immediate && !timeout;
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait || 100);
+                    if (callNow) func.apply(_context, args);
+                };
             }
 
         };
