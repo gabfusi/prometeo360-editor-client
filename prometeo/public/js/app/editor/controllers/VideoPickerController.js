@@ -130,9 +130,9 @@ define([
                     multi_selection: false,
                     filters : {
                         min_file_size: "4kb",
-                        max_file_size : '500mb',
+                        max_file_size : '80mb',
                         mime_types: [
-                            {title : "File video", extensions : "mp4,mpeg,mov"}
+                            {title : "File video", extensions : "mp4,mpeg,mov,3gp,avi"}
                         ]
                     },
 
@@ -163,14 +163,16 @@ define([
                         duration = response.duration;
 
                     if(info.status !== 200) {
-                        return self.handleUploadError();
+                        console.log('Upload Error', info);
+                        return self.handleUploadError(info.response);
                     }
 
                     self.chooseFile(filename, duration);
                 });
 
                 uploader.bind('Error', function(up, err) {
-                    self.handleUploadError(err);
+                    console.log('Upload Error', err);
+                    self.handleUploadError(err.message);
                     self.hideLoading();
                 });
 

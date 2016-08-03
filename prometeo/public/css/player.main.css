@@ -567,4 +567,8 @@
   position: relative;
   vertical-align: middle; }
 
+@media all and (max-width: 720px) {
+  .prp-fullscreen .prp-movie {
+    transform-origin: 0 50%; } }
+
 /*# sourceMappingURL=player.main.css.map */

@@ -266,15 +266,22 @@ define([
 
                 // on video play rejected
                 dispatcher.on(dispatcher.videoPlayRejected, function(e, videoElement) {
+
                     self.$resumeCover[0].style.display = 'block';
                     self.videoElementRejectedToPlay = videoElement;
                     self.pause();
 
-                    dispatcher.one(dispatcher.videoPlayingStart, function() {
-                        self.videoElementRejectedToPlay = null;
+                    dispatcher.one(dispatcher.videoPlayingStart, function(videoElement2) {
                         self.$loader[0].style.display = 'none';
                         self.play();
+                        videoElement2.isDetecting = false;
+                        var t = setTimeout(function() {
+                            self.videoElementRejectedToPlay.playRejected = false;
+                            clearTimeout(t);
+                        },30);
+
                     });
+
                 });
 
 

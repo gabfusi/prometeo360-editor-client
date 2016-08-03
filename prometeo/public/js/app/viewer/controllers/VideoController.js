@@ -69,6 +69,8 @@ define([
         this.video.height = 480;
         this.video.width = 720;
         this.isBuffering = true;
+        this.playRejected = false;
+        this.isDetecting = false;
 
         this.$el.hide();
         return this.$el;
@@ -102,6 +104,12 @@ define([
             console.debug('video seeked');
             dispatcher.trigger(dispatcher.videoBufferingEnd, this);
             self.isBuffering = false;
+        });
+
+        // video is playing
+        $(this.video).on('playing', function(e) {
+            console.debug('video playing');
+            self.detectPlaying();
         });
 
     };
@@ -144,16 +152,18 @@ define([
         console.debug('Video: play! ', this.model.getId());
         var self = this;
 
-        this.detectPlaying();
-
         var promise = self.video.play();
 
         if(promise) {
 
             // workaround for chrome android error: Failed to execute 'play' on 'HTMLMediaElement': API can only be initiated by a user gesture.
             promise.catch(function(err){
-                dispatcher.trigger(dispatcher.videoPlayRejected, self);
-                console.warn('promise fail', err)
+                if(!self.playRejected) {
+                    self.playRejected = true;
+                    console.log(err);
+                    dispatcher.trigger(dispatcher.videoPlayRejected, self);
+                    console.warn('promise fail', err)
+                }
             })
         }
 
@@ -163,7 +173,8 @@ define([
      * Pause video
      */
     VideoController.prototype.onPause = function() {
-        this.video.pause();
+        if(!this.playRejected)
+            this.video.pause();
     };
 
     /**
@@ -195,9 +206,17 @@ define([
      * This little function polyfills this issue.
      */
     VideoController.prototype.detectPlaying = function() {
+
+        if(this.isDetecting) {
+            console.log('i\'m detecting...');
+            return false;
+        }
+
         var self = this,
             prevTime = this.video.currentTime,
             t;
+
+        self.isDetecting = true;
 
         t = setInterval(function checkIfVideoIsPlaying() {
 
@@ -215,7 +234,7 @@ define([
 
             prevTime = self.video.currentTime;
 
-        }, 5);
+        }, 10);
 
 
     };
