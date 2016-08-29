@@ -25,6 +25,7 @@
   "devDependencies": {
     "almond": "^0.3.2",
     "grunt": "~0.4.5",
+    "grunt-contrib-concat": "^1.0.1",
     "grunt-contrib-requirejs": "*"
   }
 }

@@ -1,8 +1,8 @@
 "use strict";
 
-define(function() {
+define(function () {
 
-    var domain = "prometeo.duesottozero.com",
+    var domain = "130.251.47.113:3000",
         baseUrl = "http://" + domain,
         apiUrl = baseUrl + "/api/";
 
@@ -10,9 +10,9 @@ define(function() {
 
         saveDebounceTime: 2000, // msec
 
-        domain : domain,
-        baseUrl : baseUrl,
-        apiUrl : apiUrl ,
+        domain: domain,
+        baseUrl: baseUrl,
+        apiUrl: apiUrl,
         publicJs: baseUrl + '/js/app/editor/',
         embedJsUrl: baseUrl + '/min/player.min.js',
 
@@ -22,8 +22,8 @@ define(function() {
             addMovie: apiUrl + 'lesson',                        // POST
             updateMovie: apiUrl + 'lesson/',                    // + :movie_id POST
             deleteMovie: apiUrl + 'lesson/',                    // + :movie_id DELETE
-            getMovie : apiUrl + 'lesson/',                      // + :movie_id GET
-            getMovies : apiUrl + 'lesson',                      // GET
+            getMovie: apiUrl + 'lesson/',                      // + :movie_id GET
+            getMovies: apiUrl + 'lesson',                      // GET
 
             // video
             uploadVideo: apiUrl + 'video',                      // POST
@@ -34,11 +34,11 @@ define(function() {
         },
 
         availableAreas: {
-            "Video" : "Video",
-            "TextArea" : "Testo",
-            "LinkArea" : "Link",
-            "JumpArea" : "Salto temporale",
-            "QuestionArea" : "Domanda"
+            "Video": "Video",
+            "TextArea": "Testo",
+            "LinkArea": "Link",
+            "JumpArea": "Salto temporale",
+            "QuestionArea": "Domanda"
         }
 
     }

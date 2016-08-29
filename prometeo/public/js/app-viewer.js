@@ -2,7 +2,6 @@
  * Viewer startup
  */
 requirejs.config({
-    //"baseUrl": "/js",
     "baseUrl": "http://prometeo.duesottozero.com",
     "paths": {
         "app": "js/app",

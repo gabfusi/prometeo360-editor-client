@@ -26,6 +26,7 @@ requirejs.config({
         "colorpicker" : "js/libs/colorpicker/minicolors.min"
     },
     "hbs": {
+        base: "http://prometeo.duesottozero.com",
         templateExtension: ".hbs",
         compilerPath: "js/libs/hbs/handlebars.min"
     },

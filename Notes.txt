@@ -23,6 +23,23 @@ Keep this in mind as you are running software.
 
 https://www.digitalocean.com/community/tutorials/how-to-install-couchdb-and-futon-on-ubuntu-14-04
 
+sudo apt-get install software-properties-common
+sudo apt-get install couchdb
+# test installation
+curl localhost:5984
+#first db
+curl -X PUT localhost:5984/testdb
+# securing
+stop couchdb
+sudo chown -R couchdb:couchdb /usr/lib/couchdb /usr/share/couchdb /etc/couchdb /usr/bin/couchdb
+start couchdb
+# Futon ssh tunnel (On local machine)
+ssh -L5984:127.0.0.1:5984 gabfusi@130.251.47.113
+# accessing futon
+http://localhost:5984/_utils
+
+
+
 ------------------------------------------------------------------------------------------------------------
 3) Create a new database
 ------------------------------------------------------------------------------------------------------------
@@ -65,3 +82,47 @@ forever logs
 ------------------------------------------------------------------------------------------------------------
 
 http://trac.ffmpeg.org/wiki/CompilationGuide/Ubuntu
+
+#dependancies
+sudo apt-get install autoconf automake build-essential libass-dev libfreetype6-dev \
+  libsdl1.2-dev libtheora-dev libtool libva-dev libvdpau-dev libvorbis-dev libxcb1-dev libxcb-shm0-dev \
+  libxcb-xfixes0-dev pkg-config texinfo zlib1g-dev
+
+#yasm
+sudo apt-get install yasm
+
+#libx264
+sudo apt-get install libx264-dev
+
+# lib mp3lame
+sudo apt-get install libmp3lame-dev
+
+#opus
+sudo apt-get install libopus-dev
+
+# ffmpeg
+FFMPEG_DIR=/var/ffmpeg
+mkdir $FFMPEG_DIR/ffmpeg_sources
+cd $FFMPEG_DIR/ffmpeg_sources
+wget http://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2
+tar xjvf ffmpeg-snapshot.tar.bz2
+cd ffmpeg
+PATH="$FFMPEG_DIR/bin:$PATH" PKG_CONFIG_PATH="$FFMPEG_DIR/ffmpeg_build/lib/pkgconfig" ./configure \
+  --prefix="$FFMPEG_DIR/ffmpeg_build" \
+  --pkg-config-flags="--static" \
+  --extra-cflags="-I$FFMPEG_DIR/ffmpeg_build/include" \
+  --extra-ldflags="-L$FFMPEG_DIR/ffmpeg_build/lib" \
+  --bindir="$FFMPEG_DIR/bin" \
+  --enable-gpl \
+  --enable-libass \
+  --enable-libfreetype \
+  --enable-libmp3lame \
+  --enable-libopus \
+  --enable-libtheora \
+  --enable-libvorbis \
+  --enable-libx264 \
+  --enable-nonfree
+PATH="$FFMPEG_DIR/bin:$PATH" make
+make install
+make distclean
+hash -r

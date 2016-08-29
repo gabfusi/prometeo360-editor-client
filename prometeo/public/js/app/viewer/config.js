@@ -2,7 +2,7 @@
 
 define(function () {
 
-    var domain = "prometeo.duesottozero.com",
+    var domain = "130.251.47.113:3000",
         baseUrl = "http://" + domain,
         apiUrl = baseUrl + "/api/";
 

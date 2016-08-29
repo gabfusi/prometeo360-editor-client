@@ -11,11 +11,12 @@ define([
         'hbs!js/app/editor/views/VideoPickerList',
         "controller/MovieController",
         "controller/TimelineElementController",
-        "controller/TimelineController"
+        "controller/TimelineController",
+        "bootstrap"
     ],
 
     function($, config, plupload, notification, api, dispatcher, VideoPickerTpl, VideoPickerListTpl,
-             MovieController, TimelineElementController, TimelineController) {
+             MovieController, TimelineElementController, TimelineController, bootstrap) {
 
         // VideoPickerController
         var VideoPickerController = {

@@ -26,10 +26,20 @@ define(["js/libs/hbs/handlebars.min"], function (Handlebars) {
 
             // Get the template extension.
             var ext = (config.hbs && config.hbs.templateExtension ? config.hbs.templateExtension : templateExtension);
+            var fsPath = "";
+
+            // check if partial
+            var isPartial = (name.substr(0, 8) === 'partial:');
+            if (isPartial) {
+                //name = name.substr(8);
+                fsPath = parentRequire.toUrl(name.substr(8) + ext);
+            } else {
+                fsPath = parentRequire.toUrl(name + ext);
+            }
 
             // Use node.js file system module to load the template.
             // Sorry, no Rhino support.
-            var fsPath = parentRequire.toUrl(name + ext);
+
             //var fsPath = parentRequire.toUrl(name.substr(8) + ext);
 
             buildMap[name] = fs.readFileSync(fsPath).toString();
