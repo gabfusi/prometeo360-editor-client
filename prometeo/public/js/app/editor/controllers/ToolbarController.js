@@ -74,6 +74,9 @@ define([
                     elementModel.setDuration('00:00:02.000');
                     break;
 
+                case 'Video360':
+                    elementModel.setDuration('00:00:02.000');
+                    break;
 
                 default:
 
@@ -119,9 +122,8 @@ define([
             var $elements = MovieController.getVisibleElements(TimelineController.getCurrentFrame());
             var i;
 
-            if(elementType === 'Video') {
+            if(elementType === 'Video' || elementType === 'Video360') {
                 // I can't overlap 2 videos
-
 
                 for(i = 0; i < $elements.length; i++) {
                     if($elements[i].data('model').getType() === 'Video') {

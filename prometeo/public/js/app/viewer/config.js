@@ -2,7 +2,7 @@
 
 define(function () {
 
-    var domain = "130.251.47.113:3000",
+    var domain = "localhost:3030",
         baseUrl = "http://" + domain,
         apiUrl = baseUrl + "/api/";
 

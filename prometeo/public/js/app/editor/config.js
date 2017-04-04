@@ -2,7 +2,7 @@
 
 define(function () {
 
-    var domain = "130.251.47.113:3000",
+    var domain = "localhost:3030",
         baseUrl = "http://" + domain,
         apiUrl = baseUrl + "/api/";
 
@@ -35,6 +35,7 @@ define(function () {
 
         availableAreas: {
             "Video": "Video",
+            "Video360": "Video360",
             "TextArea": "Testo",
             "LinkArea": "Link",
             "JumpArea": "Salto temporale",

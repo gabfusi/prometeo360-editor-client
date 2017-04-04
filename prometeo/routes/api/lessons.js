@@ -9,6 +9,8 @@ router.get('/', function(req, res, next) {
 
     LessonsService.getLessons(function(err, data) {
 
+        console.log(err, data);
+
         if(!err) {
             res.json(data);
         } else {
@@ -130,7 +132,7 @@ function validateMovie(movie) {
     }
 
     // controllo che il filmato sia ben formattato (è un controllo minimale, andrebbe esteso)
-    if(typeof movie.name === 'undefined' || typeof movie.elements === 'undefined' || typeof movie.id === 'undefined') {
+    if(typeof movie.name === 'undefined' || typeof movie.scenes === 'undefined' || typeof movie.id === 'undefined') {
         throw new Error("Formato non riconosciuto.");
     }
 

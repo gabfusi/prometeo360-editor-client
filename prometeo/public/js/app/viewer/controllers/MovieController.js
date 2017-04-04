@@ -206,7 +206,7 @@ define([
 
                 }
 
-                dispatcher.trigger(dispatcher.movieLoaded);
+                dispatcher.trigger(dispatcher.sceneLoaded);
 
             },
 

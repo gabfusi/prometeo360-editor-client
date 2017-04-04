@@ -11,6 +11,7 @@ define([
         "controller/TimelineController",
         "controller/VideoPickerController",
         'hbs!js/app/editor/views/properties/Video',
+        'hbs!js/app/editor/views/properties/Video360',
         'hbs!js/app/editor/views/properties/JumpArea',
         'hbs!js/app/editor/views/properties/LinkArea',
         'hbs!js/app/editor/views/properties/QuestionArea',
@@ -26,7 +27,7 @@ define([
 
     function($, dispatcher, utilities, notification,
              MovieController, TimelineElementController, QuestionAreaController, TimelineController, VideoPickerController,
-             VideoTpl, JumpAreaTpl, LinkAreaTpl, QuestionAreaTpl, TextAreaTpl) {
+             VideoTpl, Video360Tpl, JumpAreaTpl, LinkAreaTpl, QuestionAreaTpl, TextAreaTpl) {
 
     // Editbar Controller
     var EditbarController = {
@@ -97,11 +98,10 @@ define([
             });
 
 
-
             // on video uploaded
             dispatcher.on(dispatcher.videoUploaded, function(e, filename, duration) {
                 // self.currentElementModel is the current element
-                if(self.currentElementModel.getType() === 'Video') {
+                if(self.currentElementModel.getType() === 'Video' || self.currentElementModel.getType() === 'Video360') {
                     self.updateElement(self.currentElementModel, 'filename', filename);
                     self.updateElement(self.currentElementModel, 'duration', duration);
                     self.loadElement(self.currentElementModel, true); // force panel refresh
@@ -277,6 +277,9 @@ define([
 
             switch (elementType) {
 
+                case 'Video360':
+                    html = Video360Tpl(elementModelObject);
+                    break;
                 case 'Video':
                     html = VideoTpl(elementModelObject);
                     break;
@@ -344,6 +347,12 @@ define([
 
             switch (elementType) {
 
+                case 'Video360':
+
+                    this.$fields['duration'].prop('readonly', true);
+
+                    break;
+
                 case 'Video':
 
                     this.$fields['duration'].prop('readonly', true);
@@ -378,7 +387,7 @@ define([
             }
 
             // slider zindex
-            if(elementType !== 'Video') {
+            if(elementType !== 'Video' && elementType !== 'Video360') {
 
                 $('#p_zindex_slider').slider({
                     min: 1,

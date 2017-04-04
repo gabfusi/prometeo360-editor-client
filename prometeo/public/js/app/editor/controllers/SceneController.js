@@ -3,7 +3,6 @@
 define([
         'jquery',
         'dispatcher',
-        'model/Movie',
         'model/Scene',
         "controller/TimelineController",
         "controller/TimelineElementController",
@@ -11,54 +10,52 @@ define([
         'jqueryui/draggable'
     ],
 
-    function($, dispatcher, Movie, Scene, TimelineController, TimelineElementController) {
+    function($, dispatcher, Scene, TimelineController, TimelineElementController) {
 
-        var _movieModel,
-            _currentSceneModel,
+        var _sceneModel,
             _defaultWidth = 720,// default video aspect ratio -> 4:3
             _defaultHeight = 480,
-            _movieRatio = _defaultWidth/_defaultHeight,
-            _movieZoomFactor = .85,
+            _sceneRatio = _defaultWidth/_defaultHeight,
+            _sceneZoomFactor = .85,
             _width = 0,
             _height = 0,
             _zoom = 1;
 
         /**
-         * MovieController Controller
-         * @type {{create: MovieController.create}}
+         * SceneController Controller
+         * @type {{create: SceneController.create}}
          */
-        var MovieController = {
+        var SceneController = {
 
-            init: function($movieElement) {
+            init: function($sceneElement) {
 
-                this.$movieContainer = $('.movie-container');
-                this.$movie = $movieElement;
-                this.$movieArea = $movieElement.find('.movie-area>.inner');
-                this.$movieBg = $movieElement.find('.movie-bg');
+                this.$sceneContainer = $('.movie-container');
+                this.$scene = $sceneElement;
+                this.$sceneArea = $sceneElement.find('.movie-area>.inner');
+                this.$sceneBg = $sceneElement.find('.movie-bg');
 
                 this.initListeners();
-                this.onResize(); // init zoom, width, height
             },
 
 
             initListeners: function(){
                 var self = this;
 
-                // on movie start loading
+                // on scene start loading
                 dispatcher.on(dispatcher.sceneLoadingStart, function() {
-                    self.$movieArea.hide();
-                    console.debug('movie loading start');
+                    self.$sceneArea.hide();
+                    console.debug('scene loading start');
                 });
 
                 // on movie loaded
                 dispatcher.on(dispatcher.sceneRendered, function() {
                     self.$movieArea.fadeIn(300);
-                    console.debug('movie rendered');
+                    console.debug('scene rendered');
                 });
 
 
                 // on TimelineElements click
-                this.$movieArea.on('click', '.area', function(e){
+                this.$sceneArea.on('click', '.area', function(e){
                     e.stopPropagation();
                     var elementModel = $(this).data('model');
                     dispatcher.trigger(dispatcher.elementSelected, elementModel);
@@ -75,7 +72,7 @@ define([
 
                 // on TimelineElements deselected
                 dispatcher.on(dispatcher.elementsDeselected, function() {
-                    self.$movieArea.find('.area.selected').removeClass('selected');
+                    self.$sceneArea.find('.area.selected').removeClass('selected');
                 });
 
                 // on TimelineElements updated
@@ -86,92 +83,40 @@ define([
             },
 
             /**
-             * Create or load movie
+             * Create or load scene
              * @param data
              * @returns {*}
              */
             create: function(data) {
-                var sceneModel,
-                    elementModel;
 
-                _movieModel = null;
-                _movieModel = new Movie();
+                var self = this,
+                    elementModel = null;
+
+                _sceneModel = null;
+                _sceneModel = new Scene();
 
                 if(!data) {
-                    var emptyScene = new Scene();
-                    emptyScene.setId(1);
-                    emptyScene.setName('Scena ' + emptyScene.getId());
-                    _movieModel.addScene(emptyScene);
-
-                    this.loadScene(_movieModel.getFirstScene());
                     dispatcher.trigger(dispatcher.sceneRendered);
                     TimelineController.resetTrack();
-                    return _movieModel;
+                    return _sceneModel;
                 }
 
                 // unserialize data
 
-                _movieModel.setId(data.id);
-                _movieModel.setName(data.name);
-                _movieModel.setPublished(data.published);
-
-                for(var i = 0; i < data.scenes.length; i++) {
-
-                    // create scene model
-                    sceneModel = (new Scene()).fromObject(data.scenes[i]);
-
-                    // create and add scene items models to scene
-                    if(data.scenes[i].elements && data.scenes[i].elements.length) {
-                        for(var j = 0, l = data.scenes[i].elements.length; j < l; j++) {
-                            elementModel = TimelineElementController.create(data.scenes[i].elements[j].type, data.scenes[i].elements[j]);
-                            sceneModel.addTimelineElement(elementModel);
-                        }
-                    }
-
-                    // add a scene to movie
-                    _movieModel.addScene(sceneModel);
-                }
-
-                this.loadScene(_movieModel.getFirstScene());
-            },
-
-            /**
-             * Unloads current movie
-             */
-            unload: function() {
-                _movieModel = null;
-                this.$movieArea.empty();
-            },
-
-            /**
-             * Render a scene and set it as current
-             */
-            loadScene: function(scene) {
-                var self = this;
-                var elementModel = null;
-                var elements;
-
-                if(!scene) {
-                    return false;
-                }
-
-                _currentSceneModel = scene;
-                elements = scene.getElements();
-
-                if(!elements.length) {
-                    return false;
-                }
+                _sceneModel.setId(data.id);
+                _sceneModel.setName(data.name);
 
                 // FIXME andrebbe ottimizzata con una bulk insert, al posto che molteplici inserimenti dei singoli elementi.
-                for(var i in elements) {
+                for(var i in data.elements) {
 
-                    elementModel = elements[i];
+                    elementModel = TimelineElementController.create(data.elements[i].type, data.elements[i]);
 
-                    // add element to movie
+                    // add element to scene
                     this.loadElement(elementModel);
 
                     // add element to timeline
                     TimelineController.loadElement(elementModel);
+
                 }
 
                 // Attendo il render degli elementi (questa cosa non è elegantissima)
@@ -180,7 +125,7 @@ define([
                     waitingInterval = 100,
                     renderWaiter = setInterval(function(){
 
-                        if(self.$movieArea.children().length === elements.length || waitingTime >= maxWaitingTime) {
+                        if(self.$sceneArea.children().length === data.elements.length || waitingTime >= maxWaitingTime) {
                             TimelineController.resetTrack();
                             self.updateVisibleElements(0);
                             dispatcher.trigger(dispatcher.sceneRendered);
@@ -191,43 +136,48 @@ define([
 
                         waitingTime += waitingInterval;
 
-                    }, waitingInterval);
+                }, waitingInterval);
 
 
             },
 
             /**
-             * Return a movie element
+             * Unloads current scene
+             */
+            unload: function() {
+                _sceneModel = null;
+                this.$sceneArea.empty();
+            },
+
+            /**
+             * Return a scene element
              * @param id
              * @returns {*|{}}
              */
             getElement: function(id) {
-                return this.$movieArea.find('[data-id="' + id + '"]')
+                return this.$sceneArea.find('[data-id="' + id + '"]')
             },
 
             /**
-             * Add element to movie
+             * Add element to scene
              * @param elementModel
              * @returns {*}
              */
             addElement: function(elementModel) {
 
-                var elementModels = _currentSceneModel.getTimelineElementsAt(elementModel.getFrame());
+                var elementModels = _sceneModel.getTimelineElementsAt(elementModel.getFrame());
 
                 if(elementModel.getType() !== 'Video' && elementModel.getType() !== 'Video360') {
                     var areaIndex = elementModels.length > 0 ? elementModels.length+1 : 2;
                     elementModel.setZindex(areaIndex);
                 }
 
-                // adds new TimelineElement to current Movie model
-                _currentSceneModel.addTimelineElement(elementModel);
-
                 return this.loadElement(elementModel);
 
             },
 
             /**
-             * load an element in the current movie
+             * load an element in the current scene
              * @param elementModel
              * @returns {*}
              */
@@ -236,8 +186,11 @@ define([
                 // generate TimelineElement jQuery object
                 var $element = TimelineElementController.render(elementModel);
 
+                // adds new TimelineElement to current Scene model
+                _sceneModel.addTimelineElement(elementModel);
+
                 // append element view to DOM
-                this.$movieArea.append($element);
+                this.$sceneArea.append($element);
 
                 // setup element
                 this.setupElement($element);
@@ -273,7 +226,7 @@ define([
                 var self = this,
                     elementType = $element.data('model').getType();
 
-                if(elementType === 'Video' || elementType === 'QuestionArea') {
+                if(elementType === 'Video' || elementType === 'Video360' || elementType === 'QuestionArea') {
                     return false;
                 }
 
@@ -288,8 +241,8 @@ define([
                     minHeight: -10000, // so we can shrink our resizable while scaled
 
                     start: function(evt, ui) {
-                        containmentW = self.$movieArea.width();
-                        containmentH = self.$movieArea.height();
+                        containmentW = self.$sceneArea.width();
+                        containmentH = self.$sceneArea.height();
                     },
                     resize: function(evt, ui) {
 
@@ -345,8 +298,8 @@ define([
                         ui.position.left = 0;
                         ui.position.top = 0;
 
-                        containmentW = self.$movieArea.width() * _zoom;
-                        containmentH = self.$movieArea.height() * _zoom;
+                        containmentW = self.$sceneArea.width() * _zoom;
+                        containmentH = self.$sceneArea.height() * _zoom;
                         objW = $(this).outerWidth() * _zoom;
                         objH = $(this).outerHeight() * _zoom;
 
@@ -409,7 +362,7 @@ define([
 
                 dispatcher.trigger(dispatcher.elementRemoved, elementModel);
 
-                _currentSceneModel.removeTimelineElement(elementModel.getId());
+                _sceneModel.removeTimelineElement(elementModel.getId());
             },
 
 
@@ -418,7 +371,7 @@ define([
              */
             getVisibleElements: function(frame) {
 
-                var elementModels = _currentSceneModel.getTimelineElementsAt(frame),
+                var elementModels = _sceneModel.getTimelineElementsAt(frame),
                     $elements = [],
                     i = 0,
                     l;
@@ -441,7 +394,7 @@ define([
              */
             updateVisibleElements: function(frame) {
 
-                if(!_movieModel || !_currentSceneModel) return;
+                if(!_sceneModel) return;
 
                 var self = this,
                     $elements = this.getVisibleElements(frame),
@@ -449,11 +402,11 @@ define([
                     elementModel,
                     i, l;
 
-                //console.log($elements);
+                console.log($elements);
 
                 requestAnimationFrame(function() {
 
-                    self.$movieArea.find('.area').hide();
+                    self.$sceneArea.find('.area').hide();
                     for( i = 0, l = $elements.length; i < l; i++ ) {
                         $elements[i].show();
                         elementApi = $elements[i].data('api');
@@ -477,14 +430,10 @@ define([
             },
 
             getModel: function() {
-                return _movieModel;
+                return _sceneModel;
             },
 
-            getCurrentScene: function() {
-              return _currentSceneModel;
-            },
-
-            getMovieDefaults: function() {
+            getSceneDefaults: function() {
                 return {
                     'width' : _defaultWidth,
                     'height': _defaultHeight,
@@ -496,7 +445,7 @@ define([
             /**
              * On window resize
              */
-            onResize: function(){
+            onResize: function() {
 
                 var self = this,
                     timelineShown = true,
@@ -507,37 +456,37 @@ define([
                     ratio;
 
                 if(timelineShown) {
-                    windowW = this.$movieContainer.width();
-                    windowH = this.$movieContainer.height();
+                    windowW = this.$sceneContainer.width();
+                    windowH = this.$sceneContainer.height();
                 } else {
                     windowW = window.innerWidth;
                     windowH = window.innerHeight;
                 }
 
-                // movie container size fixed to _movieZoomFactor of window width
-                _width = windowW * _movieZoomFactor;
-                _height = windowH * _movieZoomFactor;
+                // scene container size fixed to _sceneZoomFactor of window width
+                _width = windowW * _sceneZoomFactor;
+                _height = windowH * _sceneZoomFactor;
 
                 // calc ratio
                 ratio = windowW / windowH;
 
-                if(ratio > _movieRatio) {
-                    // if viewport ratio greater than movie ratio, use height
+                if(ratio > _sceneRatio) {
+                    // if viewport ratio greater than scene ratio, use height
                     _zoom = 1/_defaultHeight * _height;
                 } else {
                     // otherwise, use width
                     _zoom = 1/_defaultWidth * _width;
                 }
 
-                // update Movie size
+                // update Scene size
                 requestAnimationFrame(function() {
-                    self.$movie.css({'transform': 'scale(' + _zoom + ')'});
+                    self.$scene.css({'transform': 'scale(' + _zoom + ')'});
                 });
 
             }
 
         };
 
-        return MovieController;
+        return SceneController;
 
     });

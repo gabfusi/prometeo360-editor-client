@@ -176,7 +176,7 @@ define([
                     wasPlayingBeforeBuffering = true;
 
                 // on movie loaded
-                dispatcher.on(dispatcher.movieLoaded, function (e, movie) {
+                dispatcher.on(dispatcher.sceneLoaded, function (e, movie) {
                     var duration = self.movieController.getModel().getDuration();
                     self.$playCover.find('.prp-movie-title').text(self.movieController.getModel().getName());
                     self.$timeDuration.text(_formatTime(duration));

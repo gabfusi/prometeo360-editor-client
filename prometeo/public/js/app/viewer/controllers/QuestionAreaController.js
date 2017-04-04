@@ -70,7 +70,7 @@ define([
                 }
 
                 if (answers.length) {
-                    answer_id = answers[0].value;
+                    answer_id = answers[0];
                 }
 
                 // check if given answer is correct

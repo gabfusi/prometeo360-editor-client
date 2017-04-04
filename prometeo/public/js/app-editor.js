@@ -2,7 +2,7 @@
  * App startup
  */
 requirejs.config({
-    "baseUrl": "http://prometeo.duesottozero.com",
+    "baseUrl": "http://localhost:3030",
     "paths": {
         "app": "js/app",
         "lib": "js/libs",
@@ -10,7 +10,6 @@ requirejs.config({
         "router": "js/app/editor/router",
         "api": "js/app/editor/api",
         "dispatcher": "js/app/editor/dispatcher",
-        //"socket": "js/app/editor/socket",
         "model": "js/app/models",
         "controller": "js/app/editor/controllers",
         "view": "js/app/editor/views",
@@ -22,11 +21,10 @@ requirejs.config({
         "handlebars" : "js/libs/hbs/handlebars.min",
         "text" : "js/libs/hbs/text",
         "plupload": "js/libs/plupload/plupload.full.min",
-        // "diff" : "js/libs/jsondiffpatch",
         "colorpicker" : "js/libs/colorpicker/minicolors.min"
     },
     "hbs": {
-        base: "http://prometeo.duesottozero.com",
+        base: "http://localhost:3030",
         templateExtension: ".hbs",
         compilerPath: "js/libs/hbs/handlebars.min"
     },

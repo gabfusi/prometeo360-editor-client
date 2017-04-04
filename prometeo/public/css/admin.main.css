@@ -505,6 +505,8 @@ ul, li {
     content: "\f1a3"; }
   .editor .fi-Video:before {
     content: "\f20e"; }
+  .editor .fi-Video360:before {
+    content: "\f20e"; }
   .editor .fi-LinkArea:before {
     content: "\f165"; }
   .editor .fi-JumpArea:before {

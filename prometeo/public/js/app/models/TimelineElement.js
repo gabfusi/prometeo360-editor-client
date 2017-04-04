@@ -144,7 +144,7 @@ define(['lib/utilities'], function(utilities) {
             this.setDuration(objectModel.duration);
         }
 
-        if(this._type === 'Video') {
+        if(this._type === 'Video' || this._type === 'Video360') {
 
             // Video attributes
 

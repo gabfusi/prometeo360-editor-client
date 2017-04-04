@@ -2,7 +2,7 @@
  * Viewer startup
  */
 requirejs.config({
-    "baseUrl": "http://prometeo.duesottozero.com",
+    "baseUrl": "http://localhost:3030",
     "paths": {
         "app": "js/app",
         "lib": "js/libs",
@@ -17,7 +17,7 @@ requirejs.config({
         "text" : "js/libs/hbs/text"
     },
     "hbs": {
-        base: "http://prometeo.duesottozero.com",
+        base: "http://localhost:3030",
         templateExtension: ".hbs",
         compilerPath: "js/libs/hbs/handlebars.min"
     },

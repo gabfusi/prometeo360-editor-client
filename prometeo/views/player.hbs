@@ -8,7 +8,22 @@
 <body>
 
     <div class="prometeo-player" data-width="100%" data-id="{{ movie_id }}"></div>
+
+
+    <!-- scripts -->
+    <script>
+        if(typeof require !== 'undefined') {
+            window.nodeRequire = require;
+            delete window.require;
+            delete window.exports;
+            delete window.module;
+        }
+    </script>
+    <script data-main="/js/app-viewer" src="/js/libs/requirejs.min.js"></script>
+    <!--
     <script async defer src="/min/player.min.js"></script>
+    -->
+
 
 </body>
 </html>

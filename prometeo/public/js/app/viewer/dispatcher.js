@@ -9,7 +9,7 @@ define(["jquery"], function ($) {
     return {
 
         // movie events
-        movieLoaded: 'movieLoaded',
+        sceneLoaded: 'sceneLoaded',
         movieProgress: 'movieProgress',
         movieEnded: 'movieEnded',
         movieBufferingStart: 'movieBufferingStart',

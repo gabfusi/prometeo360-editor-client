@@ -79,9 +79,8 @@ define([
                     }
 
                     for(var i = 0, l = data.length; i < l; i++ ) {
-                        data[i].value.duration = utilities.formatTime(data[i].value.duration);
-                        data[i].value.modified = utilities.timeAgo(data[i].value.modified);
-                        data[i] = data[i].value;
+                        data[i].duration = utilities.formatTime(data[i].duration);
+                        data[i].modified = utilities.timeAgo(data[i].modified);
                     }
 
                     callback(data);

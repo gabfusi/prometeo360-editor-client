@@ -8,6 +8,7 @@ define([
         "lib/notifications",
         "api",
         "controller/MovieController",
+        "controller/SceneController",
         "controller/ToolbarController",
         "controller/EditbarController",
         "controller/TimelineController",
@@ -18,7 +19,7 @@ define([
     ],
 
     function ($, config, dispatcher, utilities, notification, Api,
-              MovieController, ToolbarController, EditbarController, TimelineController, InfobarController, VideoPickerController, EditorTpl) {
+              MovieController, SceneController, ToolbarController, EditbarController, TimelineController, InfobarController, VideoPickerController, EditorTpl) {
 
         var loaded = false;
 
@@ -110,10 +111,10 @@ define([
                 // on resize (debounced)
                 $(window).on('resize', utilities.debounce(function () {
                     MovieController.onResize();
-                    self.onResize();
+                    //self.onResize();
                 }, 50));
 
-                self.onResize();
+                //self.onResize();
 
                 // Initialize listeners to movie updates
                 // proxies all movie & elements change events to movieEdited event
@@ -185,12 +186,12 @@ define([
 
                 } else {
 
-                    dispatcher.trigger(dispatcher.movieLoadingStart);
+                    dispatcher.trigger(dispatcher.sceneLoadingStart);
 
                     Api.getMovie(movie_id, function (err, data) {
 
                         if (err) {
-                            dispatcher.trigger(dispatcher.movieLoadingError); // TODO gestisci UI
+                            dispatcher.trigger(dispatcher.sceneLoadingError); // TODO gestisci UI
                             notification.error("Filmato non trovato", 'Non riesco a caricare il filmato, potrebbe essere stato cancellato o non essere mai esistito.');
                             return;
                         }
@@ -198,7 +199,7 @@ define([
                         MovieController.create(data);
                         self.isMovieLoaded = true;
                         self.movieRevision = data._rev;
-                        dispatcher.trigger(dispatcher.movieLoaded, data);
+                        dispatcher.trigger(dispatcher.sceneLoaded, data);
 
                     });
 
@@ -289,8 +290,6 @@ define([
             onResize: function() {
 
                 return;
-
-                console.debug('onresize');
 
                 var editorHeight = this.$editorInner.height(),
                     movieHeight = editorHeight - timelineHeight;

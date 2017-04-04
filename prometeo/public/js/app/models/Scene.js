@@ -5,7 +5,7 @@ define([], function() {
      *
      * @constructor
      */
-    function Movie() {
+    function Scene() {
 
         /**
          *
@@ -14,9 +14,8 @@ define([], function() {
          */
         var _id = null,
             _name = '',
-            _published = false,
             _duration = 0,
-            _scenes = [];
+            _timelineElements = [];
 
         /**
          *
@@ -52,22 +51,6 @@ define([], function() {
 
         /**
          *
-         * @returns {boolean}
-         */
-        this.isPublished = function () {
-            return _published;
-        };
-
-        /**
-         *
-         * @param bool
-         */
-        this.setPublished = function (bool) {
-            _published = bool;
-        };
-
-        /**
-         *
          * @returns {number}
          */
         this.getDuration = function() {
@@ -87,59 +70,73 @@ define([], function() {
          * @param element
          * @returns {Number}
          */
-        this.addScene = function (element) {
-            return _scenes.push(element);
+        this.addTimelineElement = function (element) {
+            return _timelineElements.push(element);
         };
 
         /**
          *
-         * @param scene_id
+         * @param element_id
          */
-        this.removeScene = function (scene_id) {
-            var element_index = _getSceneIndex(scene_id);
+        this.removeTimelineElement = function (element_id) {
+            var element_index = _getTimelineElementIndex(element_id);
 
             if(element_index >= 0) {
-                _scenes.splice(element_index, 1);
+                _timelineElements.splice(element_index, 1);
             }
         };
 
 
         /**
-         * Get the first scene
-         * @returns {*}
-         */
-        this.getFirstScene = function () {
-            return _scenes[0] || null;
-        };
-
-        /**
-         * Get a scene by id
-         * @param scene_id
-         * @returns {*}
-         */
-        this.getScene = function (scene_id) {
-            var index = _getSceneIndex(scene_id);
-            return _scenes[index];
-        };
-
-        /**
-         * Returns all timeline scenes
+         * Returns TimelineElements matching given frame
+         * @param frame
          * @returns {Array}
          */
-        this.getScenes = function() {
-            return _scenes;
+        this.getTimelineElementsAt = function (frame) {
+
+            var i = 0,
+                l = _timelineElements.length,
+                elements = [];
+
+            for( ; i < l; i++) {
+
+                if(_timelineElements[i].getFrame() <= frame && frame <= _timelineElements[i].getEndFrame()) {
+                    elements[elements.length] = _timelineElements[i];
+                }
+
+            }
+
+            return elements;
+        };
+
+        /**
+         * Get an element by id
+         * @param element_id
+         * @returns {*}
+         */
+        this.getElement = function (element_id) {
+            var index = _getTimelineElementIndex(element_id);
+            return _timelineElements[index];
+        };
+
+        /**
+         * Returns all timeline elements
+         * @returns {Array}
+         */
+        this.getElements = function() {
+            return _timelineElements;
         };
 
         /**
          *
-         * @param scene_id
+         * @param element_id
          * @returns {*}
          * @private
          */
-        var _getSceneIndex = function (scene_id) {
+        var _getTimelineElementIndex = function (element_id) {
 
-            for(var i = 0; i < _scenes.length; i++) {
-                if(_scenes[i].getId() === scene_id) {
+            for(var i = 0; i < _timelineElements.length; i++) {
+                if(_timelineElements[i].getId() === element_id) {
                     return i;
                 }
             }
@@ -158,8 +155,8 @@ define([], function() {
                 currentElFrame;
 
             // get last element appearing in the movie
-            for(var i = 0; i < _scenes.length; i++) {
-                currentElFrame = _scenes[i].getDuration();
+            for(var i = 0; i < _timelineElements.length; i++) {
+                currentElFrame = _timelineElements[i].getEndFrame();
                 if(currentElFrame > maxFrame) {
                     maxFrame = currentElFrame;
                 }
@@ -171,33 +168,47 @@ define([], function() {
         /**
          * Return Movie model object
          *
-         * @returns {{id: *, name: string, scenes: Array}}
+         * @returns {{id: *, name: string, elements: Array}}
          */
         this.toObject = function(){
 
             return {
                 "id" : this.getId(),
                 "name" : this.getName(),
-                "published" : this.isPublished(),
                 "duration" : _calculateDuration(),
-                "scenes" : _scenes.map(function(el){ return el.toObject(); })
+                "elements" : _timelineElements
             }
+        };
+
+        /**
+         * Populate model from model object
+         * @param objectModel
+         */
+        this.fromObject = function(objectModel) {
+            var self = this;
+
+            this.setId(objectModel.id);
+            this.setName(objectModel.name);
+            this.setDuration(objectModel.duration);
+
+            // timeline elements are added by MovieController.create()
+
+            return this;
         };
 
         /**
          * Return Movie model serialized object
          * This function is used to save Movie model via xhr
          *
-         * @returns {{id: *, name: string, scenes: Array}}
+         * @returns {{id: *, name: string, elements: Array}}
          */
         this.serialize = function(){
 
             var obj = {
                 "id" : this.getId(),
                 "name" : this.getName(),
-                "published" : this.isPublished(),
                 "duration" : _calculateDuration(),
-                "scenes" : _scenes.map(function(el){ return el.serialize(); })
+                "elements" : _timelineElements.map(function(el){ return el.toObject(); })
             };
 
             return obj;
@@ -209,5 +220,5 @@ define([], function() {
     /**
      * Export module
      */
-    return Movie;
+    return Scene;
 });

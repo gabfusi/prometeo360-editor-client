@@ -1,10 +1,12 @@
 {
   "name": "prometeo",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
+  "main": "main.js",
   "scripts": {
+    "start": "electron .",
     "local-start": "node ./bin/www",
-    "start": "forever start ./bin/www",
+    "remote-start": "forever start ./bin/www",
     "old-start": "node ./bin/www",
     "run": "PORT=3000 DEBUG=prometeo:* npm start"
   },
@@ -15,15 +17,18 @@
     "express": "~4.13.4",
     "fluent-ffmpeg": "^2.1.0",
     "hbs": "~4.0.0",
+    "lowdb": "^0.16.0",
     "morgan": "~1.7.0",
     "nano": "~6.2.0",
-    "node-plupload": "0.0.6",
     "path": "^0.12.7",
     "serve-favicon": "~2.3.0",
     "uuid-lib": "0.0.6"
   },
   "devDependencies": {
     "almond": "^0.3.2",
+    "electron": "~1.6.2",
+    "electron-rebuild": "^1.5.7",
+    "electron-reload": "^1.1.0",
     "grunt": "~0.4.5",
     "grunt-contrib-concat": "^1.0.1",
     "grunt-contrib-requirejs": "*"

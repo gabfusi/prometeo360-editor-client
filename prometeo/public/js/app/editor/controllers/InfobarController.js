@@ -42,7 +42,7 @@ define([
 
                 this.$moviePublishedBtn.hide();
 
-                dispatcher.on(dispatcher.movieLoaded, function() {
+                dispatcher.on(dispatcher.sceneLoaded, function() {
                     var movieModel = MovieController.getModel(),
                         movie_name = movieModel.getName(),
                         movie_published = movieModel.isPublished();

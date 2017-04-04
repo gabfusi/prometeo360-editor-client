@@ -66,7 +66,7 @@ define([
 
 
                 // init video uploader
-                this.initUploader();
+                this.initStaticUploader();
             },
 
             /**
@@ -80,10 +80,10 @@ define([
 
                     if (!err) {
                         for(var i = 0; i < data.length; i++) {
-                            for(var j = 0; j < data[i].value.thumbnails.length; j++) {
-                                data[i].value.thumbnails[j] = config.api.getVideoScreenShot + data[i].value.thumbnails[j];
+                            for(var j = 0; j < data[i].thumbnails.length; j++) {
+                                data[i].thumbnails[j] = config.api.getVideoScreenShot + data[i].thumbnails[j];
                             }
-                            videos[videos.length] = data[i].value;
+                            videos[videos.length] = data[i];
                         }
                     }
 
@@ -111,6 +111,54 @@ define([
             },
 
             /**
+             * init uploader
+             * @electron
+             */
+            initStaticUploader: function() {
+
+                var self = this,
+                    $browseBtn = $('#browse_files'); // inside video-picker
+
+                $browseBtn.on('click', function() {
+
+                    var dialog = window.nodeRequire('electron').remote.dialog;
+                    var files = dialog.showOpenDialog({
+                        title: "Seleziona un file video",
+                        properties: ['openFile'],
+                        filters: [
+                            {name: 'Movies', extensions: ['mkv', 'avi', 'mp4']}
+                        ]
+                    });
+
+                    if(!files[0]) {
+                        return;
+                    }
+
+                    self.updateProgressBar(60);
+                    self.showLoading();
+
+                    api.uploadVideo({ tempPath: files[0] }, function(err, response) {
+                        self.updateProgressBar(100);
+
+                        if(!response) {
+                            self.handleUploadError(err || "Video non valido o non trovato.");
+                            self.hideLoading();
+                            return;
+                        }
+
+                        var filename = response.filename,
+                            duration = response.duration;
+
+                        self.chooseFile(filename, duration);
+
+                    });
+
+                });
+
+            },
+
+            /**
+             * @deprecated
              * init uploader
              */
             initUploader: function() {

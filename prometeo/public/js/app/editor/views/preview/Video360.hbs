@@ -1,0 +1,16 @@
+<div class="area video video360"
+     data-id="{{ id }}" data-type="{{ type }}"
+     style="left:0; top:0; right:0; bottom:0; height: 100%; width: 100%; z-index: {{zindex}}">
+    <div class="inner bg video-preview">
+        {{# if thumbnails }}
+            <!-- <canvas class="player360"></canvas> -->
+            <video class="player" preload="metadata" poster="{{ thumbnails.[0] }}">
+                <source src="{{ video }}" type="video/mp4"/>
+            </video>
+        {{else}}
+            <div class="placeholder va-wrap">
+                <i class="fi-video va-middle"></i>
+            </div>
+        {{/if}}
+    </div>
+</div>

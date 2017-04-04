@@ -67,6 +67,14 @@ define(["jquery", "config"], function($, config) {
 
         },
 
+        uploadVideo: function(data, callback) {
+            postRequest(endpoint.getVideos, data, callback);
+        },
+
+        /**
+         * Return all movies
+         * @param callback
+         */
         getMovies : function(callback) {
 
             getRequest(endpoint.getMovies, callback);

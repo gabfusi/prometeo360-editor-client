@@ -8,10 +8,11 @@ define(["jquery"], function($) {
      */
     return {
 
-        movieLoadingStart: 'movieLoadingStart',
-        movieLoadingError: 'movieLoadingError',
-        movieLoaded: 'movieLoaded',
-        movieRendered: 'movieRendered',
+        sceneLoadingStart: 'sceneLoadingStart',
+        sceneLoadingError: 'sceneLoadingError',
+        sceneLoaded: 'sceneLoaded',
+        sceneRendered: 'sceneRendered',
+
         movieUnloaded: 'movieUnloaded',
         movieEdited: 'movieEdited',         // on movie edited
         movieInfoEdited: 'movieInfoEdited', // on movie edit info
