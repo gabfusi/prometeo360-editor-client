@@ -15,7 +15,7 @@ define([
 
         var _movieModel,
             _currentSceneModel,
-            _defaultWidth = 720,// default video aspect ratio -> 4:3
+            _defaultWidth = 960,// default video aspect ratio -> 2:1
             _defaultHeight = 480,
             _movieRatio = _defaultWidth/_defaultHeight,
             _movieZoomFactor = .85,
@@ -83,6 +83,11 @@ define([
                     self.updateElement(elementModel);
                 });
 
+                // on Scene change intent
+                dispatcher.on(dispatcher.sceneChange, function(e, scene) {
+                    self.changeScene(scene);
+                });
+
             },
 
             /**
@@ -148,7 +153,7 @@ define([
              */
             loadScene: function(scene) {
                 var self = this;
-                var elementModel = null;
+                var elementModel;
                 var elements;
 
                 if(!scene) {
@@ -159,6 +164,8 @@ define([
                 elements = scene.getElements();
 
                 if(!elements.length) {
+                    dispatcher.trigger(dispatcher.sceneLoaded);
+                    dispatcher.trigger(dispatcher.sceneRendered);
                     return false;
                 }
 
@@ -173,6 +180,8 @@ define([
                     // add element to timeline
                     TimelineController.loadElement(elementModel);
                 }
+
+                dispatcher.trigger(dispatcher.sceneLoaded);
 
                 // Attendo il render degli elementi (questa cosa non è elegantissima)
                 var maxWaitingTime = 2000,
@@ -193,6 +202,16 @@ define([
 
                     }, waitingInterval);
 
+            },
+
+            changeScene: function(scene) {
+
+                this.$movieArea.empty();
+                TimelineController.unload();
+                TimelineController.resetTrack();
+
+                this.loadScene(scene);
+                dispatcher.trigger(dispatcher.sceneRendered);
 
             },
 

@@ -100,6 +100,46 @@ define(['pnotify'], function(PNotify) {
         });
     }
 
+    function prompt(title, text, onConfirm, onCancel) {
+
+        new PNotify({
+            title: title,
+            text: text,
+            icon: false,
+            hide: false,
+            width: 560,
+            confirm: {
+                prompt: true,
+                buttons: [{
+                    text: "Ok",
+                    addClass: "btn-primary",
+                    promptTrigger: true,
+                    click: function(notice, value){
+                        notice.remove();
+                        $('.ui-pnotify-modal-overlay').remove();
+                        notice.get().trigger("pnotify.confirm", [notice, value]);
+                        if(onConfirm) onConfirm(value);
+                    }
+                },{
+                    text: "Annulla",
+                    addClass: "",
+                    click: function(notice){
+                        notice.remove();
+                        $('.ui-pnotify-modal-overlay').remove();
+                        notice.get().trigger("pnotify.cancel", notice);
+                        if(onCancel) onCancel();
+                    }
+                }]
+            },
+            history: {
+                history: false
+            },
+            addclass: 'stack-modal',
+            stack: {'dir1': 'down', 'dir2': 'right', 'modal': true}
+        })
+
+    }
+
     return {
 
         dialog: function(title, content) {
@@ -128,6 +168,10 @@ define(['pnotify'], function(PNotify) {
 
         confirm: function(title, text, onConfirm) {
             confirm(title, text, onConfirm);
+        },
+
+        prompt: function(title, text, onConfirm, onCancel) {
+            prompt(title, text, onConfirm, onCancel);
         }
 
     };

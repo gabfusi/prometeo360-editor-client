@@ -12,7 +12,12 @@ define(["jquery"], function($) {
         sceneLoadingError: 'sceneLoadingError',
         sceneLoaded: 'sceneLoaded',
         sceneRendered: 'sceneRendered',
+        sceneChange: 'sceneChange',
+        sceneAdded: 'sceneAdded',
+        sceneEdited: 'sceneEdited',
+        sceneRemoved: 'sceneRemoved',
 
+        movieLoaded: 'movieLoaded',
         movieUnloaded: 'movieUnloaded',
         movieEdited: 'movieEdited',         // on movie edited
         movieInfoEdited: 'movieInfoEdited', // on movie edit info

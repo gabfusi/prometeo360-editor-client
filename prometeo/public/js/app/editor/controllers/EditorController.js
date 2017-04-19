@@ -199,7 +199,7 @@ define([
                         MovieController.create(data);
                         self.isMovieLoaded = true;
                         self.movieRevision = data._rev;
-                        dispatcher.trigger(dispatcher.sceneLoaded, data);
+                        dispatcher.trigger(dispatcher.movieLoaded, data);
 
                     });
 

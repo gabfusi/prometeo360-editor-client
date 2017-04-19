@@ -7,8 +7,17 @@
             <form action="#" id="movie_form">
                 <div class="title-wrap hint--bottom" aria-label="Rinomina">
                     <input type="text" name="movie-name" id="movie_name" placeholder="Filmato senza titolo">
-                    <i class="fi-pencil"></i>
+                    <i class="bt fi-pencil"></i>
                 </div>
+                <div class="title-wrap scene-wrap">
+                    <span class="hint--bottom" aria-label="Seleziona scena"><select id="scene_list"></select></span>
+                    <span class="scene-actions">
+                        <span class="bt fi-plus" id="add_scene" aria-label="Nuova scena"></span>
+                        <span class="bt fi-pencil" id="edit_scene" aria-label="Modifica scena"></span>
+                        <span class="bt fi-trash" id="remove_scene" aria-label="Elimina scena"></span>
+                    </span>
+                </div>
+
                 <div class="movie-save-status" id="movie_save_status"></div>
             </form>
 
@@ -55,6 +64,11 @@
             </div>
 
         </div>
+
+        <!-- scene toolbar
+        <aside class="scene-toolbar">
+            <ul class="item-list" id="scene_list"></ul>
+        </aside> -->
 
         <!-- timeline -->
         <div class="panel timeline">

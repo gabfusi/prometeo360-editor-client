@@ -139,7 +139,7 @@ define([], function() {
         var _getSceneIndex = function (scene_id) {
 
             for(var i = 0; i < _scenes.length; i++) {
-                if(_scenes[i].getId() === scene_id) {
+                if(_scenes[i].getId() == scene_id) {
                     return i;
                 }
             }

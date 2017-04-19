@@ -6,10 +6,33 @@ var router = express.Router();
 var Uuid = require('uuid-lib');
 var VideoService = require('../../services/VideoService.js');
 
-var UPLOADS_PATH        = path.join(__dirname, "../../", "uploads");
+const electron = require('electron');
+const app = electron.app;
+
+//var UPLOADS_PATH        = path.join(__dirname, "../../", "uploads");
+var UPLOADS_PATH        = path.join(app.getPath('videos'), "Prometeo360");
 var VIDEO_PATH          = path.join(UPLOADS_PATH, "video");
-var VIDEO_PATH_TMP      = path.join(UPLOADS_PATH, "tmp");
+//var VIDEO_PATH_TMP      = path.join(UPLOADS_PATH, "tmp");
 var THUMBS_PATH         = path.join(UPLOADS_PATH, "thumbs");
+
+// SETUP (TODO MOVE in install script)
+
+const mkdirSyncIfNotExists = function (dirPath) {
+    try {
+        fs.mkdirSync(dirPath)
+        return true;
+    } catch (err) {
+        //if (err.code !== 'EEXIST') throw err
+        return false;
+    }
+};
+
+// check if prometeo dir exists
+mkdirSyncIfNotExists(UPLOADS_PATH);
+// check if video dir exists
+mkdirSyncIfNotExists(VIDEO_PATH);
+// check if video dir exists
+mkdirSyncIfNotExists(THUMBS_PATH);
 
 /**
  *  GET videos list
@@ -62,33 +85,26 @@ router.post('/', function(req, res, next){
     }
 
     var inputFilePath = file.tempPath,
-        filename = path.basename(file.tempPath),
-        filenameWithoutExtension = path.parse(filename).name,
-        desiredFilePath = path.join(VIDEO_PATH, filename);
-
-    console.log('file uploaded', file);
+        inputFilename = path.basename(file.tempPath),
+        inputFilenameWithoutExtension = path.parse(inputFilename).name,
+        desiredFilePath = path.join(VIDEO_PATH, inputFilename),
+        outputFilePath = desiredFilePath,
+        outputFilename = inputFilename,
+        outputFilenameWithoutExtension = inputFilenameWithoutExtension;
 
     // check if filename exists, if exists create a new one.
-    try{
-        fs.statSync(desiredFilePath);
-        filenameWithoutExtension = filenameWithoutExtension + '-' + Uuid.raw().substr(0, 10);
-        console.log('file with same name already exists, renaming to', filenameWithoutExtension);
-    }catch(err){
-        // file does not exists, continue...
+    if(fs.existsSync(desiredFilePath)) {
+        outputFilenameWithoutExtension = inputFilenameWithoutExtension + '-' + Uuid.raw().substr(0, 10);
+        outputFilename = outputFilenameWithoutExtension + '.mp4';
+        outputFilePath = path.join(VIDEO_PATH, outputFilename);
     }
 
-    // TODO i filmati devono essere salvati in una cartella su pc (es. ~/Prometeo360/Videos/)
-    // TODO inoltre, non è necessario (ma controproducente) che vengano convertiti...
-
-    // convert video
-    VideoService.convertVideo(inputFilePath, VIDEO_PATH, filenameWithoutExtension, function(err, metadata) {
+    VideoService.copyVideo(inputFilePath, outputFilePath, function(err, metadata) {
 
         if(err) {
             res.status(500).json(metadata);
         } else {
 
-            var outputFilePath = metadata.filename;
-            var convertedFilename = path.parse(outputFilePath).base;
 
             // create thumb
             VideoService.generateThumbnails(outputFilePath, THUMBS_PATH, 4, function(err, thumbs) {
@@ -101,14 +117,14 @@ router.post('/', function(req, res, next){
                     fs.unlinkSync(inputFilePath);
 
                     var video = {
-                        filename: convertedFilename,
+                        filename: outputFilename,
                         thumbnails: thumbs,
                         duration: metadata.duration,
                         size: metadata.size
                     };
 
                     // insert into video db
-                    VideoService.addVideo(convertedFilename, video, function (err, data) {
+                    VideoService.addVideo(outputFilename, video, function (err, data) {
 
                         if(!err) {
                             // return video entity

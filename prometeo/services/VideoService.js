@@ -3,6 +3,7 @@
 var DatabaseService = require('./DatabaseService.js');
 var ffmpeg = require('fluent-ffmpeg');
 var path = require('path');
+var fs = require('fs');
 
 
 var VideoService = {
@@ -112,6 +113,43 @@ var VideoService = {
     },
 
     /**
+     *
+     * @param input
+     * @param output
+     * @param callback
+     * @returns {boolean}
+     */
+    copyVideo: function(input, output, callback) {
+
+        console.log('copying', input, 'to', output);
+
+        if (!fs.existsSync(input)) {
+            console.error('file not exists');
+            return callback && callback(true);
+        }
+
+        copyFile(input, output, function(error) {
+
+            if(error) {
+                console.error('cannot copy file', error);
+                return callback && callback(true);
+            }
+
+            // get video metadata
+            ffmpeg.ffprobe(output, function(err, metadata) {
+                if(callback) {
+                    callback(false, {
+                        duration: millisecondsToString(metadata.format.duration * 1000),
+                        size: metadata.format.size
+                    });
+                }
+            });
+
+        });
+
+    },
+
+    /**
      * Generate video thumbnails
      * @param video_input
      * @param thumb_folder
@@ -164,6 +202,30 @@ var VideoService = {
     }
 
 };
+
+function copyFile(source, target, cb) {
+    var cbCalled = false;
+
+    var rd = fs.createReadStream(source);
+    rd.on("error", function(err) {
+        done(err);
+    });
+    var wr = fs.createWriteStream(target);
+    wr.on("error", function(err) {
+        done(err);
+    });
+    wr.on("close", function(ex) {
+        done();
+    });
+    rd.pipe(wr);
+
+    function done(err) {
+        if (!cbCalled) {
+            cb(err);
+            cbCalled = true;
+        }
+    }
+}
 
 /**
  * Convert milliseconds to hh:mm:ss.mmm

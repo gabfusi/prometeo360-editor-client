@@ -26,8 +26,8 @@ function createWindow() {
     // Create the browser window.
 
     mainWindow = new BrowserWindow({
-        width: 1024,
-        height: 768,
+        width: 1440,
+        height: 800,
         icon: __dirname + '/favicon.ico'
     });
     // win.maximize();

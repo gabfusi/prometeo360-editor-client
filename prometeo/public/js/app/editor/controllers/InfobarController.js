@@ -6,10 +6,11 @@ define([
         "dispatcher",
         "lib/utilities",
         "lib/notifications",
-        "controller/MovieController"
+        "controller/MovieController",
+        "controller/SceneController"
     ],
 
-    function (config, $, dispatcher, utilities, notification, MovieController) {
+    function (config, $, dispatcher, utilities, notification, MovieController, SceneController) {
 
         var getEmbedCode = function(movie_id) {
             return '<div class="prometeo-player" data-width="100%" data-id="' + movie_id + '"></div>' +
@@ -31,6 +32,13 @@ define([
                 this.$moviePublishedBtn = this.$inforbar.find('#movie_publish');
                 this.$movieEmbedBtn = this.$inforbar.find('#movie_embed');
                 this.$moviePlayBtn = this.$inforbar.find('#movie_play');
+
+                // scene
+                this.$sceneList = this.$inforbar.find('#scene_list');
+                this.$addSceneBtn = this.$inforbar.find('#add_scene');
+                this.$editSceneBtn = this.$inforbar.find('#edit_scene');
+                this.$removeSceneBtn = this.$inforbar.find('#remove_scene');
+
                 this.initListeners();
             },
 
@@ -42,7 +50,7 @@ define([
 
                 this.$moviePublishedBtn.hide();
 
-                dispatcher.on(dispatcher.sceneLoaded, function() {
+                dispatcher.on(dispatcher.movieLoaded, function() {
                     var movieModel = MovieController.getModel(),
                         movie_name = movieModel.getName(),
                         movie_published = movieModel.isPublished();
@@ -51,7 +59,10 @@ define([
                     self.$moviePublishedBtn.show();
                     self.setMoviePublished(movie_published);
 
+                    SceneController.init(MovieController.getModel());
+                    self.renderScenes();
                 });
+
 
                 dispatcher.on(dispatcher.movieUnloaded, function() {
                     self.$moviePublishedBtn.hide();
@@ -139,6 +150,57 @@ define([
 
                 });
 
+                // scene
+
+                this.$sceneList.on('change', function(e) {
+                    var scene_id = $(this).val();
+                    var scene = MovieController.getModel().getScene(scene_id);
+                    dispatcher.trigger(dispatcher.sceneChange, scene);
+                    self.selectScene();
+                });
+
+                this.$addSceneBtn.on('click', function() {
+                    SceneController.create();
+                });
+
+                this.$editSceneBtn.on('click', function() {
+                    SceneController.edit(MovieController.getCurrentScene());
+                });
+
+                this.$removeSceneBtn.on('click', function() {
+                    SceneController.delete(MovieController.getCurrentScene());
+                });
+
+                dispatcher.on(dispatcher.sceneAdded, function() {
+                    self.renderScenes();
+                });
+                dispatcher.on(dispatcher.sceneEdited, function() {
+                    self.renderScenes();
+                });
+                dispatcher.on(dispatcher.sceneRemoved, function() {
+                    self.renderScenes();
+                });
+
+            },
+
+            renderScenes: function() {
+                var scenes = MovieController.getModel().getScenes();
+                var currentSceneId = MovieController.getCurrentScene().getId();
+                var options = '';
+
+                for(var i = 0; i < scenes.length; i++) {
+                    options += '<option value="' + scenes[i].getId() + '"' + (currentSceneId === scenes[i].getId() ? ' selected' : '') + '>'
+                        + scenes[i].getName() + '</option>';
+                }
+
+                this.$sceneList.html(options);
+
+            },
+
+            selectScene: function() {
+                var currentSceneId = MovieController.getCurrentScene().getId();
+                this.$sceneList.find(':selected').prop('selected', false);
+                this.$sceneList.find('[value="' + currentSceneId + '"]').prop('selected', true);
             },
 
             editMovieName: function(name) {
@@ -192,8 +254,6 @@ define([
 
                 }
             }
-
-
 
         };
 

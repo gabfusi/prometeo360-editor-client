@@ -22,13 +22,14 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    margin-left: -360px;
+    margin-left: -480px;
     margin-top: -240px;
     transform-origin: center center;
     transition: all 218ms $swift-out;
+    box-shadow: 0 6px 16px 0 rgba(0, 0, 0, 0.18);
 
-    // aspect ratio 3:2
-    width: 720px;
+    // aspect ratio 2:1
+    width: 960px;
     height: 480px;
 
     .movie-area{
@@ -45,7 +46,8 @@
 
     .movie-bg{
       width: 100%;
-      padding-bottom: 66.66%;
+      padding-bottom: 50%;
+      //padding-bottom: 66.66%;
       background: #000;
       z-index: 1;
     }
