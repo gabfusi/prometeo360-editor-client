@@ -23,7 +23,11 @@ define([
             this.$toolbar = $toolbarElement;
 
             this.$toolbar.on('click', 'li', function(e) {
-                self.addElement($(this).data('type'));
+                var elementType = $(this).data('type');
+                if(elementType === 'InteractiveArea') {
+                    MovieController.vrController.activateShapeTool();
+                }
+                //self.addElement($(this).data('type'));
             });
 
 

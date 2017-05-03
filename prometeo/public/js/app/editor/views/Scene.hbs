@@ -1,0 +1,27 @@
+<div class="properties video">
+    <form class="inner">
+
+        <div class="form-group">
+            <label>Nome scena</label>
+            <input type="text" class="form-control" id="scene_name" value="{{ name }}">
+        </div>
+
+        <div class="upload-area">
+
+            <div class="form-group">
+                <label for="p_file">File</label>
+                <input type="text" name="filename" id="scene_filename" class="form-control" readonly disabled value="{{ video }}">
+            </div>
+
+            <div class="form-group">
+                {{#if video}}
+                    <span class="btn btn-default open-video-browser">Sostituisci video</span>
+                {{else}}
+                    <span class="btn btn-primary open-video-browser">Aggiungi video</span>
+                {{/if}}
+            </div>
+
+        </div>
+
+    </form>
+</div>

@@ -4,10 +4,13 @@ define([
         'jquery',
         'dispatcher',
         'model/Scene',
-        "lib/notifications"
+        "lib/notifications",
+        'hbs!js/app/editor/views/Scene',
+        "controller/MovieController",
+        'hbs'
     ],
 
-    function ($, dispatcher, Scene, notification) {
+    function ($, dispatcher, Scene, notification, SceneTpl, MovieController) {
 
         var _movieModel;
 
@@ -18,7 +21,46 @@ define([
 
 
             init: function (movieModel) {
+                var self = this;
                 _movieModel = movieModel;
+                this.$wrap = $('#scene_panel');
+                this.$container = this.$wrap.find('>.panel');
+                this.$sceneFilename = this.$container.find('#scene_filename');
+
+                // on scene loaded
+
+                dispatcher.on(dispatcher.sceneLoaded, function() {
+                    self.load(MovieController.getCurrentScene());
+                });
+
+                // on edit scene
+
+                this.$container.on('change', '#scene_name', function() {
+                    var scene = MovieController.getCurrentScene();
+                    scene.setName($.trim($(this).val()));
+
+                    dispatcher.trigger(dispatcher.sceneEdited, scene);
+                    dispatcher.trigger(dispatcher.movieEdited);
+                });
+
+                dispatcher.on(dispatcher.videoUploaded, function(e, filename, duration) {
+                    var scene = MovieController.getCurrentScene();
+                    scene.setVideo(filename);
+                    scene.setDuration(duration);
+
+                    self.$sceneFilename.val(filename);
+
+                    dispatcher.trigger(dispatcher.sceneVideoChanged, scene);
+                    dispatcher.trigger(dispatcher.sceneEdited, scene);
+                    dispatcher.trigger(dispatcher.movieEdited);
+                });
+
+            },
+
+            load: function(sceneModel) {
+                var html = SceneTpl(sceneModel.toObject());
+                console.log('Loading scene', sceneModel);
+                this.$container.html(html);
             },
 
             create: function() {
@@ -62,20 +104,8 @@ define([
                     });
             },
 
-            edit: function(scene) {
-                console.warn('TODO edit (rename)', scene);
-
-                notification.prompt(
-                    "Rinomina scena",
-                    "Modifica il nome della scena corrente",
-                    function(scene_name) {
-
-                        scene.setName(scene_name);
-
-                        dispatcher.trigger(dispatcher.sceneEdited, scene);
-                        dispatcher.trigger(dispatcher.movieEdited);
-
-                    });
+            edit: function() {
+                this.$wrap.toggleClass('active');
             },
 
             getScenes: function() {

@@ -183,6 +183,7 @@ define([
 
                     MovieController.create();
                     this.isMovieLoaded = true;
+                    SceneController.load(MovieController.getCurrentScene());
 
                 } else {
 
@@ -200,6 +201,7 @@ define([
                         self.isMovieLoaded = true;
                         self.movieRevision = data._rev;
                         dispatcher.trigger(dispatcher.movieLoaded, data);
+                        SceneController.load(MovieController.getCurrentScene());
 
                     });
 

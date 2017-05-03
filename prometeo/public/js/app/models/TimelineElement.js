@@ -144,100 +144,26 @@ define(['lib/utilities'], function(utilities) {
             this.setDuration(objectModel.duration);
         }
 
-        if(this._type === 'Video' || this._type === 'Video360') {
-
-            // Video attributes
-
-            if(typeof objectModel.filename !== 'undefined') {
-                this.setFilename(objectModel.filename);
-            }
-
-        } else {
-
-            // Area attributes
-
-            if(typeof objectModel.x !== 'undefined') {
-                this.setX(objectModel.x);
-            }
-            if(typeof objectModel.y !== 'undefined') {
-                this.setY(objectModel.y);
-            }
-            if(typeof objectModel.width !== 'undefined') {
-                this.setWidth(objectModel.width);
-            }
-            if(typeof objectModel.height !== 'undefined') {
-                this.setHeight(objectModel.height);
-            }
-            if(typeof objectModel.background !== 'undefined') {
-                this.setBackground(objectModel.background);
-            }
-            if(typeof objectModel.text_color !== 'undefined') {
-                this.setTextColor(objectModel.text_color);
-            }
-            if(typeof objectModel.text_size !== 'undefined') {
-                this.setTextSize(objectModel.text_size);
-            }
-            if(typeof objectModel.pause_movie !== 'undefined') {
-                this.setPauseMovie(objectModel.pause_movie);
-            }
-            if(typeof objectModel.zindex !== 'undefined') {
-                this.setZindex(objectModel.zindex);
-            }
-
-            // TextArea, LinkArea, JumpArea
-            if(typeof objectModel.text !== 'undefined') {
-                this.setText(objectModel.text);
-            }
-
+        // InteractiveArea attributes
+        if(typeof objectModel.actionType !== 'undefined') {
+            this.setActionType(objectModel.actionType);
+        }
+        if(typeof objectModel.actionValue !== 'undefined') {
+            this.setActionValue(objectModel.actionValue);
+        }
+        if(typeof objectModel.background !== 'undefined') {
+            this.setBackground(objectModel.background);
+        }
+        if(typeof objectModel.backgroundOpacity !== 'undefined') {
+            this.setBackgroundOpacity(objectModel.backgroundOpacity);
+        }
+        if(typeof objectModel.keyframes !== 'undefined') {
+            this.setKeyframes(objectModel.keyframes);
+        }
+        if(typeof objectModel.zindex !== 'undefined') {
+            this.setZindex(objectModel.zindex);
         }
 
-        // Specific areas
-
-        switch(this._type) {
-
-            case 'LinkArea':
-
-                if(typeof objectModel.url !== 'undefined') {
-                    this.setUrl(objectModel.url);
-                }
-
-                break;
-
-            case 'JumpArea':
-
-                if(typeof objectModel.jump_to_frame !== 'undefined') {
-                    this.setJumpToFrame(objectModel.jump_to_frame);
-                }
-
-                break;
-
-            case 'QuestionArea':
-
-                if(typeof objectModel.question !== 'undefined') {
-                    this.setQuestion(objectModel.question);
-                }
-                if(typeof objectModel.question_type !== 'undefined') {
-                    this.setQuestionType(objectModel.question_type);
-                }
-                if(typeof objectModel.exp !== 'undefined') {
-                    this.setExp(objectModel.exp);
-                }
-                if(typeof objectModel.correct_answer !== 'undefined') {
-                    this.setCorrectAnswer(objectModel.correct_answer);
-                }
-
-                if(typeof objectModel.answer !== 'undefined') {
-                    this.setCorrectAnswer(objectModel.answer);
-                }
-                if(typeof objectModel.answers !== 'undefined') {
-                    var a;
-                    for(var i in objectModel.answers) {
-                        a = this.addAnswer(objectModel.answers[i].text);
-                        a.setId(objectModel.answers[i].id);
-                        a.setOrder(objectModel.answers[i].order);
-                    }
-                }
-        }
 
     };
 

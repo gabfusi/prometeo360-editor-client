@@ -9,6 +9,9 @@ var hbs = require('hbs'); // https://github.com/donpark/hbs
 // var socket_io = require("socket.io");
 var debug = require('debug')('prometeo:server');
 var http = require('http');
+var cors = require('cors');
+const electron = require('electron');
+const electronApp = electron.app;
 
 // init express
 var shuttingDown = false;
@@ -20,6 +23,8 @@ server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 server.timeout = 1200000; // 20min
+
+app.use(cors())
 
 // socket io
 // app.io = socket_io();
@@ -37,6 +42,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// vrview rewrite
+console.log(path.join(__dirname, 'node_modules', 'vrview'));
+app.use('/vrview', express.static(path.join(__dirname, 'node_modules', 'vrview')));
+app.use('/assets', express.static(path.join(electronApp.getPath('videos'), "Prometeo360")));
 
 // routes
 var admin = require('./routes/admin');

@@ -34,12 +34,13 @@ define(function () {
         },
 
         availableAreas: {
-            "Video": "Video",
-            "Video360": "Video360",
-            "TextArea": "Testo",
-            "LinkArea": "Link",
-            "JumpArea": "Salto temporale",
-            "QuestionArea": "Domanda"
+            //"Video": "Video",
+            //"Video360": "Video 360",
+            "InteractiveArea": "Area Interattiva",
+            //"TextArea": "Testo",
+            //"LinkArea": "Link"
+            //"JumpArea": "Salto temporale",
+            //"QuestionArea": "Domanda"
         }
 
     }

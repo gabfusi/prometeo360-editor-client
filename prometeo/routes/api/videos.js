@@ -16,6 +16,7 @@ var VIDEO_PATH          = path.join(UPLOADS_PATH, "video");
 var THUMBS_PATH         = path.join(UPLOADS_PATH, "thumbs");
 
 // SETUP (TODO MOVE in install script)
+// TODO put blank.png inside UPLOADS_PATH directory!!!
 
 const mkdirSyncIfNotExists = function (dirPath) {
     try {

@@ -15,6 +15,7 @@ define([], function() {
         var _id = null,
             _name = '',
             _duration = 0,
+            _video = null,
             _timelineElements = [];
 
         /**
@@ -47,6 +48,22 @@ define([], function() {
          */
         this.setName = function (name) {
             _name = name;
+        };
+
+        /**
+         *
+         * @returns {string}
+         */
+        this.getVideo = function () {
+            return _video;
+        };
+
+        /**
+         *
+         * @param video
+         */
+        this.setVideo = function (video) {
+            _video = video;
         };
 
         /**
@@ -175,7 +192,8 @@ define([], function() {
             return {
                 "id" : this.getId(),
                 "name" : this.getName(),
-                "duration" : _calculateDuration(),
+                "duration" : this.getDuration(),
+                "video" : this.getVideo(),
                 "elements" : _timelineElements
             }
         };
@@ -190,6 +208,7 @@ define([], function() {
             this.setId(objectModel.id);
             this.setName(objectModel.name);
             this.setDuration(objectModel.duration);
+            this.setVideo(objectModel.video);
 
             // timeline elements are added by MovieController.create()
 
@@ -207,7 +226,8 @@ define([], function() {
             var obj = {
                 "id" : this.getId(),
                 "name" : this.getName(),
-                "duration" : _calculateDuration(),
+                "video" : this.getVideo(),
+                "duration" : this.getDuration(),
                 "elements" : _timelineElements.map(function(el){ return el.toObject(); })
             };
 

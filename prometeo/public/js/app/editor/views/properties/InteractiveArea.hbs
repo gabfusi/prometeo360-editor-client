@@ -1,0 +1,17 @@
+<div class="properties textarea">
+    <form class="inner">
+
+        {{> TimelineElement }}
+
+        <div class="form-group">
+            <label for="p_background">Sfondo</label>
+            <input type="text" id="p_background" name="background" class="colorpicker form-control change-listener" value="{{ background }}">
+        </div>
+
+        <div class="form-group">
+            <label for="p_linked_scene">Comportamento sul click</label>
+            <select id="p_linked_scene" name="linked_scene" class="form-control change-listener bool"></select>
+        </div>
+
+    </form>
+</div>

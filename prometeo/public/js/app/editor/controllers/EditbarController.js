@@ -10,12 +10,7 @@ define([
         "controller/QuestionAreaController",
         "controller/TimelineController",
         "controller/VideoPickerController",
-        'hbs!js/app/editor/views/properties/Video',
-        'hbs!js/app/editor/views/properties/Video360',
-        'hbs!js/app/editor/views/properties/JumpArea',
-        'hbs!js/app/editor/views/properties/LinkArea',
-        'hbs!js/app/editor/views/properties/QuestionArea',
-        'hbs!js/app/editor/views/properties/TextArea',
+        'hbs!js/app/editor/views/properties/InteractiveArea',
 
         'hbs!partial:js/app/editor/views/properties/TimelineElement',
         'hbs!partial:js/app/editor/views/properties/Area',
@@ -27,7 +22,7 @@ define([
 
     function($, dispatcher, utilities, notification,
              MovieController, TimelineElementController, QuestionAreaController, TimelineController, VideoPickerController,
-             VideoTpl, Video360Tpl, JumpAreaTpl, LinkAreaTpl, QuestionAreaTpl, TextAreaTpl) {
+             InteractiveAreaTpl) {
 
     // Editbar Controller
     var EditbarController = {
@@ -94,17 +89,6 @@ define([
                 if(self.isCurrentElement(elementModel)) {
                     // if element dragged is current element displayed in editbar
                     self.$fields.frame.val(elementModel.getHumanReadableFrame());
-                }
-            });
-
-
-            // on video uploaded
-            dispatcher.on(dispatcher.videoUploaded, function(e, filename, duration) {
-                // self.currentElementModel is the current element
-                if(self.currentElementModel.getType() === 'Video' || self.currentElementModel.getType() === 'Video360') {
-                    self.updateElement(self.currentElementModel, 'filename', filename);
-                    self.updateElement(self.currentElementModel, 'duration', duration);
-                    self.loadElement(self.currentElementModel, true); // force panel refresh
                 }
             });
 
@@ -251,6 +235,7 @@ define([
             }
 
             dispatcher.trigger(dispatcher.elementUpdated, elementModel);
+            dispatcher.trigger(dispatcher.elementUpdatedInfo, elementModel);
 
         },
 
@@ -261,13 +246,12 @@ define([
          */
         loadElement: function(elementModel, force) {
 
-            var self = this,
-                html,
+            var html,
                 $element,
                 elementType = elementModel.getType(),
                 elementModelObject = elementModel.toObject();
 
-            if(!force && (this.currentElementModel && this.currentElementModel.getId() === elementModel.getId()) ) {
+            if(!force && this.isCurrentElement(elementModel) ) {
                 return;
             }
 
@@ -277,24 +261,8 @@ define([
 
             switch (elementType) {
 
-                case 'Video360':
-                    html = Video360Tpl(elementModelObject);
-                    break;
-                case 'Video':
-                    html = VideoTpl(elementModelObject);
-                    break;
-                case 'JumpArea':
-                    html = JumpAreaTpl(elementModelObject);
-                    break;
-                case 'LinkArea':
-                    html = LinkAreaTpl(elementModelObject);
-                    break;
-                case 'QuestionArea':
-                    html = QuestionAreaTpl(elementModelObject);
-                    break;
-                case 'TextArea':
-                    html = TextAreaTpl(elementModelObject);
-                    break;
+                case 'InteractiveArea':
+                    html = InteractiveAreaTpl(elementModelObject);
 
             }
 
@@ -345,72 +313,17 @@ define([
 
             // specific
 
-            switch (elementType) {
-
-                case 'Video360':
-
-                    this.$fields['duration'].prop('readonly', true);
-
-                    break;
-
-                case 'Video':
-
-                    this.$fields['duration'].prop('readonly', true);
-
-                    this.$currentEl.on('click', '.playpause', function(){
-                        var VideoApi = MovieController.getElement(self.currentElementModel.getId()).data('api');
-                        if(VideoApi.isPlaying()) {
-                            VideoApi.pause();
-                            $(this).html('<i class="fi-play-video"></i>');
-                        } else {
-                            VideoApi.play();
-                            $(this).html('<i class="fi-pause"></i>');
-                        }
-                    });
-
-                    break;
-
-                case 'JumpArea':
-                    this.$fields['jump_to_frame'].val(this.currentElementModel.getHumanReadableJumpFrame());
-                    break;
-
-
-                case 'QuestionArea':
-                    QuestionAreaController.init(this.currentElementModel, this.$currentEl);
-                    break;
-
-                case 'LinkArea':
-                case 'TextArea':
-
-                    break;
-
-            }
-
-            // slider zindex
-            if(elementType !== 'Video' && elementType !== 'Video360') {
-
-                $('#p_zindex_slider').slider({
-                    min: 1,
-                    max: 10,
-                    value: self.currentElementModel.getZindex(),
-                    slide: function( event, ui ) {
-                        self.updateElement(self.currentElementModel, 'zindex', ui.value);
-                    }
-                });
-
-                this.$propertiesWrap.find('.colorpicker').minicolors({
-                    theme: 'bootstrap',
-                    format: 'rgb',
-                    opacity: true,
-                    show: function() {
-                        self.$editbar.draggable('disable');
-                    },
-                    hide: function() {
-                        self.$editbar.draggable('enable');
-                    }
-                });
-
-            }
+            this.$propertiesWrap.find('.colorpicker').minicolors({
+                theme: 'bootstrap',
+                format: 'rgb',
+                opacity: true,
+                show: function() {
+                    self.$editbar.draggable('disable');
+                },
+                hide: function() {
+                    self.$editbar.draggable('enable');
+                }
+            });
 
 
         },

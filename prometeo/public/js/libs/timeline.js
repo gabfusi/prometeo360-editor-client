@@ -22,7 +22,11 @@ define(["jquery", 'jqueryui/draggable'], function($) {
                 onStartTrackMove: null, // on track start move
                 onTrackMove: null,      // on track moved
                 onElementDragged: null,  // on element dragged
-                onElementStopDrag: null  // on element drag stop
+                onElementStopDrag: null, // on element drag stop
+                onElementRightClick: null,
+                onKeyframeAdded: null,
+                onKeyframeRemoved: null,
+                onKeyframeSelected: null
 
             },
             options = $.extend(defaultOptions, _options),
@@ -43,6 +47,7 @@ define(["jquery", 'jqueryui/draggable'], function($) {
 
             this.trackPosition = 0;
             this.elementSelected = false;
+            this.isDragging = false;
 
             // l'unità di misura sono i millisecondi
             options.rulersStep = secondToFrame(options.rulersStep);
@@ -134,6 +139,7 @@ define(["jquery", 'jqueryui/draggable'], function($) {
                 snapMode: "inner",
                 start: function(evt, ui) {
                     self.unselectElements();
+                    self.isDragging = true;
 
                     if(typeof options.onStartTrackMove === 'function') {
                         options.onStartTrackMove.call();
@@ -141,6 +147,9 @@ define(["jquery", 'jqueryui/draggable'], function($) {
                 },
                 drag: function(evt, ui) {
                     self.setTrackPosition(positionToSeconds(ui.position.left));
+                },
+                stop: function() {
+                    self.isDragging = false;
                 }
             });
 
@@ -158,9 +167,34 @@ define(["jquery", 'jqueryui/draggable'], function($) {
 
             // on elements select
             $elementsEl.on('click', '.element', function(e) {
+                var offset = $(this).position().left + e.offsetX;
                 e.stopPropagation();
                 self.selectElement($(this));
-                self.moveTrack( $(this).position().left + e.offsetX );
+
+                if($(e.target).hasClass('element-keyframe')) {
+                    offset += $(e.target).position().left;
+                }
+
+                self.moveTrack( offset );
+            });
+
+            // on keyframe right click
+            $elementsEl.on('contextmenu', '.element-keyframe', function(e) {
+                e.stopPropagation();
+                if(typeof options.onKeyframeSelected === 'function') {
+                    var element = $(this).parent().data('element');
+                    options.onKeyframeSelected(element, $(this).data('frame'));
+                }
+            });
+
+            // on keyframe right click
+            $elementsEl.on('contextmenu', '.element', function(e) {
+                e.stopPropagation();
+                if(typeof options.onElementRightClick === 'function') {
+                    var element = $(this).data('element');
+                    self.moveTrack( $(this).position().left + e.offsetX );
+                    options.onElementRightClick(element);
+                }
             });
 
         };
@@ -244,6 +278,19 @@ define(["jquery", 'jqueryui/draggable'], function($) {
 
             //console.log('timeline: adding element ', name, 'positionH', positionH, 'frame', frame, data);
 
+            if(data.getType() === 'InteractiveArea') {
+                // keyframes
+
+                var keyframes = data.getKeyframes(),
+                    $k;
+
+                for(var f in keyframes) {
+                    $k = createKeyframeElement(f);
+                    $el.append($k);
+                }
+
+            }
+
             $elementsEl.append($el);
 
             $el.draggable({
@@ -301,7 +348,7 @@ define(["jquery", 'jqueryui/draggable'], function($) {
                     left: positionH,
                     width: width,
                     top: positionV
-                }).text(name);
+                });//.text(name);
             });
 
         };
@@ -326,6 +373,30 @@ define(["jquery", 'jqueryui/draggable'], function($) {
          */
         this.remove = function(element_id) {
             $elementsEl.find('#gtml_' + element_id).remove();
+        };
+
+        this.addKeyframe = function(element_id, frame) {
+            var $el = $elementsEl.find('#gtml_' + element_id),
+                $k = createKeyframeElement(frame);
+
+            $el.append($k);
+
+            if(typeof options.onKeyframeAdded === 'function') {
+                options.onKeyframeAdded.call($el, $el.data('element'), frame);
+            }
+
+            return $el;
+
+        };
+
+        this.removeKeyframe = function(element_id, frame) {
+            var $el = $elementsEl.find('#gtml_' + element_id);
+
+            $el.find('.element-k-' + frame).remove();
+
+            if(typeof options.onKeyframeRemoved === 'function') {
+                options.onKeyframeRemoved.call($el, $el.data('element'), frame);
+            }
         };
 
 
@@ -355,6 +426,13 @@ define(["jquery", 'jqueryui/draggable'], function($) {
 
         };
 
+        this.updateTrackPosition = function(second) {
+            this.trackPosition = secondToFrame(second);
+
+            $trackEl.css('left', secondsToPosition(second));
+
+            return { formattedFrame: formatTime(this.trackPosition, true), frame: this.trackPosition }
+        };
 
         /**
          * Reset current timeline
@@ -365,6 +443,17 @@ define(["jquery", 'jqueryui/draggable'], function($) {
         };
 
         // private methods / utility
+
+        var createKeyframeElement = function(frame) {
+
+            // TODO calc position (startFrame + frame)
+            var $el = $('<div/>', {
+                class: "element-keyframe element-k-" + frame,
+                style: 'left:' + secondsToPosition(frameToSecond(frame)) + 'px'
+            });
+            $el.data('frame', frame);
+            return $el;
+        };
 
         var frameToSecond = function(frame) {
             return frame/1000;

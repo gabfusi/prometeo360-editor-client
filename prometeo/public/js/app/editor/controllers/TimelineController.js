@@ -11,9 +11,11 @@ define([
 
     function(require, $, dispatcher, utilities, Timeline) {
 
+        var remote = window.nodeRequire('electron').remote;
+        var Menu = remote.Menu;
+        var MenuItem = remote.MenuItem;
 
         var _timeline = null;
-
         var MovieController = null;
 
         // Timeline Controller
@@ -72,12 +74,48 @@ define([
 
                     onElementStopDrag: function(elementModel, frame) {
                         MovieController.updateVisibleElements(self.getCurrentFrame());
+                        dispatcher.trigger(dispatcher.elementUpdatedInfo, elementModel);
+                    },
+
+                    onElementRightClick: function(elementModel) {
+                        var menuAdd = new Menu();
+                        var menuItemAdd = new MenuItem({
+                            label: 'Inserisci keyframe',
+                            click: function() {
+                                var relativeFrame = self.getCurrentFrame() - elementModel.getFrame();
+                                self.addElementKeyframe(elementModel, relativeFrame);
+                            }
+                        });
+                        menuAdd.append(menuItemAdd);
+                        menuAdd.popup(remote.getCurrentWindow());
+                    },
+
+                    onKeyframeAdded: function(elementModel, frame) {
+                        dispatcher.trigger(dispatcher.elementAddedKeyframe, elementModel, frame);
+                    },
+
+                    onKeyframeSelected: function(elementModel, frame) {
+                        var menuRemove = new Menu();
+                        var menuItemRemove = new MenuItem({
+                            label: 'Rimuovi keyframe',
+                            click: function() {
+                                self.removeElementKeyframe(elementModel, frame);
+                                console.log('TODO Rimuovi keyframe at', frame, ' on element', elementModel)
+                            }
+                        });
+                        menuRemove.append(menuItemRemove);
+                        menuRemove.popup(remote.getCurrentWindow());
+                    },
+
+                    onKeyframeRemoved: function(elementModel, frame) {
+                        dispatcher.trigger(dispatcher.elementRemovedKeyframe, elementModel, frame);
                     }
                 });
 
                 this.resetTrack();
 
                 this.initListeners();
+
             },
 
             /**
@@ -106,6 +144,24 @@ define([
                     _timeline.remove(elementModel.getId());
                 });
 
+            },
+
+            addElementKeyframe: function (elementModel, frame) {
+
+                var $el = _timeline.addKeyframe(elementModel.getId(), frame);
+
+                _timeline.selectElement($el);
+
+            },
+
+            removeElementKeyframe: function (elementModel, frame) {
+
+                var $el = _timeline.removeKeyframe(elementModel.getId(), frame);
+
+            },
+
+            isDragging: function() {
+                return _timeline.isDragging;
             },
 
             /**
@@ -156,6 +212,12 @@ define([
              */
             resetTrack: function() {
                 _timeline.setTrackPosition(0, true);
+            },
+
+            updateTrack: function(seconds) {
+                var data = _timeline.updateTrackPosition(seconds, true);
+                this.currentFrame = data.frame;
+                this.$currentFrame.text(data.formattedFrame);
             },
 
             /**

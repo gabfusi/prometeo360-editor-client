@@ -18,10 +18,19 @@
     line-height: 34px;
   }
 
+  .play_pause{
+    display: inline-block;
+    font-size: 1.5em;
+    padding: 0 1em;
+    cursor: pointer;
+  }
+
   .current-frame{
     font-size: 1.25em;
     color: $white;
     text-align: right;
+    display: inline-block;
+    vertical-align: top;
   }
 
   .rulers{
@@ -74,6 +83,26 @@
   .element-LinkArea:before { content: "\f165"; }
   .element-JumpArea:before { content: "\f12b"; }
   .element-QuestionArea:before { content: "\f168"; }
+
+  .element .element-keyframe{
+    position: absolute;
+    height: 100%;
+    width: 6px;
+    top: 0;
+
+    &:before{
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin-left: -3px;
+      margin-top: -3px;
+      width: 6px;
+      height: 6px;
+      background-color: $white;
+      border-radius: 50%;
+    }
+  }
 
 }
 

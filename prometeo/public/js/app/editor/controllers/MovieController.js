@@ -5,13 +5,14 @@ define([
         'dispatcher',
         'model/Movie',
         'model/Scene',
+        "controller/VRViewController",
         "controller/TimelineController",
-        "controller/TimelineElementController",
+        "controller/InteractiveAreaController",
         'jqueryui/resizable',
         'jqueryui/draggable'
     ],
 
-    function($, dispatcher, Movie, Scene, TimelineController, TimelineElementController) {
+    function($, dispatcher, Movie, Scene, VRViewController, TimelineController, InteractiveAreaController) {
 
         var _movieModel,
             _currentSceneModel,
@@ -35,6 +36,9 @@ define([
                 this.$movie = $movieElement;
                 this.$movieArea = $movieElement.find('.movie-area>.inner');
                 this.$movieBg = $movieElement.find('.movie-bg');
+                this.vrController = VRViewController;
+                VRViewController.init(this);
+                InteractiveAreaController.init();
 
                 this.initListeners();
                 this.onResize(); // init zoom, width, height
@@ -66,11 +70,7 @@ define([
 
                 // on TimelineElements selected
                 dispatcher.on(dispatcher.elementSelected, function(e, elementModel) {
-                    var $el = self.getElement(elementModel.getId());
-
-                    if($el.length) {
-                        $el.addClass('selected').siblings('.selected').removeClass('selected');
-                    }
+                    console.log(elementModel.getId());
                 });
 
                 // on TimelineElements deselected
@@ -80,11 +80,15 @@ define([
 
                 // on TimelineElements updated
                 dispatcher.on(dispatcher.elementUpdated, function(e, elementModel) {
-                    self.updateElement(elementModel);
+                    // self.updateElement(elementModel);
                 });
 
                 // on Scene change intent
                 dispatcher.on(dispatcher.sceneChange, function(e, scene) {
+                    self.changeScene(scene);
+                });
+
+                dispatcher.on(dispatcher.sceneVideoChanged, function(e, scene) {
                     self.changeScene(scene);
                 });
 
@@ -128,7 +132,7 @@ define([
                     // create and add scene items models to scene
                     if(data.scenes[i].elements && data.scenes[i].elements.length) {
                         for(var j = 0, l = data.scenes[i].elements.length; j < l; j++) {
-                            elementModel = TimelineElementController.create(data.scenes[i].elements[j].type, data.scenes[i].elements[j]);
+                            elementModel = InteractiveAreaController.create(data.scenes[i].elements[j]);
                             sceneModel.addTimelineElement(elementModel);
                         }
                     }
@@ -163,19 +167,16 @@ define([
                 _currentSceneModel = scene;
                 elements = scene.getElements();
 
+                VRViewController.loadScene(scene);
+
                 if(!elements.length) {
                     dispatcher.trigger(dispatcher.sceneLoaded);
                     dispatcher.trigger(dispatcher.sceneRendered);
                     return false;
                 }
 
-                // FIXME andrebbe ottimizzata con una bulk insert, al posto che molteplici inserimenti dei singoli elementi.
                 for(var i in elements) {
-
                     elementModel = elements[i];
-
-                    // add element to movie
-                    this.loadElement(elementModel);
 
                     // add element to timeline
                     TimelineController.loadElement(elementModel);
@@ -183,24 +184,9 @@ define([
 
                 dispatcher.trigger(dispatcher.sceneLoaded);
 
-                // Attendo il render degli elementi (questa cosa non è elegantissima)
-                var maxWaitingTime = 2000,
-                    waitingTime = 0,
-                    waitingInterval = 100,
-                    renderWaiter = setInterval(function(){
-
-                        if(self.$movieArea.children().length === elements.length || waitingTime >= maxWaitingTime) {
-                            TimelineController.resetTrack();
-                            self.updateVisibleElements(0);
-                            dispatcher.trigger(dispatcher.sceneRendered);
-                            clearInterval(renderWaiter);
-                            renderWaiter = null;
-                            return;
-                        }
-
-                        waitingTime += waitingInterval;
-
-                    }, waitingInterval);
+                TimelineController.resetTrack();
+                self.updateVisibleElements(0);
+                dispatcher.trigger(dispatcher.sceneRendered);
 
             },
 
@@ -216,203 +202,14 @@ define([
             },
 
             /**
-             * Return a movie element
-             * @param id
-             * @returns {*|{}}
-             */
-            getElement: function(id) {
-                return this.$movieArea.find('[data-id="' + id + '"]')
-            },
-
-            /**
              * Add element to movie
              * @param elementModel
              * @returns {*}
              */
             addElement: function(elementModel) {
 
-                var elementModels = _currentSceneModel.getTimelineElementsAt(elementModel.getFrame());
-
-                if(elementModel.getType() !== 'Video' && elementModel.getType() !== 'Video360') {
-                    var areaIndex = elementModels.length > 0 ? elementModels.length+1 : 2;
-                    elementModel.setZindex(areaIndex);
-                }
-
                 // adds new TimelineElement to current Movie model
                 _currentSceneModel.addTimelineElement(elementModel);
-
-                return this.loadElement(elementModel);
-
-            },
-
-            /**
-             * load an element in the current movie
-             * @param elementModel
-             * @returns {*}
-             */
-            loadElement: function(elementModel) {
-
-                // generate TimelineElement jQuery object
-                var $element = TimelineElementController.render(elementModel);
-
-                // append element view to DOM
-                this.$movieArea.append($element);
-
-                // setup element
-                this.setupElement($element);
-
-                return $element;
-
-            },
-
-            /**
-             *
-             * @param elementModel
-             */
-            updateElement: function(elementModel) {
-
-                var id = elementModel.getId(),
-                    $oldElement = this.getElement(id);
-
-                // generate updated TimelineElement jQuery object
-                var $element = TimelineElementController.render(elementModel);
-
-                $oldElement.replaceWith($element);
-
-                // setup element
-                this.setupElement($element);
-
-            },
-
-            /**
-             * Setup element behaviours
-             * @param $element
-             */
-            setupElement: function($element) {
-                var self = this,
-                    elementType = $element.data('model').getType();
-
-                if(elementType === 'Video' || elementType === 'QuestionArea') {
-                    return false;
-                }
-
-                var containmentW,
-                    containmentH,
-                    objW,
-                    objH;
-
-                // make element resizable
-                $element.resizable({
-                    minWidth: -10000,  // these need to be large and negative
-                    minHeight: -10000, // so we can shrink our resizable while scaled
-
-                    start: function(evt, ui) {
-                        containmentW = self.$movieArea.width();
-                        containmentH = self.$movieArea.height();
-                    },
-                    resize: function(evt, ui) {
-
-                        var elementModel = $(this).data('model'),
-                            boundReached = false,
-                            changeWidth = ui.size.width - ui.originalSize.width,
-                            newWidth = ui.originalSize.width + changeWidth / _zoom,
-                            changeHeight = ui.size.height - ui.originalSize.height,
-                            newHeight = ui.originalSize.height + changeHeight / _zoom,
-
-                            changeLeft = ui.position.left - ui.originalPosition.left,
-                            newLeft = ui.originalPosition.left + changeLeft / _zoom,
-                            changeTop = ui.position.top - ui.originalPosition.top,
-                            newTop = ui.originalPosition.top + changeTop / _zoom;
-
-
-                        // right bound check
-                        if(newWidth > containmentW - newLeft) {
-                            newWidth = containmentW - newLeft;
-                            boundReached = true;
-                        }
-                        // left bound check
-                        if(newWidth < 0) {
-                            newWidth = 0;
-                            boundReached = true;
-                        }
-                        // bottom bound check
-                        if(newHeight > containmentH - newTop) {
-                            newHeight = containmentH - newTop;
-                            boundReached = true;
-                        }
-                        // top bound check
-                        if(newHeight < 0) {
-                            newHeight = 0;
-                            boundReached = true;
-                        }
-
-                        ui.size.width = newWidth;
-                        ui.size.height = newHeight;
-
-                        elementModel.setWidth(ui.size.width);
-                        elementModel.setHeight(ui.size.height);
-
-                        dispatcher.trigger(dispatcher.elementResized, elementModel);
-                    }
-                });
-
-
-                // make element draggable
-                $element.draggable({
-
-                    start: function(evt, ui) {
-                        ui.position.left = 0;
-                        ui.position.top = 0;
-
-                        containmentW = self.$movieArea.width() * _zoom;
-                        containmentH = self.$movieArea.height() * _zoom;
-                        objW = $(this).outerWidth() * _zoom;
-                        objH = $(this).outerHeight() * _zoom;
-
-                    },
-                    drag: function(evt, ui) {
-
-                        var elementModel = $(this).data('model'),
-                            boundReached = false,
-                            changeLeft = ui.position.left - ui.originalPosition.left, // find change in left
-                            newLeft = ui.originalPosition.left + changeLeft / _zoom, // adjust new left by our zoomScale
-                            changeTop = ui.position.top - ui.originalPosition.top, // find change in top
-                            newTop = ui.originalPosition.top + changeTop / _zoom; // adjust new top by our zoomScale
-
-
-                        // right bound check
-                        if(ui.position.left > containmentW - objW) {
-                            newLeft = (containmentW - objW) / _zoom;
-                            boundReached = true;
-                        }
-                        // left bound check
-                        if(newLeft < 0) {
-                            newLeft = 0;
-                            boundReached = true;
-                        }
-                        // bottom bound check
-                        if(ui.position.top > containmentH - objH) {
-                            newTop = (containmentH - objH) / _zoom;
-                            boundReached = true;
-                        }
-                        // top bound check
-                        if(newTop < 0) {
-                            newTop = 0;
-                            boundReached = true;
-                        }
-
-                        ui.position.left = newLeft;
-                        ui.position.top = newTop;
-
-
-                        elementModel.setX(ui.position.left);
-                        elementModel.setY(ui.position.top);
-
-                        dispatcher.trigger(dispatcher.elementDragged, elementModel);
-
-                    }
-                });
-
             },
 
             /**
@@ -421,14 +218,18 @@ define([
              */
             removeElement: function(elementModel) {
 
-                var id = elementModel.getId(),
-                    $element = this.getElement(id);
-
-                $element.remove();
+                _currentSceneModel.removeTimelineElement(elementModel.getId());
+                VRViewController.removeShape(elementModel.getId());
 
                 dispatcher.trigger(dispatcher.elementRemoved, elementModel);
+            },
 
-                _currentSceneModel.removeTimelineElement(elementModel.getId());
+            /**
+             *
+             * @returns {*|Array}
+             */
+            getElements: function() {
+                return _currentSceneModel.getElements();
             },
 
 
@@ -437,21 +238,7 @@ define([
              */
             getVisibleElements: function(frame) {
 
-                var elementModels = _currentSceneModel.getTimelineElementsAt(frame),
-                    $elements = [],
-                    i = 0,
-                    l;
-
-                if(elementModels.length > 0) {
-
-                    for( i = 0, l = elementModels.length; i < l; i++ ) {
-                        $elements[$elements.length] = this.getElement(elementModels[i].getId());
-                    }
-
-                }
-
-                return $elements;
-
+                return _currentSceneModel.getTimelineElementsAt(frame);
             },
 
             /**
@@ -461,6 +248,10 @@ define([
             updateVisibleElements: function(frame) {
 
                 if(!_movieModel || !_currentSceneModel) return;
+
+                this.vrController.seek(frame);
+
+                return;
 
                 var self = this,
                     $elements = this.getVisibleElements(frame),

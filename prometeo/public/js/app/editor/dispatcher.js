@@ -16,6 +16,7 @@ define(["jquery"], function($) {
         sceneAdded: 'sceneAdded',
         sceneEdited: 'sceneEdited',
         sceneRemoved: 'sceneRemoved',
+        sceneVideoChanged: 'sceneVideoChanged',
 
         movieLoaded: 'movieLoaded',
         movieUnloaded: 'movieUnloaded',
@@ -31,6 +32,9 @@ define(["jquery"], function($) {
         elementResized: 'elementResized',
         elementDragged: 'elementDragged',
         elementUpdatedFrame: 'elementUpdatedFrame',
+        elementUpdatedInfo: 'elementUpdatedInfo',
+        elementAddedKeyframe: 'elementAddedKeyframe',
+        elementRemovedKeyframe: 'elementRemovedKeyframe',
 
         elementSelected: 'elementSelected',
         elementsDeselected: 'elementsDeselected',

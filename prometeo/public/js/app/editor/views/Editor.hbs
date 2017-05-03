@@ -55,9 +55,7 @@
             <div class="movie-container">
 
                 <div class="movie" id="movie">
-                    <div class="movie-area">
-                        <div class="inner"></div>
-                    </div>
+                    <div id="vrview" class="movie-area"></div>
                     <div class="movie-bg"></div>
                 </div>
 
@@ -65,18 +63,21 @@
 
         </div>
 
-        <!-- scene toolbar
-        <aside class="scene-toolbar">
-            <ul class="item-list" id="scene_list"></ul>
-        </aside> -->
+        <!-- scene toolbar -->
+        <aside class="scene-toolbar" id="scene_panel">
+            <div class="panel scene"></div>
+        </aside>
 
         <!-- timeline -->
         <div class="panel timeline">
             <div class="head row">
-                <div class="col-sm-6">
+                <div class="col-xs-6">
                     <i class="fi-graph-horizontal"></i> Timeline
                 </div>
-                <div class="col-sm-6 current-frame"></div>
+                <div class="col-xs-6 text-right">
+                    <span class="play_pause"><i class="fi-play"></i></span>
+                    <span class="current-frame"></span>
+                </div>
             </div>
             <div id="timeline"></div>
         </div>

@@ -171,6 +171,9 @@ define([
                     SceneController.delete(MovieController.getCurrentScene());
                 });
 
+                dispatcher.on(dispatcher.sceneLoaded, function() {
+                    self.renderScenes();
+                });
                 dispatcher.on(dispatcher.sceneAdded, function() {
                     self.renderScenes();
                 });
