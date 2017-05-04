@@ -6,10 +6,11 @@ define([
         "dispatcher",
         "lib/utilities",
         "lib/timeline",
+        "controller/SceneController",
         "controller/MovieController"
 ],
 
-    function(require, $, dispatcher, utilities, Timeline) {
+    function(require, $, dispatcher, utilities, Timeline, SceneController) {
 
         var remote = window.nodeRequire('electron').remote;
         var Menu = remote.Menu;
@@ -20,7 +21,6 @@ define([
 
         // Timeline Controller
         var TimelineController = {
-
 
             /**
              * Initialize timeline listeners
@@ -49,7 +49,12 @@ define([
 
                     // on element selected
                     onSelect: function(elementModel) {
-                        dispatcher.trigger(dispatcher.elementSelected, elementModel, this);
+                        if(typeof elementModel.getType !== 'undefined') {
+                            dispatcher.trigger(dispatcher.elementSelected, elementModel, this);
+                        } else {
+                            // scene
+                            SceneController.edit(MovieController.getCurrentScene());
+                        }
                     },
 
                     onDeselect: function() {
@@ -142,6 +147,16 @@ define([
                 // on TimelineElement deleted
                 dispatcher.on(dispatcher.elementRemoved, function (e, elementModel) {
                     _timeline.remove(elementModel.getId());
+                });
+
+                // on Scene edited
+                dispatcher.on(dispatcher.sceneEdited, function() {
+                    _timeline.setSceneElement(MovieController.getCurrentScene())
+                });
+
+                // on Scene added
+                dispatcher.on(dispatcher.sceneLoaded, function() {
+                    _timeline.setSceneElement(MovieController.getCurrentScene())
                 });
 
             },

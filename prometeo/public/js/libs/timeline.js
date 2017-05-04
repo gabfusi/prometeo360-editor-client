@@ -248,6 +248,31 @@ define(["jquery", 'jqueryui/draggable'], function($) {
         };
 
 
+        this.setSceneElement = function(scene) {
+
+            var $el, $existingElement,
+                video = scene.getVideo(),
+                duration = scene.getDuration(),
+                width = secondsToPosition(frameToSecond(duration)),
+                positionV = this.calcVerticalPosition(1);
+
+            $el = $('<div/>', {
+                "id": "gtml_" + scene.getId(),
+                "class" : "element element-video-scene",
+                "style" : "left:0px; width:" + width + "px; height: " + options.elementHeight + "px; top:" + positionV + "px"
+            }).data('element', scene).text(scene.getVideo());
+
+
+            $existingElement = $elementsEl.find('.element-video-scene');
+
+            if($existingElement.length) {
+                $existingElement.replaceWith($el);
+            } else {
+                $elementsEl.append($el);
+            }
+
+        };
+
         /**
          * Adds an element to timeline
          * @param element_id
@@ -274,7 +299,8 @@ define(["jquery", 'jqueryui/draggable'], function($) {
                     "id": "gtml_" + element_id,
                     "class" : "element element-" + data.getType().replace(/\s+/, ''), // FIXME bruttino
                     "style" : "left:" + positionH + "px; width:" + width + "px; height: " + options.elementHeight + "px; top:" + positionV + "px"
-                }).text(name).data('element', data);
+                })
+                    .data('element', data);
 
             //console.log('timeline: adding element ', name, 'positionH', positionH, 'frame', frame, data);
 

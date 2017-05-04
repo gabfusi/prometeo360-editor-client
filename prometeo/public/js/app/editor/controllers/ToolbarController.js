@@ -24,9 +24,19 @@ define([
 
             this.$toolbar.on('click', 'li', function(e) {
                 var elementType = $(this).data('type');
+
                 if(elementType === 'InteractiveArea') {
-                    MovieController.vrController.activateShapeTool();
+
+                    if($(this).hasClass('active')) {
+                        $(this).removeClass('active');
+                        MovieController.vrController.deactivateShapeTool();
+                    } else {
+                        $(this).addClass('active');
+                        MovieController.vrController.activateShapeTool();
+                    }
+
                 }
+
                 //self.addElement($(this).data('type'));
             });
 

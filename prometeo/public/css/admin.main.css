@@ -486,12 +486,14 @@ ul, li {
       .editor .toolbar .area-list li > span {
         display: none;
         padding: 0 9px 0 2px; }
-      .editor .toolbar .area-list li:hover {
+      .editor .toolbar .area-list li.active, .editor .toolbar .area-list li:hover {
         background: #424C56;
         color: #ffffff;
         width: auto; }
-        .editor .toolbar .area-list li:hover > span {
+        .editor .toolbar .area-list li.active > span, .editor .toolbar .area-list li:hover > span {
           display: block; }
+      .editor .toolbar .area-list li.active {
+        background: #2c3339; }
   .editor i[class^="fi-"] {
     font-family: "foundation-icons";
     font-style: normal;
@@ -508,6 +510,8 @@ ul, li {
     content: "\f20e"; }
   .editor .fi-Video360:before {
     content: "\f20e"; }
+  .editor .fi-InteractiveArea:before {
+    content: "\f194"; }
   .editor .fi-LinkArea:before {
     content: "\f165"; }
   .editor .fi-JumpArea:before {

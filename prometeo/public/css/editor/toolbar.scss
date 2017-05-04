@@ -37,6 +37,7 @@
         padding: 0 9px 0 2px;
       }
 
+      &.active,
       &:hover {
         background: $grey-shade-4;
         color: $white;
@@ -45,6 +46,10 @@
         > span{
           display: block;
         }
+      }
+
+      &.active{
+        background: darken($grey-shade-4, 10);
       }
 
     }
@@ -68,6 +73,7 @@ i[class^="fi-"] {
 .fi-TextArea:before { content: "\f1a3"; }
 .fi-Video:before { content: "\f20e"; }
 .fi-Video360:before { content: "\f20e"; }
+.fi-InteractiveArea:before { content: "\f194"; }
 .fi-LinkArea:before { content: "\f165"; }
 .fi-JumpArea:before { content: "\f12b"; }
 .fi-QuestionArea:before { content: "\f168"; }

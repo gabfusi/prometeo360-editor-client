@@ -46,7 +46,7 @@ define([
                 dispatcher.on(dispatcher.videoUploaded, function(e, filename, duration) {
                     var scene = MovieController.getCurrentScene();
                     scene.setVideo(filename);
-                    scene.setDuration(duration);
+                    scene.setDuration(duration); // TODO set the duration in seconds!!!
 
                     self.$sceneFilename.val(filename);
 

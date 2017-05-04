@@ -132,20 +132,15 @@ define([
             _onShapeTransformed: function(shape) {
                 var scene = MovieController.getCurrentScene();
                 var element = scene.getElement(shape.id);
-
                 var keyframe = InteractiveAreaController.updateAt(element, TimelineController.getCurrentFrame(), shape.vertices);
 
                 dispatcher.trigger(dispatcher.elementUpdated, element);
 
                 vrView.editShapeKeyframe(shape.id, keyframe, { vertices: shape.vertices });
-
-                console.log('shape transformed', shape)
-
             },
 
             _onVideoTimeUpdate: function(data) {
                 if(!TimelineController.isDragging()) {
-                    console.log(data)
                     TimelineController.updateTrack(data.currentTime);
                 }
             },
