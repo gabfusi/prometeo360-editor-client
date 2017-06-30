@@ -23,13 +23,16 @@ let server = null;
  */
 function startServer(additionalConfig) {
 
-    const port = normalizePort(process.env.PORT || '3030');
+    const videosPath = additionalConfig.videosPath;
 
+    // checks if everything is ok
+    const setup = require('./setup');
+    setup.check(videosPath);
+
+    // set server port
+    const port = normalizePort(process.env.PORT || '3030');
     app.set('port', port);
     app.use(cors());
-
-    let videosPath = additionalConfig.videosPath;
-
 
     // view engine setup
     app.set('views', path.join(__dirname, 'views'));

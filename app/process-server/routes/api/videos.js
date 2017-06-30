@@ -7,36 +7,11 @@ var router = express.Router();
 var Uuid = require('uuid-lib');
 var VideoService = require('../../services/VideoService.js');
 
-const electron = require('electron');
-const app = electron.app;
-
 module.exports = function(videosPath) {
 
     const UPLOADS_PATH        = path.join(videosPath, "Prometeo360");
     const VIDEO_PATH          = path.join(UPLOADS_PATH, "video");
     const THUMBS_PATH         = path.join(UPLOADS_PATH, "thumbs");
-
-    // SETUP (TODO MOVE in install script)
-    // TODO put blank.png inside UPLOADS_PATH directory!!!
-
-    const mkdirSyncIfNotExists = function (dirPath) {
-        try {
-            fs.mkdirSync(dirPath)
-            return true;
-        } catch (err) {
-            //if (err.code !== 'EEXIST') throw err
-            return false;
-        }
-    };
-
-    // check if prometeo dir exists
-    mkdirSyncIfNotExists(UPLOADS_PATH);
-    // check if video dir exists
-    mkdirSyncIfNotExists(VIDEO_PATH);
-    // check if video dir exists
-    mkdirSyncIfNotExists(THUMBS_PATH);
-
-    // TODO end move in install.js
 
     /**
      *  GET videos list
