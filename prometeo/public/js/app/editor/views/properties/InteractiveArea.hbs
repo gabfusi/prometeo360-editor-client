@@ -1,7 +1,21 @@
 <div class="properties textarea">
     <form class="inner">
 
-        {{> TimelineElement }}
+        <input type="hidden" name="id" value="{{id}}">
+
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="p_frame">Frame</label>
+                <input type="text" id="p_frame" name="frame" value="{{ frame }}" class="form-control change-listener">
+            </div>
+        </div>
+
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="p_duration">Durata</label>
+                <input type="text" id="p_duration" name="duration" value="{{ duration }}" class="form-control change-listener">
+            </div>
+        </div>
 
         <div class="form-group">
             <label for="p_background">Sfondo</label>
@@ -9,8 +23,8 @@
         </div>
 
         <div class="form-group">
-            <label for="p_linked_scene">Comportamento sul click</label>
-            <select id="p_linked_scene" name="linked_scene" class="form-control change-listener bool"></select>
+            <label for="p_linked_scene">Al click, vai alla scena:</label>
+            <select id="p_linked_scene" name="linked_scene" class="form-control change-listener"></select>
         </div>
 
     </form>

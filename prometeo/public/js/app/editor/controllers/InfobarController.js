@@ -63,7 +63,6 @@ define([
                     self.renderScenes();
                 });
 
-
                 dispatcher.on(dispatcher.movieUnloaded, function() {
                     self.$moviePublishedBtn.hide();
                     self.$movieName.val('');
@@ -186,6 +185,9 @@ define([
 
             },
 
+            /**
+             * Fills the scene <select> list
+             */
             renderScenes: function() {
                 var scenes = MovieController.getModel().getScenes();
                 var currentSceneId = MovieController.getCurrentScene().getId();
@@ -200,12 +202,19 @@ define([
 
             },
 
+            /**
+             * Selects the current scene from <select> list
+             */
             selectScene: function() {
                 var currentSceneId = MovieController.getCurrentScene().getId();
                 this.$sceneList.find(':selected').prop('selected', false);
                 this.$sceneList.find('[value="' + currentSceneId + '"]').prop('selected', true);
             },
 
+            /**
+             * Rename the movie
+             * @param name
+             */
             editMovieName: function(name) {
                 var movie_name = utilities.stripTags(name);
 
@@ -215,6 +224,10 @@ define([
                 }
             },
 
+            /**
+             * Flags the movie as published or not
+             * @param published
+             */
             setMoviePublished: function(published) {
 
                 if(published) {
@@ -239,6 +252,10 @@ define([
 
             },
 
+            /**
+             * Notify save status
+             * @param status
+             */
             updateSaveStatus: function(status) {
 
                 switch(status) {

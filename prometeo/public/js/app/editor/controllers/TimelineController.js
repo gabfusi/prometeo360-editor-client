@@ -185,6 +185,8 @@ define([
              */
             addElement: function(elementModel) {
 
+                console.log(elementModel);
+
                 var $el = _timeline.add(
                     elementModel.getId(),
                     elementModel.getType(),

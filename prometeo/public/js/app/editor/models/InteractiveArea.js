@@ -14,8 +14,8 @@ define(['model/TimelineElement'], function(TimelineElement) {
         this._keyframes = {};
         this._background = '';
         this._backgroundOpacity = 1;
-        this._actionType = '';
-        this._actionValue = '';
+        this._linkedSceneId = '';
+        this._zindex = 1;
 
     };
 
@@ -35,6 +35,7 @@ define(['model/TimelineElement'], function(TimelineElement) {
 
 
     // Class specific methods
+
     InteractiveArea.prototype.addKeyframe = function(frame, vertices) {
         this._keyframes[frame] = { frame: frame/1000, vertices: vertices };
     };
@@ -69,18 +70,11 @@ define(['model/TimelineElement'], function(TimelineElement) {
         return this._backgroundOpacity;
     };
 
-    InteractiveArea.prototype.setActionType = function(actionType) {
-        this._actionType = actionType;
+    InteractiveArea.prototype.setLinkedScene = function(sceneId) {
+        this._linkedSceneId = sceneId ? parseInt(sceneId) : null;
     };
-    InteractiveArea.prototype.getActionType = function(actionType) {
-        return this._actionType;
-    };
-
-    InteractiveArea.prototype.setActionValue = function(actionValue) {
-        this._actionValue = actionValue;
-    };
-    InteractiveArea.prototype.getActionValue = function(actionValue) {
-        return this._actionValue;
+    InteractiveArea.prototype.getLinkedScene = function() {
+        return this._linkedSceneId;
     };
 
     return InteractiveArea;

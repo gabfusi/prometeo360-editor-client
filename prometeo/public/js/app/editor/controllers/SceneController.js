@@ -6,13 +6,13 @@ define([
         'model/Scene',
         "lib/notifications",
         'hbs!js/app/editor/views/Scene',
-        "controller/MovieController",
         'hbs'
     ],
 
-    function ($, dispatcher, Scene, notification, SceneTpl, MovieController) {
+    function ($, dispatcher, Scene, notification, SceneTpl) {
 
         var _movieModel;
+        var MovieController = null;
 
         /**
          * SceneController Controller
@@ -26,6 +26,7 @@ define([
                 this.$wrap = $('#scene_panel');
                 this.$container = this.$wrap.find('>.panel');
                 this.$sceneFilename = this.$container.find('#scene_filename');
+                MovieController = require('controller/MovieController');
 
                 // on scene loaded
 
@@ -46,7 +47,7 @@ define([
                 dispatcher.on(dispatcher.videoUploaded, function(e, filename, duration) {
                     var scene = MovieController.getCurrentScene();
                     scene.setVideo(filename);
-                    scene.setDuration(duration); // TODO set the duration in seconds!!!
+                    scene.setDuration(duration);
 
                     self.$sceneFilename.val(filename);
 

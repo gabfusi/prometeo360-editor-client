@@ -190,6 +190,10 @@ define([
 
             },
 
+            /**
+             * Change the presented scene
+             * @param scene
+             */
             changeScene: function(scene) {
 
                 this.$movieArea.empty();

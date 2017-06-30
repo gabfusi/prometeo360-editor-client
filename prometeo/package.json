@@ -28,11 +28,14 @@
   },
   "devDependencies": {
     "almond": "^0.3.2",
+    "devtron": "^1.4.0",
     "electron": "~1.6.2",
     "electron-rebuild": "^1.5.7",
     "electron-reload": "^1.1.0",
+    "electron-remote": "^1.1.2",
     "grunt": "~0.4.5",
     "grunt-contrib-concat": "^1.0.1",
-    "grunt-contrib-requirejs": "*"
+    "grunt-contrib-requirejs": "*",
+    "madge": "^1.6.0"
   }
 }

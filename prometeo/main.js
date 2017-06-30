@@ -1,6 +1,8 @@
 "use strict";
 
 const electron = require('electron');
+const childProcess = require('child_process');
+
 require('electron-reload')(__dirname, {
     ignored: /node_modules|[\/\\]\.|db/
 }); // watch changes
@@ -17,14 +19,33 @@ const url = require('url');
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
+let serverProcess;
 
-function createWindow() {
+// This method will be called when Electron has finished
+// initialization and is ready to create browser windows.
+// Some APIs can only be used after this event occurs.
+app.on('ready', waitForServerStart);
 
-    // start server
-    electron.app.server = require('./app');
+// Quit when all windows are closed.
+app.on('window-all-closed', function () {
+    app.quit();
+});
+
+// On app quit
+app.on('quit', function() {
+    serverProcess.kill('SIGINT');
+});
+
+// Logic
+
+let serverStarted = false;
+
+/**
+ * Create the client in a new BrowserWindow
+ */
+function createClient() {
 
     // Create the browser window.
-
     mainWindow = new BrowserWindow({
         width: 1440,
         height: 800,
@@ -39,38 +60,57 @@ function createWindow() {
     mainWindow.loadURL('http://localhost:3030/admin/');
 
     // Open the DevTools.
-    mainWindow.webContents.openDevTools()
+    mainWindow.webContents.openDevTools();
 
     // Emitted when the window is closed.
     mainWindow.on('closed', function () {
         // Dereference the window object, usually you would store windows
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
-        mainWindow = null
+        mainWindow = null;
     })
 }
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+/**
+ * Create a new forked process for the server
+ */
+function createServer() {
 
-// Quit when all windows are closed.
-app.on('window-all-closed', function () {
-    // On OS X it is common for applications and their menu bar
-    // to stay active until the user quits explicitly with Cmd + Q
-    if (process.platform !== 'darwin') {
-        app.quit()
-    }
-});
+    let serverStartMsg = {
+        "type" : "start",
+        "payload" : {
+            "videosPath": app.getPath('videos') // user Videos folder on user home (cross-os)
+        }
+    };
 
-app.on('activate', function () {
-    // On OS X it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
-    if (mainWindow === null) {
-        createWindow()
-    }
-});
+    serverProcess = childProcess.fork('./app');
+    serverProcess.send(serverStartMsg);
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
+    serverProcess.on("message", (message) => {
+
+        switch(message.type) {
+            case "started":
+                serverStarted = true;
+                break;
+
+        }
+    });
+}
+
+/**
+ * Wait until server starts
+ */
+function waitForServerStart() {
+
+    let t = setInterval(() => {
+        if(serverStarted) {
+            clearInterval(t);
+            createClient();
+        }
+    }, 50);
+
+}
+
+// start the server
+createServer();
+

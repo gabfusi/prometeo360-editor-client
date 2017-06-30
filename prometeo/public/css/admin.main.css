@@ -1,8 +1,10 @@
+@charset "UTF-8";
 html, body, .main-content {
   height: 100%; }
 
 body {
-  background: #556270; }
+  background: #556270;
+  font-family: -apple-system, BlinkMacSystemFont, Roboto, Oxygen, Ubuntu, Cantarell, “Fira Sans”, “Droid Sans”, “Helvetica Neue”, Arial, sans-serif; }
 
 .main-content {
   padding-top: 32px; }
@@ -350,7 +352,6 @@ ul, li {
     height: 70%;
     display: block; }
     .editor .movie-wrapper * {
-      font-family: 'Open Sans', sans-serif;
       margin: 0;
       padding: 0; }
     .editor .movie-wrapper .movie-container {

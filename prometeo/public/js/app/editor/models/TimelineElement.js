@@ -145,11 +145,8 @@ define(['lib/utilities'], function(utilities) {
         }
 
         // InteractiveArea attributes
-        if(typeof objectModel.actionType !== 'undefined') {
-            this.setActionType(objectModel.actionType);
-        }
-        if(typeof objectModel.actionValue !== 'undefined') {
-            this.setActionValue(objectModel.actionValue);
+        if(typeof objectModel.linkedSceneId !== 'undefined') {
+            this.setLinkedScene(objectModel.linkedSceneId);
         }
         if(typeof objectModel.background !== 'undefined') {
             this.setBackground(objectModel.background);

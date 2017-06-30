@@ -98,7 +98,8 @@ define([
 
                 // set zindex (
                 var sceneElements = MovieController.getElements();
-                var maxZindex = Math.max.apply(Math, sceneElements.map(function(o){ return o.getZindex(); })) || 0;
+                var maxZindex = sceneElements && sceneElements.length ?
+                    Math.max.apply(Math, sceneElements.map(function(o){ return o.getZindex(); })) : 1;
                 elementModel.setZindex(maxZindex + 1);
 
                 // add element to current scene model

@@ -6,22 +6,15 @@ define([
         "lib/utilities",
         "lib/notifications",
         "controller/MovieController",
-        "controller/TimelineElementController",
-        "controller/QuestionAreaController",
         "controller/TimelineController",
         "controller/VideoPickerController",
         'hbs!js/app/editor/views/properties/InteractiveArea',
-
-        'hbs!partial:js/app/editor/views/properties/TimelineElement',
-        'hbs!partial:js/app/editor/views/properties/Area',
         'hbs',
-        'jqueryui/slider',
-        'jqueryui/draggable',
-        'jqueryui/sortable'
+        'jqueryui/draggable'
     ],
 
     function($, dispatcher, utilities, notification,
-             MovieController, TimelineElementController, QuestionAreaController, TimelineController, VideoPickerController,
+             MovieController, TimelineController, VideoPickerController,
              InteractiveAreaTpl) {
 
     // Editbar Controller
@@ -191,45 +184,13 @@ define([
                 case 'frame' :      elementModel.setFrame(value); break;
                 case 'duration' :   elementModel.setDuration(value); break;
                 case 'background' : elementModel.setBackground(value); break;
-                case 'text_color' : elementModel.setTextColor(value); break;
-                case 'text_size' :  elementModel.setTextSize(value); break;
-                case 'pause_movie': elementModel.setPauseMovie(value); break;
                 case 'zindex':      elementModel.setZindex(value); break;
 
                 // video
                 case 'filename': elementModel.setFilename(value); break;
 
-                // textarea, linkarea, etc
-                case 'text':
-                    elementModel.setText(utilities.nl2br(value));
-                    break;
-
-                // linkarea
-                case 'url':
-                    elementModel.setUrl(value);
-                    break;
-
-                // jumparea
-                case 'jump_to_frame':
-                    elementModel.setJumpToFrame(value);
-                    break;
-
-                // question area
-                case 'question':
-                    elementModel.setQuestion(value);
-                    break;
-
-                case 'exp':
-                    elementModel.setExp(value);
-                    break;
-
-                case 'answer_text':
-                    var answer_id = $field.data('answer-id');
-                    elementModel.getAnswer(answer_id).setText(value);
-                    break;
-
-                case 'question_type':
-                    elementModel.setQuestionType(value);
+                case 'linked_scene':
+                    elementModel.setLinkedScene(value);
                     break;
 
             }
@@ -325,7 +286,17 @@ define([
                 }
             });
 
+            if(elementType === 'InteractiveArea') {
 
+                var scenes = MovieController.getModel().getScenes(),
+                    options = scenes.map(function(s) {
+                        return '<option value="' + s.getId() + '"' +
+                            (self.currentElementModel.getLinkedScene() == s.getId() ? ' selected="selected"' : '')
+                            + '>' + s.getName() + '</option>';
+                    });
+
+                $("#p_linked_scene").append('<option value="">Nessuna</option>' + options.join());
+            }
         },
 
         /**

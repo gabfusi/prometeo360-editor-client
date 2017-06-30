@@ -3,20 +3,14 @@
 define([
         "jquery",
         "config",
-        "plupload",
         "lib/notifications",
         "api",
         "dispatcher",
         'hbs!js/app/editor/views/VideoPicker',
-        'hbs!js/app/editor/views/VideoPickerList',
-        "controller/MovieController",
-        "controller/TimelineElementController",
-        "controller/TimelineController",
-        "bootstrap"
+        'hbs!js/app/editor/views/VideoPickerList'
     ],
 
-    function($, config, plupload, notification, api, dispatcher, VideoPickerTpl, VideoPickerListTpl,
-             MovieController, TimelineElementController, TimelineController, bootstrap) {
+    function($, config, notification, api, dispatcher, VideoPickerTpl, VideoPickerListTpl) {
 
         // VideoPickerController
         var VideoPickerController = {
@@ -66,7 +60,7 @@ define([
 
 
                 // init video uploader
-                this.initStaticUploader();
+                this.initUploader();
             },
 
             /**
@@ -114,7 +108,7 @@ define([
              * init uploader
              * @electron
              */
-            initStaticUploader: function() {
+            initUploader: function() {
 
                 var self = this,
                     $browseBtn = $('#browse_files'); // inside video-picker
@@ -157,77 +151,6 @@ define([
 
             },
 
-            /**
-             * @deprecated
-             * init uploader
-             */
-            initUploader: function() {
-
-                var self = this,
-                    uploader,
-                    $browseBtn = $('#browse_files'); // inside video-picker
-
-                if(this.uploader) {
-                    this.uploader.destroy();
-                }
-
-                uploader = new plupload.Uploader({
-                    runtimes : "html5,flash,silverlight,html4",
-                    browse_button : $browseBtn[0],
-                    url : config.api.uploadVideo,
-                    unique_names : false,
-                    multi_selection: false,
-                    filters : {
-                        min_file_size: "4kb",
-                        max_file_size : '80mb',
-                        mime_types: [
-                            {title : "File video", extensions : "mp4,mpeg,mov,3gp,avi"}
-                        ]
-                    },
-
-                    flash_swf_url : '/js/libs/plupload/Moxie.swf',
-                    silverlight_xap_url : '/js/libs/plupload/Moxie.xap'
-                });
-
-                uploader.init();
-
-                // automatic upload
-                uploader.bind('FilesAdded', function(up, files) {
-                    self.updateProgressBar(0);
-                    self.showLoading();
-                    uploader.start();
-                });
-
-                uploader.bind('UploadProgress', function(up, file) {
-                    self.updateProgressBar(file.percent);
-                });
-
-                /**
-                 * On file uploaded
-                 */
-                uploader.bind('FileUploaded', function(up, file, info) {
-
-                    var response = JSON.parse(info.response),
-                        filename = response.filename,
-                        duration = response.duration;
-
-                    if(info.status !== 200) {
-                        console.log('Upload Error', info);
-                        return self.handleUploadError(info.response);
-                    }
-
-                    self.chooseFile(filename, duration);
-                });
-
-                uploader.bind('Error', function(up, err) {
-                    console.log('Upload Error', err);
-                    self.handleUploadError(err.message);
-                    self.hideLoading();
-                });
-
-                this.uploader = uploader;
-
-            },
 
             showLoading: function() {
                 this.$modal.addClass('loading');

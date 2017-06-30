@@ -139,7 +139,8 @@ var VideoService = {
             ffmpeg.ffprobe(output, function(err, metadata) {
                 if(callback) {
                     callback(false, {
-                        duration: millisecondsToString(metadata.format.duration * 1000),
+                        durationMillis: metadata.format.duration * 1000,
+                        durationString: millisecondsToString(metadata.format.duration * 1000),
                         size: metadata.format.size
                     });
                 }
