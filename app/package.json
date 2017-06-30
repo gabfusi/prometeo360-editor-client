@@ -1,0 +1,31 @@
+{
+  "name": "prometeo360-editor-client",
+  "version": "0.1.0",
+  "private": false,
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "run": "PORT=3000 DEBUG=prometeo:* npm start"
+  },
+  "dependencies": {
+    "body-parser": "~1.15.1",
+    "cookie-parser": "~1.4.3",
+    "cors": "^2.8.3",
+    "debug": "~2.2.0",
+    "express": "~4.13.4",
+    "fluent-ffmpeg": "^2.1.0",
+    "hbs": "~4.0.0",
+    "lowdb": "^0.16.0",
+    "morgan": "~1.7.0",
+    "nano": "~6.2.0",
+    "path": "^0.12.7",
+    "uuid-lib": "0.0.6",
+    "vrview": "https://github.com/gabfusi/vrview/tarball/master"
+  },
+  "devDependencies": {
+    "devtron": "^1.4.0",
+    "electron": "~1.6.2",
+    "electron-rebuild": "^1.5.7",
+    "electron-reload": "^1.1.0"
+  }
+}

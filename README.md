@@ -39,7 +39,7 @@ L'applicazione lato client adotta un architettura MVC (Model View Controller)
 - */public/js/* contiene i files Javascript di editor e player (separati).
 - */public/js/libs/* contiene le librerie esterne utilizzate per facilitare l'implementazione.
 - */public/js/app/* contiene il codice di prometeo creato ad-hoc.
-- */public/js/app/editor/* contiene il codice dell'editor (Controllers e Views).
+- */public/js/src/* contiene il codice dell'editor (Controllers e Views).
 - */public/js/app/viewer/* contiene il codice del player (Controllers e Views).
 - */public/js/app/models/* contiene i file che compongono il modello di dati (Model) di un Filmato, tali file sono condivisi dall'editor e dal player.
 - */public/css* contiene i fogli di stile di editor e player.

@@ -1,7 +1,3 @@
-*.pem
 node_modules/
-!node_modules/node-plupload/index.js
 .idea/
-prometeo/uploads/thumbs/*
-prometeo/uploads/tmp/*
-prometeo/uploads/video/*
+/app/node_modules/
