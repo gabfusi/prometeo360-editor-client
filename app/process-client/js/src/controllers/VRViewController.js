@@ -14,6 +14,7 @@ define([
         var vrView;
         var vrReady = false;
         var isPlaying = false;
+        var editorMode = true;
 
         // Video Controller
         var VRViewController = {
@@ -27,7 +28,8 @@ define([
                     image: 'blank.png',
                     preview: 'blank.png',
                     is_stereo: true,
-                    is_autopan_off: true
+                    is_autopan_off: true,
+                    editor_mode:  editorMode
                 }, {
                     assetsUrl: commonAssetsUrl,
                     autoplay: false
@@ -224,7 +226,8 @@ define([
                     video: false,
                     preview: 'blank.png',
                     is_stereo: false,
-                    is_autopan_off: true
+                    is_autopan_off: true,
+                    editor_mode: editorMode
                 };
 
                 if(sceneModel.getVideo()) {
@@ -240,11 +243,11 @@ define([
 
                 // add shapes
                 var shapes = sceneModel.getElements();
-                var initialShapeVertices;
-                for(var i = 0; i < shapes.length; i++) {
+                var initialShapeVertices, i, j;
+                for(i = 0; i < shapes.length; i++) {
                     initialShapeVertices = shapes[i].getKeyframes();
 
-                    var j = 0;
+                    j = 0;
                     for(var keyframe in initialShapeVertices) {
 
                         if(j === 0) {
@@ -257,6 +260,8 @@ define([
                                 start_frame: shapes[i].getFrame()/1000,
                                 end_frame: (shapes[i].getFrame() + shapes[i].getDuration()) / 1000
                             });
+
+                            console.log("Loading shape " + shapes[i].getId() + " - from " + shapes[i].getFrame()/1000 + " to " + (shapes[i].getFrame() + shapes[i].getDuration()) / 1000)
 
                         } else {
                             vrView.addShapeKeyframe(shapes[i].getId(), keyframe/1000, initialShapeVertices[keyframe]);
