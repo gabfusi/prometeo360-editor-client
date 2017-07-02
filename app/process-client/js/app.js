@@ -52,6 +52,7 @@ requirejs.config({
 
 /**
  * To create the dependencies graph
+ * output can be used here: http://yuml.me/diagram/scruffy/class/draw
  * @param context
  * @param map
  * @param depMaps
