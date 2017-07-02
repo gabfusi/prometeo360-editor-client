@@ -1,15 +1,16 @@
 "use strict";
 
 define([
+    "config",
         "dispatcher",
         "controller/TimelineController",
         'controller/InteractiveAreaController'
     ],
 
-    function (dispatcher, TimelineController, InteractiveAreaController) {
+    function (config, dispatcher, TimelineController, InteractiveAreaController) {
 
         var MovieController;
-        var commonAssetsUrl = "http://localhost:3030/assets";
+        var commonAssetsUrl = config.assetsPath;
         var vrView;
         var vrReady = false;
         var isPlaying = false;
@@ -89,6 +90,11 @@ define([
 
             },
 
+            /**
+             *
+             * @param shape
+             * @private
+             */
             _onShapeDrawn: function(shape) {
 
                 var currentFrame = TimelineController.getCurrentFrame();
@@ -118,6 +124,11 @@ define([
 
             },
 
+            /**
+             *
+             * @param shape
+             * @private
+             */
             _onShapeSelected: function(shape) {
 
                 var scene = MovieController.getCurrentScene();
@@ -126,10 +137,19 @@ define([
 
             },
 
+            /**
+             *
+             * @private
+             */
             _onShapeUnselected: function() {
                 dispatcher.trigger(dispatcher.elementsDeselected);
             },
 
+            /**
+             *
+             * @param shape
+             * @private
+             */
             _onShapeTransformed: function(shape) {
                 var scene = MovieController.getCurrentScene();
                 var element = scene.getElement(shape.id);
@@ -140,16 +160,28 @@ define([
                 vrView.editShapeKeyframe(shape.id, keyframe, { vertices: shape.vertices });
             },
 
+            /**
+             *
+             * @param data
+             * @private
+             */
             _onVideoTimeUpdate: function(data) {
                 if(!TimelineController.isDragging()) {
                     TimelineController.updateTrack(data.currentTime);
                 }
             },
 
+            /**
+             *
+             * @param fn
+             */
             onReady: function(fn) {
                 this.onReadyFn = fn;
             },
 
+            /**
+             *
+             */
             playVideo: function(){
                 if(vrView && !isPlaying) {
                     vrView.play();
@@ -158,6 +190,9 @@ define([
                 }
             },
 
+            /**
+             *
+             */
             pauseVideo: function() {
                 if(vrView && isPlaying) {
                     vrView.pause();
@@ -166,6 +201,11 @@ define([
                 }
             },
 
+            /**
+             *
+             * @param sceneModel
+             * @returns {*}
+             */
             loadScene: function(sceneModel) {
 
                 if(!vrReady) {
@@ -189,8 +229,7 @@ define([
 
                 if(sceneModel.getVideo()) {
                     // TODO unload current vr content
-                    sceneParams.video = commonAssetsUrl + '/video/' + sceneModel.getVideo();
-                    // TODO sceneParams.preview = ..get saved video frame png;
+                    sceneParams.video = config.videosPath + '/' + sceneModel.getVideo();
                 } else {
                     sceneParams.image = 'blank.png';
                 }
@@ -211,6 +250,7 @@ define([
                         if(j === 0) {
 
                             vrView.addShape(shapes[i].getId(), initialShapeVertices[keyframe]);
+
                             vrView.editShape(shapes[i].getId(), {
                                 background_color: shapes[i].getBackground(),
                                 background_opacity: shapes[i].getBackgroundOpacity(),
@@ -231,37 +271,59 @@ define([
 
             },
 
+            /**
+             *
+             * @param frame
+             */
             seek: function(frame) {
                 if(vrView && vrReady) { // TODO check if scene has video or prevent timeline track drag!
                     vrView.setCurrentTime(frame/1000); // ms to seconds
                 }
             },
 
+            /**
+             *
+             */
             activateShapeTool: function() {
                 vrView.activateShapeTool();
             },
 
+            /**
+             *
+             */
             deactivateShapeTool: function() {
                 vrView.deactivateShapeTool();
             },
 
+            /**
+             *
+             * @param id
+             * @param shapeInfo
+             */
             addShape: function(id, shapeInfo) {
                 vrView.addShape(id, shapeInfo);
 
             },
 
+            /**
+             *
+             * @param id
+             * @param frame
+             * @param vertices
+             */
             addShapeKeyframe: function(id, frame, vertices) {
                 vrView.addShape(id, frame, vertices);
             },
 
+            /**
+             *
+             * @param id
+             */
             removeShape: function(id) {
                 vrView.removeShape(id);
             }
 
-
         };
 
-
         return VRViewController;
-
     });

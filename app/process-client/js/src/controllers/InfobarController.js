@@ -7,10 +7,11 @@ define([
         "lib/utilities",
         "lib/notifications",
         "controller/MovieController",
-        "controller/SceneController"
+        "controller/SceneController",
+        "api"
     ],
 
-    function (config, $, dispatcher, utilities, notification, MovieController, SceneController) {
+    function (config, $, dispatcher, utilities, notification, MovieController, SceneController, Api) {
 
         var getEmbedCode = function(movie_id) {
             return '<div class="prometeo-player" data-width="100%" data-id="' + movie_id + '"></div>' +
@@ -82,6 +83,24 @@ define([
                     self.setMoviePublished(false);
                 });
 
+
+                dispatcher.on(dispatcher.apiMoviePublishResponse, function(e, data) {
+
+                    self.setMoviePublished(true);
+                    MovieController.getModel().setPublished(true);
+                    dispatcher.trigger(dispatcher.movieInfoEdited);
+                    notification.notice("Filmato pubblicato");
+                });
+
+                dispatcher.on(dispatcher.apiMovieUnpublishResponse, function(e, data) {
+
+                    self.setMoviePublished(false);
+                    MovieController.getModel().setPublished(false);
+                    dispatcher.trigger(dispatcher.movieInfoEdited);
+                    notification.notice("Filmato nascosto");
+                });
+
+
                 this.$movieForm.on('submit', function(e) {
                     e.preventDefault();
                     self.editMovieName($(this).val());
@@ -93,21 +112,20 @@ define([
 
                 this.$moviePublishedBtn.on('click', function () {
 
-                    var isPublished = !MovieController.getModel().isPublished(),
-                        verb = isPublished ? "pubblicare" : "nascondere";
+                    var isPublished = MovieController.getModel().isPublished(),
+                        verb = !isPublished ? "pubblicare" : "nascondere";
 
                     notification.confirm(
                         "Pubblicazione Filmato",
                         "Sei sicuro di voler " + verb + " questo filmato?",
                         function() {
-                            self.setMoviePublished(isPublished);
-                            MovieController.getModel().setPublished(isPublished);
-                            dispatcher.trigger(dispatcher.movieInfoEdited);
-                            if(isPublished) {
-                                notification.notice("Filmato pubblicato");
+
+                            if(!isPublished) {
+                                self.publishMovie();
                             } else {
-                                notification.notice("Filmato nascosto");
+                                self.unpublishMovie();
                             }
+
                         });
 
                 });
@@ -250,6 +268,22 @@ define([
 
                 }
 
+            },
+
+            /**
+             * Publish the current movie
+             */
+            publishMovie: function() {
+                var movie_id = MovieController.getModel().getId();
+                Api.publishMovie(movie_id);
+            },
+
+            /**
+             * Unpublish the current movie
+             */
+            unpublishMovie: function() {
+                var movie_id = MovieController.getModel().getId();
+                Api.unpublishMovie(movie_id);
             },
 
             /**

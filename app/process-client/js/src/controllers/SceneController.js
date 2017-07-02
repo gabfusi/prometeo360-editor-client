@@ -5,7 +5,7 @@ define([
         'dispatcher',
         'model/Scene',
         "lib/notifications",
-        'hbs!js/src/views/Scene',
+        'hbs!../../js/src/views/Scene',
         'hbs'
     ],
 
@@ -20,6 +20,10 @@ define([
         var SceneController = {
 
 
+            /**
+             *
+             * @param movieModel
+             */
             init: function (movieModel) {
                 var self = this;
                 _movieModel = movieModel;
@@ -58,12 +62,19 @@ define([
 
             },
 
+            /**
+             *
+             * @param sceneModel
+             */
             load: function(sceneModel) {
                 var html = SceneTpl(sceneModel.toObject());
                 console.log('Loading scene', sceneModel);
                 this.$container.html(html);
             },
 
+            /**
+             *
+             */
             create: function() {
 
                 notification.prompt(
@@ -85,6 +96,11 @@ define([
 
             },
 
+            /**
+             *
+             * @param scene
+             * @returns {boolean}
+             */
             delete: function(scene) {
 
                 var scenes = _movieModel.getScenes().length;
@@ -105,16 +121,20 @@ define([
                     });
             },
 
+            /**
+             *
+             */
             edit: function() {
                 this.$wrap.toggleClass('active');
             },
 
+            /**
+             *
+             * @returns {*|Array}
+             */
             getScenes: function() {
                 return _movieModel.getScenes();
             }
-
-
-
         };
 
         return SceneController;

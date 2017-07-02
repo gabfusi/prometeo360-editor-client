@@ -2,10 +2,13 @@
 
 const low = require('lowdb');
 
-var DatabaseService = function(_database_id) {
+const DatabaseService = function (_database_id) {
 
-    this.db = low('db/' + _database_id + '.json');
-    this.db.defaults({ [_database_id]: [] }).write();
+    const globalFolder = DatabaseService.globalFolder ?
+    DatabaseService.globalFolder + '/' : '';
+
+    this.db = low(globalFolder + 'lowdb/' + _database_id + '.json');
+    this.db.defaults({[_database_id]: []}).write();
 
     /**
      * Add a document to db
@@ -13,16 +16,16 @@ var DatabaseService = function(_database_id) {
      * @param data
      * @param callback
      */
-    this.insert = function(id, data, callback) {
+    this.insert = function (id, data, callback) {
 
-        if(!id) {
+        if (!id) {
             id = this._generateId();
         }
 
         data.id = id;
         this.db.get(_database_id).push(data).write();
 
-        if(callback) {
+        if (callback) {
             callback(false, data.id);
         }
 
@@ -34,11 +37,11 @@ var DatabaseService = function(_database_id) {
      * @param data
      * @param callback
      */
-    this.update = function(document_id, data, callback) {
+    this.update = function (document_id, data, callback) {
 
-        var doc = this.db.get(_database_id).find({ id: document_id }).assign(data).write();
+        var doc = this.db.get(_database_id).find({id: document_id}).assign(data).write();
 
-        if(callback) callback(false, doc);
+        if (callback) callback(false, doc);
 
     };
 
@@ -49,9 +52,9 @@ var DatabaseService = function(_database_id) {
      */
     this.get = function (document_id, callback) {
 
-        var doc = this.db.get(_database_id).find({ id: document_id }).value();
+        var doc = this.db.get(_database_id).find({id: document_id}).value();
 
-        if(callback) {
+        if (callback) {
             callback(false, doc);
         }
 
@@ -62,13 +65,11 @@ var DatabaseService = function(_database_id) {
      * @param document_id
      * @param callback
      */
-    this.delete = function(document_id, callback) {
+    this.delete = function (document_id, callback) {
 
-        console.log(document_id);
+        var doc = this.db.get(_database_id).remove({id: document_id}).write();
 
-        var doc = this.db.get(_database_id).remove({ id: document_id }).write();
-
-        if(callback) {
+        if (callback) {
             callback(false, doc);
         }
 
@@ -84,7 +85,7 @@ var DatabaseService = function(_database_id) {
     this.list = function (designname, viewname, params, callback) {
 
         var docs = this.db.get(_database_id).sortBy('created').value();
-        if(callback) callback(false, docs || []);
+        if (callback) callback(false, docs || []);
 
     };
 
@@ -93,7 +94,7 @@ var DatabaseService = function(_database_id) {
      * @returns {string}
      * @private
      */
-    this._generateId = function() {
+    this._generateId = function () {
         return this.database_id + '_' + Uuid.raw();
     };
 
@@ -103,12 +104,16 @@ var DatabaseService = function(_database_id) {
      * @param data
      * @returns {Number|HTMLCollection|string}
      */
-    this.formatResponse = function(data) {
+    this.formatResponse = function (data) {
         return data.rows;
     };
 
     return this;
 
+};
+
+DatabaseService.setGlobalFolder = function (dir) {
+    DatabaseService.globalFolder = dir;
 };
 
 module.exports = DatabaseService;

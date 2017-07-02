@@ -14,7 +14,7 @@ define([
         "controller/TimelineController",
         "controller/InfobarController",
         "controller/VideoPickerController",
-        'hbs!js/src/views/Editor',
+        'hbs!../../js/src/views/Editor',
         'hbs'
     ],
 
@@ -116,6 +116,64 @@ define([
 
                 //self.onResize();
 
+                /**
+                 * On movie loaded
+                 */
+                dispatcher.on(dispatcher.apiMovieGetResponse, function (e, data) {
+
+                    if (typeof data.error !== 'undefined') {
+                        dispatcher.trigger(dispatcher.sceneLoadingError); // TODO gestisci UI
+                        notification.error("Filmato non trovato", 'Non riesco a caricare il filmato, potrebbe essere stato cancellato o non essere mai esistito.');
+                        return;
+                    }
+
+                    MovieController.create(data);
+                    self.isMovieLoaded = true;
+                    self.movieRevision = data._rev;
+                    dispatcher.trigger(dispatcher.movieLoaded, data);
+                    SceneController.load(MovieController.getCurrentScene());
+
+                });
+
+                /**
+                 * On movie added
+                 */
+                dispatcher.on(dispatcher.apiMovieAddResponse, function (e, data) {
+
+                    if (typeof data.error !== 'undefined') {
+                        notification.error("Errore", "Il filmato non è stato salvato");
+                        console.error(data.error);
+                        return;
+                    }
+
+                    var movie_id = data.movie_id;
+
+                    MovieController.getModel().setId(movie_id);
+
+                    // replace url
+                    self.router.replaceUri('/editor/' + movie_id);
+
+                    dispatcher.trigger(dispatcher.movieFirstSave);
+                    dispatcher.trigger(dispatcher.movieSaved);
+
+                });
+
+                /**
+                 * On movie updated
+                 */
+                dispatcher.on(dispatcher.apiMovieUpdateResponse, function (e, data) {
+
+                    if (typeof data.error !== 'undefined') {
+                        notification.error("Errore", "Il filmato non è stato salvato");
+                        console.error(data.error);
+                        return;
+                    }
+
+                    dispatcher.trigger(dispatcher.movieSaved);
+
+                });
+
+
                 // Initialize listeners to movie updates
                 // proxies all movie & elements change events to movieEdited event
 
@@ -183,28 +241,14 @@ define([
 
                     MovieController.create();
                     this.isMovieLoaded = true;
+                    dispatcher.trigger(dispatcher.movieLoaded, MovieController.getCurrentScene());
                     SceneController.load(MovieController.getCurrentScene());
 
                 } else {
 
                     dispatcher.trigger(dispatcher.sceneLoadingStart);
-
-                    Api.getMovie(movie_id, function (err, data) {
-
-                        if (err) {
-                            dispatcher.trigger(dispatcher.sceneLoadingError); // TODO gestisci UI
-                            notification.error("Filmato non trovato", 'Non riesco a caricare il filmato, potrebbe essere stato cancellato o non essere mai esistito.');
-                            return;
-                        }
-
-                        MovieController.create(data);
-                        self.isMovieLoaded = true;
-                        self.movieRevision = data._rev;
-                        dispatcher.trigger(dispatcher.movieLoaded, data);
-                        SceneController.load(MovieController.getCurrentScene());
-
-                    });
-
+                    // request movie
+                    Api.getMovie(movie_id);
                 }
 
             },
@@ -230,8 +274,7 @@ define([
              */
             saveMovie: function () {
 
-                var self = EditorController,
-                    movieModel = MovieController.getModel(),
+                var movieModel = MovieController.getModel(),
                     movie_id = movieModel.getId(),
                     movieName = movieModel.getName(),
                     movieObject;
@@ -242,44 +285,17 @@ define([
 
                 movieObject = movieModel.serialize();
 
-                this.isSaving = true;
                 dispatcher.trigger(dispatcher.movieStartSave);
 
                 if (!movie_id) {
 
                     // add new movie
-                    Api.addMovie(movieObject, function (err, movie_id) {
-
-                        if (err) {
-                            notification.error("Errore", "Il filmato non è stato salvato");
-                            console.error(err);
-                            return;
-                        }
-
-                        MovieController.getModel().setId(movie_id);
-
-                        // replace url
-                        self.router.replaceUri('/editor/' + movie_id);
-
-                        dispatcher.trigger(dispatcher.movieFirstSave);
-                        dispatcher.trigger(dispatcher.movieSaved);
-
-                    });
+                    Api.addMovie(movieObject);
 
                 } else {
 
                     // update movie
-                    Api.updateMovie(movie_id, movieObject, function (err, movie_id) {
-
-                        if (err) {
-                            notification.error("Errore", "Il filmato non è stato salvato");
-                            console.error(err);
-                            return;
-                        }
-
-                        dispatcher.trigger(dispatcher.movieSaved);
-
-                    });
+                    Api.updateMovie(movie_id, movieObject);
 
                 }
 

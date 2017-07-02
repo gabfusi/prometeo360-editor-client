@@ -7,7 +7,7 @@ define([
         "lib/utilities",
         "lib/notifications",
         "api",
-        'hbs!js/src/views/List',
+        'hbs!../../js/src/views/List',
         'hbs'
     ],
 
@@ -50,6 +50,42 @@ define([
                     self.deleteMovie(movie_id);
                 });
 
+                /**
+                 * On movie list response
+                 */
+                dispatcher.on(dispatcher.apiMovieListResponse, function(e, data) {
+
+                    console.log(e, data);
+
+                    for(var i = 0, l = data.length; i < l; i++ ) {
+                        data[i].duration = utilities.formatTime(data[i].duration);
+                        data[i].modified = utilities.timeAgo(data[i].modified);
+                    }
+
+                    var html = ListTpl({
+                        config: config,
+                        movies: data
+                    });
+
+                    self.$list.html(html);
+                    self.router.refresh();
+                });
+
+                /**
+                 * On movie deleted
+                 */
+                dispatcher.on(dispatcher.apiMovieDeleteResponse, function(e, data) {
+
+                    if(typeof data.error !== 'undefined') {
+                        notification.error("Errore", "Il filmato non è stato eliminato, riprova.");
+                        return;
+                    }
+
+                    notification.success("Filmato eliminato");
+                    self.renderList();
+
+                });
+
             },
 
             /**
@@ -66,68 +102,17 @@ define([
                 this.$list.addClass('hided');
             },
 
-            /**
-             * Loads moovies list from remote
-             * @param callback
-             */
-            loadList : function (callback) {
-
-                Api.getMovies(function(err, data) {
-
-                    if(err) {
-                        return callback(false);
-                    }
-
-                    for(var i = 0, l = data.length; i < l; i++ ) {
-                        data[i].duration = utilities.formatTime(data[i].duration);
-                        data[i].modified = utilities.timeAgo(data[i].modified);
-                    }
-
-                    callback(data);
-
-                });
-            },
 
             /**
              * Render movies list
              */
             renderList: function () {
-
-                var self = this,
-                    html;
-
-                this.loadList(function(data) {
-
-                    html = ListTpl({
-                        config: config,
-                        lessons: data
-                    });
-
-                    self.$list.html(html);
-                    self.router.refresh();
-
-                });
-
+                Api.getMovies();
             },
 
 
             deleteMovie: function(movie_id) {
-
-                var self = this;
-
-                Api.deleteMovie(movie_id, function(err, data) {
-
-                    if(err) {
-                        notification.error("Errore", "Il filmato non è stato eliminato, riprova.");
-                        return;
-                    }
-
-                    notification.success("Filmato eliminato");
-                    self.renderList();
-                    console.log(err, data);
-
-                });
-
+                Api.deleteMovie(movie_id);
             }
 
         };

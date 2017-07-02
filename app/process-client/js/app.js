@@ -2,7 +2,7 @@
  * App startup
  */
 requirejs.config({
-    "baseUrl": "http://localhost:3030",
+    "baseUrl": "",
     "paths": {
         "app": "js/src",
         "lib": "js/libs",
@@ -26,7 +26,7 @@ requirejs.config({
         "colorpicker" : "js/libs/colorpicker/minicolors.min"
     },
     "hbs": {
-        base: "http://localhost:3030",
+        base: ".",
         templateExtension: ".hbs",
         compilerPath: "js/libs/hbs/handlebars.min"
     },

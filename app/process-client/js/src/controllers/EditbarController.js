@@ -8,7 +8,7 @@ define([
         "controller/MovieController",
         "controller/TimelineController",
         "controller/VideoPickerController",
-        'hbs!js/src/views/properties/InteractiveArea',
+        'hbs!../../js/src/views/properties/InteractiveArea',
         'hbs',
         'jqueryui/draggable'
     ],

@@ -17,7 +17,7 @@ define(["config", "navigo"], function(config, Navigo) {
          * @param base
          */
         init: function (base) {
-            this.router = new Navigo(base);
+            this.router = new Navigo(base, true); // always use hash in electron environment!
         },
 
         /**
@@ -43,7 +43,7 @@ define(["config", "navigo"], function(config, Navigo) {
          * @param uri
          */
         navigateUri: function(uri) {
-            this.router.navigate(config.domain + uri);
+            this.router.navigate(uri);
         },
 
         /**

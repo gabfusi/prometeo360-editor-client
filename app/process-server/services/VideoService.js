@@ -1,10 +1,9 @@
 "use strict";
 
-var DatabaseService = require('./DatabaseService.js');
-var ffmpeg = require('fluent-ffmpeg');
-var path = require('path');
-var fs = require('fs');
-
+const DatabaseService = require('./DatabaseService.js');
+const ffmpeg = require('fluent-ffmpeg');
+const path = require('path');
+const fs = require('fs');
 
 var VideoService = {
 
@@ -48,6 +47,7 @@ var VideoService = {
     },
 
     /**
+     * @unused
      * Compress and covert video to mp4 format
      * @param input
      * @param output_path

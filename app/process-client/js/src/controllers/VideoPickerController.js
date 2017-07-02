@@ -6,15 +6,18 @@ define([
         "lib/notifications",
         "api",
         "dispatcher",
-        'hbs!js/src/views/VideoPicker',
-        'hbs!js/src/views/VideoPickerList'
+        'hbs!../../js/src/views/VideoPicker',
+        'hbs!../../js/src/views/VideoPickerList'
     ],
 
-    function($, config, notification, api, dispatcher, VideoPickerTpl, VideoPickerListTpl) {
+    function($, config, notification, Api, dispatcher, VideoPickerTpl, VideoPickerListTpl) {
 
         // VideoPickerController
         var VideoPickerController = {
 
+            /**
+             *
+             */
             init: function() {
 
                 this.$modal = null;
@@ -35,7 +38,6 @@ define([
                     $pickerModal = $(VideoPickerTpl()),
                     $videoList = $pickerModal.find('#video_picker_list');
 
-
                 this.$modal = $pickerModal;
                 this.$progressBar = $pickerModal.find('#video_picker_progress');
 
@@ -43,11 +45,7 @@ define([
 
                 // open video picker
                 $body.on('click', '.open-video-browser', function() {
-
-                    self.renderVideoList($videoList, function() {
-                        $pickerModal.modal('show');
-                    });
-
+                    Api.getVideos();
                 });
 
                 // select existing video
@@ -58,50 +56,48 @@ define([
                     self.chooseFile(filename, duration);
                 });
 
+                /**
+                 * On video list retrieved
+                 */
+                dispatcher.on(dispatcher.apiVideoListResponse, function(e, data) {
+
+                    var videos = [];
+
+                    for(var i = 0; i < data.length; i++) {
+                        for(var j = 0; j < data[i].thumbnails.length; j++) {
+                            data[i].thumbnails[j] = config.screenshotsPath + '/' + data[i].thumbnails[j];
+                        }
+                        videos[videos.length] = data[i];
+                    }
+
+                    var html = VideoPickerListTpl(videos);
+                    $videoList.html(html);
+                    $pickerModal.modal('show');
+
+                });
+
+                /**
+                 * On video uploaded
+                 */
+                dispatcher.on(dispatcher.apiVideoUploadResponse, function(e, data) {
+
+                    self.updateProgressBar(100);
+
+                    if(typeof data.error !== 'undefined') {
+                        self.handleUploadError(data.error || "Video non valido o non trovato.");
+                        self.hideLoading();
+                        return;
+                    }
+
+                    var filename = data.filename,
+                        duration = data.duration;
+
+                    self.chooseFile(filename, duration);
+
+                });
 
                 // init video uploader
                 this.initUploader();
-            },
-
-            /**
-             * get videos list from server
-             * @param callback
-             */
-            getVideos: function(callback) {
-                var videos = [];
-
-                api.getVideos(function(err, data) {
-
-                    if (!err) {
-                        for(var i = 0; i < data.length; i++) {
-                            for(var j = 0; j < data[i].thumbnails.length; j++) {
-                                data[i].thumbnails[j] = config.api.getVideoScreenShot + data[i].thumbnails[j];
-                            }
-                            videos[videos.length] = data[i];
-                        }
-                    }
-
-                    if(callback) callback(videos);
-                });
-            },
-
-            /**
-             * Render videos list
-             * @param $element
-             * @param callback
-             */
-            renderVideoList : function($element, callback) {
-                var html;
-
-                this.getVideos(function(videos) {
-
-                    html = VideoPickerListTpl(videos);
-                    $element.html(html);
-
-                    if(callback) callback();
-
-                });
-
             },
 
             /**
@@ -131,35 +127,30 @@ define([
                     self.updateProgressBar(60);
                     self.showLoading();
 
-                    api.uploadVideo({ tempPath: files[0] }, function(err, response) {
-                        self.updateProgressBar(100);
-
-                        if(!response) {
-                            self.handleUploadError(err || "Video non valido o non trovato.");
-                            self.hideLoading();
-                            return;
-                        }
-
-                        var filename = response.filename,
-                            duration = response.duration;
-
-                        self.chooseFile(filename, duration);
-
-                    });
+                    Api.uploadVideo(files[0]);
 
                 });
 
             },
 
-
+            /**
+             *
+             */
             showLoading: function() {
                 this.$modal.addClass('loading');
             },
 
+            /**
+             *
+             */
             hideLoading: function() {
                 this.$modal.removeClass('loading');
             },
 
+            /**
+             *
+             * @param percent
+             */
             updateProgressBar : function(percent) {
                 if(percent == 100) {
                     // 100% means that video is uploaded but not converted yet
@@ -169,12 +160,21 @@ define([
                 }
             },
 
+            /**
+             *
+             * @param filename
+             * @param duration
+             */
             chooseFile: function(filename, duration) {
                 dispatcher.trigger(dispatcher.videoUploaded, filename, duration);
                 this.hideLoading();
                 this.$modal.modal('hide');
             },
 
+            /**
+             *
+             * @param msg
+             */
             handleUploadError: function(msg) {
                 notification.error('Errore durante il caricamento del video', msg)
             }

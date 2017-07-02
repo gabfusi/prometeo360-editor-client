@@ -8,6 +8,7 @@ define(["jquery"], function($) {
      */
     return {
 
+        // internal events
         sceneLoadingStart: 'sceneLoadingStart',
         sceneLoadingError: 'sceneLoadingError',
         sceneLoaded: 'sceneLoaded',
@@ -40,6 +41,17 @@ define(["jquery"], function($) {
         elementsDeselected: 'elementsDeselected',
 
         videoUploaded: 'videoUploaded',
+
+        // ipc events
+        apiMovieListResponse: 'apiMovieListResponse',
+        apiMovieGetResponse: 'apiMovieGetResponse',
+        apiMovieAddResponse: 'apiMovieAddResponse',
+        apiMovieUpdateResponse: 'apiMovieUpdateResponse',
+        apiMovieDeleteResponse: 'apiMovieDeleteResponse',
+        apiMoviePublishResponse: 'apiMoviePublishResponse',
+        apiMovieUnpublishResponse: 'apiMovieUnpublishResponse',
+        apiVideoListResponse: 'apiVideoListResponse',
+        apiVideoUploadResponse: 'apiVideoUploadResponse',
 
         status: {
             saving: 'saving',
