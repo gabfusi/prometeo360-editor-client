@@ -8,11 +8,11 @@
     "run": "PORT=3000 DEBUG=prometeo:* npm start"
   },
   "dependencies": {
-    "debug": "~2.2.0",
+    "debug": "~2.6.8",
     "fluent-ffmpeg": "^2.1.0",
     "hbs": "~4.0.0",
     "lowdb": "^0.16.0",
-    "morgan": "~1.7.0",
+    "morgan": "~1.8.2",
     "node-ipc": "^9.0.1",
     "path": "^0.12.7",
     "request": "^2.81.0",

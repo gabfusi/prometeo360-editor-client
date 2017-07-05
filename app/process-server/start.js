@@ -9,6 +9,7 @@ let shuttingDown = false;
 // setup ipc 'server'
 ipc.config.id = 'server';
 ipc.config.retry = 1500;
+ipc.config.silent = true;
 
 /**
  * Starts server

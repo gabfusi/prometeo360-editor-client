@@ -69,7 +69,7 @@ module.exports = function (sharedConfig) {
                     }
 
                     // delete temp file
-                    fs.unlinkSync(inputFilePath);
+                    // fs.unlinkSync(inputFilePath);
 
                     let video = {
                         filename: outputFilename,

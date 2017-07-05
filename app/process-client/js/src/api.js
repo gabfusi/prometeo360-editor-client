@@ -11,6 +11,7 @@ define([
 
     ipc.config.id = 'client';
     ipc.config.retry = 1000;
+    ipc.config.silent = true;
 
     ipc.connectTo(
         'server',
