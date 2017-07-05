@@ -169,20 +169,20 @@ define([], function() {
         };
 
         /**
-         * Return Movie model object
-         *
-         * @returns {{id: *, name: string, scenes: Array}}
+         * Populate model from model object
+         * @param objectModel
          */
-        this.toObject = function(){
+        this.fromObject = function(objectModel) {
 
-            return {
-                "id" : this.getId(),
-                "name" : this.getName(),
-                "published" : this.isPublished(),
-                "duration" : _calculateDuration(),
-                "scenes" : _scenes.map(function(el){ return el.toObject(); })
-            }
+            this.setId(objectModel.id);
+            this.setName(objectModel.name);
+            this.setDuration(objectModel.duration);
+
+            // scenes will be added by MovieController.create()
+
+            return this;
         };
+
 
         /**
          * Return Movie model serialized object
@@ -202,7 +202,6 @@ define([], function() {
 
             return obj;
         };
-
 
     }
 

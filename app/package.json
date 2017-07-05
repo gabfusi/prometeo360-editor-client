@@ -25,6 +25,8 @@
   "devDependencies": {
     "devtron": "^1.4.0",
     "electron": "~1.6.2",
+    "electron-icon-maker": "0.0.3",
+    "electron-packager": "^8.7.2",
     "electron-rebuild": "^1.5.7",
     "electron-reload": "^1.1.0"
   }

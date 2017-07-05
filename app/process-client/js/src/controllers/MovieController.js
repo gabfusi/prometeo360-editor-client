@@ -120,9 +120,7 @@ define([
 
                 // unserialize data
 
-                _movieModel.setId(data.id);
-                _movieModel.setName(data.name);
-                _movieModel.setPublished(data.published);
+                _movieModel.fromObject(data);
 
                 for(var i = 0; i < data.scenes.length; i++) {
 

@@ -7,7 +7,7 @@ const Store = require('./Store');
 const username = require('username');
 const Uuid = require('uuid-lib');
 const url = require('url');
-const vrdebug = true;
+const vrdebug = false;
 
 require('electron-reload')(__dirname, {
     ignored: /node_modules|[\/\\]\.|db/
@@ -69,7 +69,7 @@ function createClient() {
     mainWindow = new BrowserWindow({
         width: width,
         height: height,
-        icon: __dirname + '/favicon.ico'
+        icon: path.join(__dirname, 'assets', 'icons', 'png', '512x512.png')
     });
 
     // Hide the menu

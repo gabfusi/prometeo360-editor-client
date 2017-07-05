@@ -203,14 +203,13 @@ define([], function() {
          * @param objectModel
          */
         this.fromObject = function(objectModel) {
-            var self = this;
 
             this.setId(objectModel.id);
             this.setName(objectModel.name);
             this.setDuration(objectModel.duration);
             this.setVideo(objectModel.video);
 
-            // timeline elements are added by MovieController.create()
+            // timeline elements will be added by MovieController.create()
 
             return this;
         };

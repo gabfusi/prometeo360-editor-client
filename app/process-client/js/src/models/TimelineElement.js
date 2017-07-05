@@ -13,10 +13,6 @@ define(['lib/utilities'], function(utilities) {
         this._end_frame = 0;
         this._type = null;
         this._zindex = 0;
-
-        // just for viewer
-        this.api = null;
-
     };
 
     TimelineElement.prototype.setId = function(id){
@@ -102,21 +98,12 @@ define(['lib/utilities'], function(utilities) {
         var obj = {};
 
         for(var prop in this) {
-            if(typeof this[prop] !== 'function' && prop !== 'api') {
+            if(typeof this[prop] !== 'function') {
                 obj[prop.substring(1)] = this[prop];
             }
         }
 
         return obj;
-    };
-
-    // viewer api
-    TimelineElement.prototype.setApi = function(api){
-        this.api = api;
-    };
-
-    TimelineElement.prototype.getApi = function(){
-        return this.api;
     };
 
     /**
