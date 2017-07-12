@@ -13,6 +13,9 @@ define([
 
     function (config, $, dispatcher, utilities, notification, MovieController, SceneController, Api) {
 
+        // open new browser window
+        var BrowserWindow = window.nodeRequire('electron').remote.BrowserWindow;
+
         var getEmbedCode = function(movie_id) {
             return '<div class="prometeo-player" data-width="100%" data-id="' + movie_id + '"></div>' +
                    '<script async defer src="' + config.embedJsUrl + '"></script>';
@@ -33,6 +36,7 @@ define([
                 this.$moviePublishedBtn = this.$inforbar.find('#movie_publish');
                 this.$movieEmbedBtn = this.$inforbar.find('#movie_embed');
                 this.$moviePlayBtn = this.$inforbar.find('#movie_play');
+                this.$movieSyncBtn = this.$inforbar.find('#movie_sync');
 
                 // scene
                 this.$sceneList = this.$inforbar.find('#scene_list');
@@ -55,6 +59,9 @@ define([
                     var movieModel = MovieController.getModel(),
                         movie_name = movieModel.getName(),
                         movie_published = movieModel.isPublished();
+
+                  console.info("Movie is published? ", movieModel)
+                  window.movie = movieModel;
 
                     self.$movieName.val(movie_name);
                     self.$moviePublishedBtn.show();
@@ -85,6 +92,11 @@ define([
 
 
                 dispatcher.on(dispatcher.apiMoviePublishResponse, function(e, data) {
+
+                    if(typeof data.error !== 'undefined') {
+                        notification.error("Errore, potresti non essere connesso alla rete internet.");
+                        return;
+                    }
 
                     self.setMoviePublished(true);
                     MovieController.getModel().setPublished(true);
@@ -130,6 +142,16 @@ define([
 
                 });
 
+                this.$movieSyncBtn.on('click', function() {
+
+                    notification.confirm(
+                        "Sincronizzazione filmato",
+                        "Sei sicuro di voler sincronizzare le modifiche sul server remoto?",
+                        function() {
+                            self.publishMovie();
+                        });
+                });
+
                 this.$movieEmbedBtn.on('click', function() {
 
                     var movie_id = MovieController.getModel().getId();
@@ -146,24 +168,31 @@ define([
                 // video preview
                 this.$moviePlayBtn.on('click', function() {
 
-                    var movie_id = MovieController.getModel().getId(),
-                        $overlay =
-                                    $('<div class="movie-preview">' +
-                                      '<div class="va-wrap">' +
-                                        '<div class="va-middle">' +
-                                        '<div class="preview-box">' +
-                                            '<div class="close-preview"><i class="fi-x"></i></div>' +
-                                            '<iframe src="/player/' + movie_id + '" scrolling="no" allowfullscreen="no"></iframe>' +
-                                        '</div>' +
-                                        '</div>' +
-                                      '</div>' +
-                                      '</div>');
+                    var previewWindow = new BrowserWindow({
+                        width: 720,
+                        height: 480,
+                        backgroundColor: '#000000',
+                        alwaysOnTop: true,
+                        fullscreenable: true,
+                        skipTaskbar: true,
+                        title: "Prometeo360 preview"
+                    });
+                    previewWindow.setMenu(null);
+                    previewWindow.loadURL(config.previewWindow);
+                    previewWindow.webContents.on('did-finish-load', () => {
+                        previewWindow.webContents.send('load', {
+                            movie: MovieController.getModel().serialize(),
+                            videoPath: config.videosPath
+                        });
+                    });
 
-                    $overlay.on('click', '.close-preview', function() {
-                        $overlay.fadeOut(300, function(){
-                            $overlay.remove();
-                        })
-                    }).appendTo('body');
+                    // Open the DevTools.
+                    previewWindow.webContents.openDevTools();
+
+                    // Emitted when the window is closed.
+                    previewWindow.on('closed', function () {
+                        previewWindow = null;
+                    });
 
                 });
 
@@ -250,7 +279,8 @@ define([
 
                 if(published) {
 
-                    this.$movieEmbedBtn.add(this.$moviePlayBtn).show();
+                    this.$movieEmbedBtn.add(this.$movieSyncBtn).show();
+
 
                     this.$moviePublishedBtn
                         .removeClass('btn-primary').addClass('btn-default')
@@ -259,7 +289,7 @@ define([
 
                 } else {
 
-                    this.$movieEmbedBtn.add(this.$moviePlayBtn).hide();
+                    this.$movieEmbedBtn.add(this.$movieSyncBtn).hide();
 
                     this.$moviePublishedBtn
                         .removeClass('btn-default').addClass('btn-primary')

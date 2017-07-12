@@ -177,6 +177,7 @@ define([], function() {
             this.setId(objectModel.id);
             this.setName(objectModel.name);
             this.setDuration(objectModel.duration);
+            this.setPublished(objectModel.published);
 
             // scenes will be added by MovieController.create()
 

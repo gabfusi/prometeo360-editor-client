@@ -69,6 +69,7 @@ function createClient() {
     mainWindow = new BrowserWindow({
         width: width,
         height: height,
+        title: "Prometeo360",
         icon: path.join(__dirname, 'assets', 'icons', 'png', '512x512.png')
     });
 

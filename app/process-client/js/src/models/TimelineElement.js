@@ -135,6 +135,9 @@ define(['lib/utilities'], function(utilities) {
         if(typeof objectModel.linkedSceneId !== 'undefined') {
             this.setLinkedScene(objectModel.linkedSceneId);
         }
+        if(typeof objectModel.linkedSceneFrame !== 'undefined') {
+            this.setLinkedSceneFrame(objectModel.linkedSceneFrame);
+        }
         if(typeof objectModel.background !== 'undefined') {
             this.setBackground(objectModel.background);
         }

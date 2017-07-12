@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Prometeo360 preview</title>
+    <link rel="stylesheet" href="preview/main.css">
+</head>
+<body>
+
+<div id="vrview"></div>
+<div id="controls">
+    <div id="toggleplay" class="paused"></div>
+    <div id="time">00:00 | 00:00</div>
+</div>
+
+<script src="../node_modules/vrview/build/vrview.js"></script>
+<script src="preview/PlayerVR.js"></script>
+<script type="text/javascript">
+    require('electron').ipcRenderer.on('load', function (event, options) {
+        new PlayerVR(options.movie, {videoPath: options.videoPath});
+    });
+</script>
+
+</body>
+</html>
+

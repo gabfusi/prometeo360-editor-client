@@ -32,6 +32,10 @@ var RemotePublisherService = {
             json: true,
             callback: function (error, response, body) {
 
+                if(error) {
+                    return callback(error, body);
+                }
+
                 if (body.videos.length) {
                    self.uploadVideos(body.videos, function() {
                        callback(error, body);

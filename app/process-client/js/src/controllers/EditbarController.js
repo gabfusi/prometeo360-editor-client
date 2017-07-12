@@ -96,6 +96,14 @@ define([
                 }
 
                 self.updateElement(self.currentElementModel, property, value, $(this));
+
+                if(property === 'linked_scene') {
+                    if(value) {
+                        $('#linkedFrameBox').show();
+                    } else {
+                        $('#linkedFrameBox').hide();
+                    }
+                }
             });
 
             // update on type (live)
@@ -177,21 +185,21 @@ define([
 
             switch(property) {
 
-                case 'x' :          elementModel.setX(value); break;
-                case 'y' :          elementModel.setY(value); break;
-                case 'width' :      elementModel.setWidth(value); break;
-                case 'height' :     elementModel.setHeight(value); break;
                 case 'frame' :      elementModel.setFrame(value); break;
                 case 'duration' :   elementModel.setDuration(value); break;
                 case 'background' : elementModel.setBackground(value); break;
                 case 'zindex':      elementModel.setZindex(value); break;
 
-                // video
-                case 'filename': elementModel.setFilename(value); break;
-
                 case 'linked_scene':
                     elementModel.setLinkedScene(value);
                     break;
+
+                case 'linked_scene_frame':
+                    elementModel.setLinkedSceneFrame(value);
+                    break;
+
+                // video
+                case 'filename': elementModel.setFilename(value); break;
 
             }
 
@@ -296,6 +304,15 @@ define([
                     });
 
                 $("#p_linked_scene").append('<option value="">Nessuna</option>' + options.join());
+
+                if(this.currentElementModel.getLinkedScene()) {
+                    $('#linkedFrameBox').show();
+                } else {
+                    $('#linkedFrameBox').hide();
+                }
+
+                this.$fields['linked_scene_frame'].val(this.currentElementModel.getHumanReadableLinkedSceneFrame());
+
             }
         },
 

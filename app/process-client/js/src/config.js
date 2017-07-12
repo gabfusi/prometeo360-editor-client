@@ -9,7 +9,7 @@ define(function () {
 
         saveDebounceTime: 2000, // msec
 
-        embedJsUrl: 'TODO/min/player.min.js',
+        previewWindow: "file://" + currentWindow.customOptions.appPath + "/process-client/preview.html",
 
         assetsPath: currentWindow.customOptions.appPath + '/assets',
         videosPath: currentWindow.customOptions.videosPath,

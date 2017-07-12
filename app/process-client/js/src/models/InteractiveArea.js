@@ -1,11 +1,11 @@
-define(['model/TimelineElement'], function(TimelineElement) {
+define(['model/TimelineElement', 'lib/utilities'], function (TimelineElement, utilities) {
     "use strict";
 
     /**
      * TextArea
      * @constructor
      */
-    var InteractiveArea = function() {
+    var InteractiveArea = function () {
 
         // Call the parent constructor
         TimelineElement.call(this);
@@ -15,6 +15,7 @@ define(['model/TimelineElement'], function(TimelineElement) {
         this._background = '';
         this._backgroundOpacity = 1;
         this._linkedSceneId = '';
+        this._linkedSceneFrame = 0;
         this._zindex = 1;
 
     };
@@ -36,45 +37,59 @@ define(['model/TimelineElement'], function(TimelineElement) {
 
     // Class specific methods
 
-    InteractiveArea.prototype.addKeyframe = function(frame, vertices) {
-        this._keyframes[frame] = { frame: frame/1000, vertices: vertices };
+    InteractiveArea.prototype.addKeyframe = function (frame, vertices) {
+        this._keyframes[frame] = {frame: frame / 1000, vertices: vertices};
     };
-
-    InteractiveArea.prototype.removeKeyframe = function(frame) {
-        if(typeof this._keyframes[frame] !== 'undefined') {
+    InteractiveArea.prototype.removeKeyframe = function (frame) {
+        if (typeof this._keyframes[frame] !== 'undefined') {
             delete this._keyframes[frame];
         }
     };
 
-    InteractiveArea.prototype.setKeyframes = function(keyframes) {
+    InteractiveArea.prototype.setKeyframes = function (keyframes) {
         this._keyframes = keyframes;
     };
-
-    InteractiveArea.prototype.getKeyframes = function() {
+    InteractiveArea.prototype.getKeyframes = function () {
         return this._keyframes;
     };
 
-    InteractiveArea.prototype.setBackground = function(background) {
+    InteractiveArea.prototype.setBackground = function (background) {
         this._background = background;
     };
-
-    InteractiveArea.prototype.getBackground = function() {
+    InteractiveArea.prototype.getBackground = function () {
         return this._background;
     };
 
-    InteractiveArea.prototype.setBackgroundOpacity = function(backgroundOpacity) {
+    InteractiveArea.prototype.setBackgroundOpacity = function (backgroundOpacity) {
         this._backgroundOpacity = backgroundOpacity;
     };
-
-    InteractiveArea.prototype.getBackgroundOpacity = function() {
+    InteractiveArea.prototype.getBackgroundOpacity = function () {
         return this._backgroundOpacity;
     };
 
-    InteractiveArea.prototype.setLinkedScene = function(sceneId) {
+    InteractiveArea.prototype.setLinkedScene = function (sceneId) {
         this._linkedSceneId = sceneId ? parseInt(sceneId) : null;
     };
-    InteractiveArea.prototype.getLinkedScene = function() {
+    InteractiveArea.prototype.getLinkedScene = function () {
         return this._linkedSceneId;
+    };
+
+    InteractiveArea.prototype.setLinkedSceneFrame = function (frame) {
+        if(typeof frame === 'string') {
+            frame = utilities.stringToMilliseconds(frame);
+        }
+
+        if(frame < 0) {
+            frame = 0;
+        }
+
+        this._linkedSceneFrame = frame;
+    };
+    InteractiveArea.prototype.getLinkedSceneFrame = function () {
+        return this._linkedSceneFrame;
+    };
+    InteractiveArea.prototype.getHumanReadableLinkedSceneFrame = function(){
+        return utilities.millisecondsToString(this._linkedSceneFrame);
     };
 
     return InteractiveArea;
