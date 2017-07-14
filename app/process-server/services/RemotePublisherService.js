@@ -1,11 +1,14 @@
 "use strict";
 
+const socketAddress = 'http://prometeo360.gabrielefusi.com:3002';
+const apiAddress = 'http://prometeo360.gabrielefusi.com';
+
 const request = require('request');
 const async = require('async');
 const path = require('path');
 const io = require('socket.io-client');
 const ss = require('socket.io-stream');
-const socket = io.connect('http://localhost:3000');
+const socket = io.connect(socketAddress);
 const fs = require('fs');
 let videoPath = '';
 
@@ -17,6 +20,15 @@ var RemotePublisherService = {
 
     init: function (_videoPath) {
         videoPath = _videoPath;
+        this.onVideoUploaded_ = null;
+
+        socket.on('file-uploaded', (data) => {
+          if(this.onVideoUploaded_) this.onVideoUploaded_(data);
+        });
+    },
+
+    onVideoUploaded: function(callback) {
+      this.onVideoUploaded_ = callback;
     },
 
     publishRequest: function (userId, movie, callback) {
@@ -24,7 +36,7 @@ var RemotePublisherService = {
 
         request({
             method: 'POST',
-            uri: 'http://localhost:3001/api/movie/publish',
+            uri: apiAddress + '/api/movie/publish',
             body: {
                 userId: userId,
                 movie: movie
@@ -33,6 +45,7 @@ var RemotePublisherService = {
             callback: function (error, response, body) {
 
                 if(error) {
+                    console.error(error);
                     return callback(error, body);
                 }
 

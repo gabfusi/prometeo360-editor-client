@@ -7,11 +7,15 @@ const Store = require('./Store');
 const username = require('username');
 const Uuid = require('uuid-lib');
 const url = require('url');
+const ipc = require("node-ipc");
+const DatabaseService = require('./process-server/services/DatabaseService.js');
 const vrdebug = false;
 
+/*
 require('electron-reload')(__dirname, {
     ignored: /node_modules|[\/\\]\.|db/
 }); // watch changes
+*/
 
 // Module to control application life.
 const app = electron.app || electron.remote.app;
@@ -38,7 +42,6 @@ if(vrdebug) {
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
-let serverProcess;
 let userData;
 let serverStarted = false;
 
@@ -51,10 +54,7 @@ app.on('window-all-closed', function () {
 });
 
 // On app quit
-app.on('quit', function() {
-    serverProcess.kill('SIGINT');
-});
-
+app.on('quit', function() { });
 
 // Logic
 
@@ -77,10 +77,13 @@ function createClient() {
     mainWindow.setMenu(null);
 
     // and load the index.html of the app.
-    mainWindow.loadURL(`file://${__dirname}/process-client/index.html`);
+    mainWindow.loadURL(url.format({
+        pathname:path.join(__dirname, 'process-client', 'index.html'),
+        protocol:'file:'
+    }));
 
     // Open the DevTools.
-    mainWindow.webContents.openDevTools();
+    //mainWindow.webContents.openDevTools();
 
     mainWindow.customOptions = {
         "userId": userData.get("userId"),
@@ -98,42 +101,6 @@ function createClient() {
     mainWindow.on('resize', () => {
         let { width, height } = mainWindow.getBounds();
         userData.set('windowBounds', { width, height });
-    });
-}
-
-/**
- * Create a new forked process for the server
- */
-function createServer() {
-
-    const serverStartMsg = {
-        "type" : "start",
-        "payload" : {
-            "vrdebug" : vrdebug,
-            "userId": userData.get("userId"),
-            "videosPath": videosPath,
-            "screenshotsPath": screenshotsPath,
-            "dbPath": app.getPath('userData')
-        }
-    };
-
-    // fork this process
-    serverProcess = childProcess.fork('./process-server/start');
-
-    // tell forked process to start
-    serverProcess.send(serverStartMsg);
-
-    // listen child process
-    serverProcess.on("message", (message) => {
-
-        switch(message.type) {
-
-            // when ipc ready, sets as ready
-            case "started":
-                serverStarted = true;
-                break;
-
-        }
     });
 }
 
@@ -170,10 +137,52 @@ function waitForServerStart() {
 
 }
 
+/**
+ * Start a server in this process
+ * @param additionalConfig
+ */
+function startServer(additionalConfig) {
+
+    // setup ipc 'server'
+    ipc.config.id = 'server';
+    ipc.config.retry = 1500;
+    ipc.config.silent = true;
+
+    const dbPath = additionalConfig.dbPath;
+    DatabaseService.setGlobalFolder(dbPath);
+
+    // checks if everything is ok
+    if(!additionalConfig.vrdebug) {
+        const setup = require('./process-server/setup');
+        setup.check(additionalConfig);
+    }
+
+    // setup ipc server 'routes'
+    ipc.serve(
+        function () {
+
+            require("./process-server/handlers/movies")(additionalConfig);
+
+            require("./process-server/handlers/videos")(additionalConfig);
+
+            serverStarted = true;
+        }
+    );
+
+    ipc.server.start();
+
+}
+
 // init user if not exists
 initUser();
 
-// start the server
-createServer();
+// start server
+startServer({
+    "vrdebug" : vrdebug,
+    "userId": userData.get("userId"),
+    "videosPath": videosPath,
+    "screenshotsPath": screenshotsPath,
+    "dbPath": app.getPath('userData')
+});
 
 

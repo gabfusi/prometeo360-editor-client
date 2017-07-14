@@ -126,6 +126,10 @@ module.exports = function (sharedConfig) {
         'movies.publish',
         function (data, socket) {
 
+            RemotePublisherService.onVideoUploaded((data) => {
+              ipcSend(socket, 'videos.uploaded-remote', data)
+            });
+
             MoviesService.getMovie(data.movie_id, function (err, data) {
 
                 if (err) {

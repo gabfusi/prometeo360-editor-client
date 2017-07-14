@@ -102,6 +102,14 @@ define([
                     dispatcher.trigger(dispatcher.apiVideoUploadResponse, data.message);
                 }
             );
+
+          ipc.of.server.on(
+            'videos.uploaded-remote',
+            function (data) {
+              console.info("retrieved videos.uploaded-remote")
+              dispatcher.trigger(dispatcher.apiVideoUploadedRemoteResponse, data.message);
+            }
+          );
         }
     );
 

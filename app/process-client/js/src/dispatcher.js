@@ -52,6 +52,7 @@ define(["jquery"], function($) {
         apiMovieUnpublishResponse: 'apiMovieUnpublishResponse',
         apiVideoListResponse: 'apiVideoListResponse',
         apiVideoUploadResponse: 'apiVideoUploadResponse',
+      apiVideoUploadedRemoteResponse: 'apiVideoUploadedRemoteResponse',
 
         status: {
             saving: 'saving',

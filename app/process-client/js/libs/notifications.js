@@ -21,6 +21,7 @@ define(['pnotify'], function(PNotify) {
             text: text || '',
             type: type,
             icon: false,
+            width: 360,
             cornerclass: 'ui-pnotify-sharp',
             delay: duration,
             buttons: {

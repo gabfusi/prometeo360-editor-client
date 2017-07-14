@@ -16,10 +16,14 @@ define([
         // open new browser window
         var BrowserWindow = window.nodeRequire('electron').remote.BrowserWindow;
 
-        var getEmbedCode = function(movie_id) {
-            return '<div class="prometeo-player" data-width="100%" data-id="' + movie_id + '"></div>' +
-                   '<script async defer src="' + config.embedJsUrl + '"></script>';
-        };
+
+        function getEmbedCode (movie_id) {
+            return '<iframe frameborder="0" width="640" height="360" src="' + config.remoteEmbedLink + config.userId + '/'  + movie_id + '"></iframe>';
+        }
+
+        function getRemoteLink (movie_id) {
+            return config.remoteMovieLink + config.userId + '/' + movie_id;
+        }
 
         // Inforbar Controller
         var InforbarController = {
@@ -55,13 +59,13 @@ define([
 
                 this.$moviePublishedBtn.hide();
 
-                dispatcher.on(dispatcher.movieLoaded, function() {
+                dispatcher.on(dispatcher.movieLoaded, function () {
                     var movieModel = MovieController.getModel(),
                         movie_name = movieModel.getName(),
                         movie_published = movieModel.isPublished();
 
-                  console.info("Movie is published? ", movieModel)
-                  window.movie = movieModel;
+                    console.info("Movie is published? ", movieModel)
+                    window.movie = movieModel;
 
                     self.$movieName.val(movie_name);
                     self.$moviePublishedBtn.show();
@@ -71,29 +75,30 @@ define([
                     self.renderScenes();
                 });
 
-                dispatcher.on(dispatcher.movieUnloaded, function() {
+                dispatcher.on(dispatcher.movieUnloaded, function () {
                     self.$moviePublishedBtn.hide();
                     self.$movieName.val('');
                     self.setMoviePublished(false);
                 });
 
-                dispatcher.on(dispatcher.movieStartSave, function() {
+                dispatcher.on(dispatcher.movieStartSave, function () {
                     self.updateSaveStatus(dispatcher.status.saving);
                 });
 
-                dispatcher.on(dispatcher.movieSaved, function() {
+                dispatcher.on(dispatcher.movieSaved, function () {
                     self.updateSaveStatus(dispatcher.status.saved);
                 });
 
-                dispatcher.on(dispatcher.movieFirstSave, function() {
+                dispatcher.on(dispatcher.movieFirstSave, function () {
                     self.$moviePublishedBtn.show();
                     self.setMoviePublished(false);
                 });
 
 
-                dispatcher.on(dispatcher.apiMoviePublishResponse, function(e, data) {
+                // on movie published
+                dispatcher.on(dispatcher.apiMoviePublishResponse, function (e, data) {
 
-                    if(typeof data.error !== 'undefined') {
+                    if (typeof data.error !== 'undefined') {
                         notification.error("Errore, potresti non essere connesso alla rete internet.");
                         return;
                     }
@@ -102,9 +107,11 @@ define([
                     MovieController.getModel().setPublished(true);
                     dispatcher.trigger(dispatcher.movieInfoEdited);
                     notification.notice("Filmato pubblicato");
+                    self.$moviePublishedBtn.removeClass("disabled").prop("disabled", false);
                 });
 
-                dispatcher.on(dispatcher.apiMovieUnpublishResponse, function(e, data) {
+                // on movie unpublished
+                dispatcher.on(dispatcher.apiMovieUnpublishResponse, function (e, data) {
 
                     self.setMoviePublished(false);
                     MovieController.getModel().setPublished(false);
@@ -112,8 +119,14 @@ define([
                     notification.notice("Filmato nascosto");
                 });
 
+                // on video uploaded
+                dispatcher.on(dispatcher.apiVideoUploadedRemoteResponse, function (e, data) {
+                    notification.notice("Video caricato: " + data.filename);
+                });
 
-                this.$movieForm.on('submit', function(e) {
+
+
+                this.$movieForm.on('submit', function (e) {
                     e.preventDefault();
                     self.editMovieName($(this).val());
                 });
@@ -130,10 +143,12 @@ define([
                     notification.confirm(
                         "Pubblicazione Filmato",
                         "Sei sicuro di voler " + verb + " questo filmato?",
-                        function() {
+                        function () {
 
-                            if(!isPublished) {
+                            if (!isPublished) {
                                 self.publishMovie();
+                                notification.notice("Pubblicazione iniziata...");
+                                self.$moviePublishedBtn.addClass("disabled").prop("disabled", true);
                             } else {
                                 self.unpublishMovie();
                             }
@@ -142,31 +157,38 @@ define([
 
                 });
 
-                this.$movieSyncBtn.on('click', function() {
+                this.$movieSyncBtn.on('click', function () {
 
                     notification.confirm(
                         "Sincronizzazione filmato",
                         "Sei sicuro di voler sincronizzare le modifiche sul server remoto?",
-                        function() {
+                        function () {
                             self.publishMovie();
+                            notification.notice("Sincronizzazione iniziata...");
                         });
                 });
 
-                this.$movieEmbedBtn.on('click', function() {
+                this.$movieEmbedBtn.on('click', function () {
 
                     var movie_id = MovieController.getModel().getId();
 
                     notification.popup("Codice per incorporare il filmato",
-                        '<p>Utilizza questo codice per incorporare il filmato sul tuo sito web.<br>' +
-                        'Puoi specificare la larghezza del player attraverso l\'attributo <code>data-width</code>.<br>' +
-                        'Ricorda che puoi incorporare un solo filmato per pagina web.</p>' +
-                        '<textarea class="form-control" rows="8" readonly onclick="this.focus();this.select();">' +
-                        getEmbedCode(movie_id) + '</textarea>');
+                        '<p>Il filmato &eacute; disponibile a questo link:</p>' +
+                        '<div class="form-group">' +
+                        '<input class="form-control" type="text" readonly value="' + getRemoteLink(movie_id) +
+                            '" onclick="this.focus();this.select();">' +
+                        '</div>' +
+                        '<p>Puoi utilizzare il codice qui sotto per incorporare il filmato sul tuo sito web:</p>' +
+                        '<textarea class="form-control" rows="4" readonly onclick="this.focus();this.select();">' +
+                        getEmbedCode(movie_id) + '</textarea>' +
+                        '<p>Puoi specificare la larghezza e l\'altezza del player attraverso gli attributi ' +
+                        '<code>width</code> e <code>height</code> dell\'iframe.<br>'
+                    );
 
                 });
 
                 // video preview
-                this.$moviePlayBtn.on('click', function() {
+                this.$moviePlayBtn.on('click', function () {
 
                     var previewWindow = new BrowserWindow({
                         width: 720,
@@ -187,7 +209,7 @@ define([
                     });
 
                     // Open the DevTools.
-                    previewWindow.webContents.openDevTools();
+                    //previewWindow.webContents.openDevTools();
 
                     // Emitted when the window is closed.
                     previewWindow.on('closed', function () {
@@ -198,35 +220,35 @@ define([
 
                 // scene
 
-                this.$sceneList.on('change', function(e) {
+                this.$sceneList.on('change', function (e) {
                     var scene_id = $(this).val();
                     var scene = MovieController.getModel().getScene(scene_id);
                     dispatcher.trigger(dispatcher.sceneChange, scene);
                     self.selectScene();
                 });
 
-                this.$addSceneBtn.on('click', function() {
+                this.$addSceneBtn.on('click', function () {
                     SceneController.create();
                 });
 
-                this.$editSceneBtn.on('click', function() {
+                this.$editSceneBtn.on('click', function () {
                     SceneController.edit(MovieController.getCurrentScene());
                 });
 
-                this.$removeSceneBtn.on('click', function() {
+                this.$removeSceneBtn.on('click', function () {
                     SceneController.delete(MovieController.getCurrentScene());
                 });
 
-                dispatcher.on(dispatcher.sceneLoaded, function() {
+                dispatcher.on(dispatcher.sceneLoaded, function () {
                     self.renderScenes();
                 });
-                dispatcher.on(dispatcher.sceneAdded, function() {
+                dispatcher.on(dispatcher.sceneAdded, function () {
                     self.renderScenes();
                 });
-                dispatcher.on(dispatcher.sceneEdited, function() {
+                dispatcher.on(dispatcher.sceneEdited, function () {
                     self.renderScenes();
                 });
-                dispatcher.on(dispatcher.sceneRemoved, function() {
+                dispatcher.on(dispatcher.sceneRemoved, function () {
                     self.renderScenes();
                 });
 
@@ -235,12 +257,12 @@ define([
             /**
              * Fills the scene <select> list
              */
-            renderScenes: function() {
+            renderScenes: function () {
                 var scenes = MovieController.getModel().getScenes();
                 var currentSceneId = MovieController.getCurrentScene().getId();
                 var options = '';
 
-                for(var i = 0; i < scenes.length; i++) {
+                for (var i = 0; i < scenes.length; i++) {
                     options += '<option value="' + scenes[i].getId() + '"' + (currentSceneId === scenes[i].getId() ? ' selected' : '') + '>'
                         + scenes[i].getName() + '</option>';
                 }
@@ -252,7 +274,7 @@ define([
             /**
              * Selects the current scene from <select> list
              */
-            selectScene: function() {
+            selectScene: function () {
                 var currentSceneId = MovieController.getCurrentScene().getId();
                 this.$sceneList.find(':selected').prop('selected', false);
                 this.$sceneList.find('[value="' + currentSceneId + '"]').prop('selected', true);
@@ -262,10 +284,10 @@ define([
              * Rename the movie
              * @param name
              */
-            editMovieName: function(name) {
+            editMovieName: function (name) {
                 var movie_name = utilities.stripTags(name);
 
-                if(movie_name !==  MovieController.getModel().getName()) {
+                if (movie_name !== MovieController.getModel().getName()) {
                     MovieController.getModel().setName(movie_name);
                     dispatcher.trigger(dispatcher.movieInfoEdited);
                 }
@@ -275,9 +297,9 @@ define([
              * Flags the movie as published or not
              * @param published
              */
-            setMoviePublished: function(published) {
+            setMoviePublished: function (published) {
 
-                if(published) {
+                if (published) {
 
                     this.$movieEmbedBtn.add(this.$movieSyncBtn).show();
 
@@ -303,7 +325,7 @@ define([
             /**
              * Publish the current movie
              */
-            publishMovie: function() {
+            publishMovie: function () {
                 var movie_id = MovieController.getModel().getId();
                 Api.publishMovie(movie_id);
             },
@@ -311,7 +333,7 @@ define([
             /**
              * Unpublish the current movie
              */
-            unpublishMovie: function() {
+            unpublishMovie: function () {
                 var movie_id = MovieController.getModel().getId();
                 Api.unpublishMovie(movie_id);
             },
@@ -320,9 +342,9 @@ define([
              * Notify save status
              * @param status
              */
-            updateSaveStatus: function(status) {
+            updateSaveStatus: function (status) {
 
-                switch(status) {
+                switch (status) {
 
                     case dispatcher.status.saving:
                         this.$movieSaveStatus.html('<i class="fi-clock"></i> Salvataggio...');

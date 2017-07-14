@@ -1,11 +1,25 @@
 {
-  "name": "prometeo360-editor-client",
+  "name": "Prometeo360",
+  "description" : "Prometeo 360 è un editor di montaggio per rendere interattivi video a 360 gradi.",
   "version": "0.1.0",
   "private": false,
+  "homepage" : "http://prometeo360.gabrielefusi.com",
+  "license" : "CC-BY-NC-SA-4.0",
+  "author" : {
+    "name" : "Gabriele Fusi",
+    "email": "gabfusi@gmail.com"
+  },
+  "repository" : {
+    "url" : "https://github.com/gabfusi/prometeo360-editor-client"
+  },
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "run": "PORT=3000 DEBUG=prometeo:* npm start"
+    "dev": "electron . --enable-logging",
+    "pack": "electron-builder --dir --mac --win",
+    "dist": "electron-builder --mac --win",
+
+    "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
     "debug": "~2.6.8",
@@ -25,9 +39,33 @@
   "devDependencies": {
     "devtron": "^1.4.0",
     "electron": "~1.6.2",
+    "electron-builder": "^19.16.0",
     "electron-icon-maker": "0.0.3",
     "electron-packager": "^8.7.2",
     "electron-rebuild": "^1.5.7",
     "electron-reload": "^1.1.0"
+  },
+
+  "build" : {
+    "appId" : "com.gabfusi.prometeo360",
+    "productName" : "Prometeo 360",
+    "compression" : "store",
+    "directories" : {
+      "output" : "../dist"
+    },
+    "mac" : {
+      "category" : "public.app-category.video",
+      "target" : "dmg",
+      "icon": "assets/icons/mac/icon.icns"
+    },
+    "dmg" : {
+      "contents": [
+        { "x": 355, "y": 125, "type": "link", "path": "/Applications" },
+        { "x": 155, "y": 125, "type": "file" }
+      ]
+    },
+    "win" : {
+      "icon" : "assets/icons/win/icon.ico"
+    }
   }
 }

@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-
-cd app/
-electron-packager . "Prometeo 360" --all --icon "app/assets/icons/mac/icon.icns"

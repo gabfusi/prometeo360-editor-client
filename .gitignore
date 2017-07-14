@@ -1,3 +1,5 @@
 .idea/
 /app/node_modules/
-/app/db/*
+dist/*
+Notes.txt
+package-app
