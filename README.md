@@ -1,4 +1,4 @@
-# prometeo 360 Editor
+# Prometeo 360 Editor
 An Electron app for adding interactive areas to spherical video.
 
 This work is part of my computer science thesis.
