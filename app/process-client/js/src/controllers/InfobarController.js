@@ -18,7 +18,7 @@ define([
 
 
         function getEmbedCode (movie_id) {
-            return '<iframe frameborder="0" width="640" height="360" src="' + config.remoteEmbedLink + config.userId + '/'  + movie_id + '"></iframe>';
+            return '<iframe allowfullscreen="true" frameborder="0" width="640" height="360" src="' + config.remoteEmbedLink + config.userId + '/'  + movie_id + '"></iframe>';
         }
 
         function getRemoteLink (movie_id) {

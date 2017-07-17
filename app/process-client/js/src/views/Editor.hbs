@@ -10,11 +10,19 @@
                     <i class="bt fi-pencil"></i>
                 </div>
                 <div class="title-wrap scene-wrap">
-                    <span class="hint--bottom" aria-label="Seleziona scena"><select id="scene_list"></select></span>
+                    <span class="hint--bottom" aria-label="Seleziona scena">
+                        <select id="scene_list"></select>
+                    </span>
                     <span class="scene-actions">
-                        <span class="bt fi-plus" id="add_scene" aria-label="Nuova scena"></span>
-                        <span class="bt fi-pencil" id="edit_scene" aria-label="Modifica scena"></span>
-                        <span class="bt fi-trash" id="remove_scene" aria-label="Elimina scena"></span>
+                        <span class="bt hint--bottom" aria-label="Nuova scena">
+                            <i class="fi-plus" id="add_scene"></i>
+                        </span>
+                        <span class="bt hint--bottom" aria-label="Modifica scena corrente">
+                            <i class="fi-pencil" id="edit_scene"></i>
+                        </span>
+                        <span class="bt hint--bottom" aria-label="Elimina scena corrente">
+                            <i class="fi-trash" id="remove_scene"></i>
+                        </span>
                     </span>
                 </div>
 
@@ -24,9 +32,12 @@
         </div>
 
         <div class="col-sm-4 right">
-            <div class="btn btn-default hint--bottom-left" id="movie_play" aria-label="Riproduci il filmato"><i class="fi-play"></i></div>
-            <div class="btn btn-default hint--bottom-left" id="movie_embed" aria-label="Ottieni il codice per la condivisione del filmato"><i class="fi-share"></i></div>
-            <div class="btn btn-default hint--bottom-left" id="movie_sync" aria-label="Sincronizza modifiche"><i class="fi-refresh"></i></div>
+            <div class="btn btn-default hint--bottom-left" id="movie_play" aria-label="Riproduci il filmato"><i
+                    class="fi-play"></i></div>
+            <div class="btn btn-default hint--bottom-left" id="movie_embed"
+                 aria-label="Ottieni il codice per la condivisione del filmato"><i class="fi-share"></i></div>
+            <div class="btn btn-default hint--bottom-left" id="movie_sync" aria-label="Sincronizza modifiche"><i
+                    class="fi-refresh"></i></div>
             <div class="btn btn-default hint--bottom-left" id="movie_publish"></div>
         </div>
 
@@ -95,8 +106,10 @@
                 <div class="area-title" id="area_title"></div>
             </div>
             <div class="col-xs-4 actions">
-                <div class="remove-area hint--bottom-left" aria-label="Rimuovi dal filmato"><i class="fi-trash"></i></div>
-                <div class="close-panel hint--bottom-left" aria-label="Chiudi il pannello di modifica"><i class="fi-x"></i></div>
+                <div class="remove-area hint--bottom-left" aria-label="Rimuovi dal filmato"><i class="fi-trash"></i>
+                </div>
+                <div class="close-panel hint--bottom-left" aria-label="Chiudi il pannello di modifica"><i
+                        class="fi-x"></i></div>
             </div>
         </div>
     </div>

@@ -9,11 +9,8 @@ var path = require('path');
  */
 function checkFolders(config) {
 
-    const videosPath = config.videosPath;
-    const dbPath = config.dbPath;
-
-    const DB_PATH             = path.join(dbPath, "lowdb");
-    const UPLOADS_PATH        = path.join(videosPath, "Prometeo360");
+    const DB_PATH             = path.join(config.dbPath, "lowdb");
+    const UPLOADS_PATH        = config.userHome;
     const VIDEO_PATH          = path.join(UPLOADS_PATH, "video");
     const THUMBS_PATH         = path.join(UPLOADS_PATH, "thumbs");
 

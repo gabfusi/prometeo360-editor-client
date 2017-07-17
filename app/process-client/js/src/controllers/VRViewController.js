@@ -16,6 +16,8 @@ define([
         var isPlaying = false;
         var editorMode = true;
 
+        var path = nodeRequire("path");
+
         // Video Controller
         var VRViewController = {
 
@@ -77,18 +79,6 @@ define([
                         self.pauseVideo();
                     }
                 });
-
-                /*
-
-                 vrView.on('ready', onVRViewReady);
-                 vrView.on('modechange', onModeChange);
-                 vrView.on('click', onHotspotClick);
-                 vrView.on('error', onVRViewError);
-                 vrView.on('getposition', onGetPosition);
-                 vrView.on('enddraw', onShapeDrawn);
-                 vrView.on('shapetransformed', onShapeTransformed);
-                 vrView.on('shapeselected', onShapeSelected);
-                 vrView.on('shapeunselected', onShapeUnselected);*/
 
             },
 
@@ -232,7 +222,7 @@ define([
 
                 if(sceneModel.getVideo()) {
                     // TODO unload current vr content
-                    sceneParams.video = config.videosPath + '/' + sceneModel.getVideo();
+                    sceneParams.video = path.join(config.videosPath, sceneModel.getVideo());
                 } else {
                     sceneParams.image = 'blank.png';
                 }

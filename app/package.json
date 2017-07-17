@@ -1,16 +1,16 @@
 {
   "name": "Prometeo360",
-  "description" : "Prometeo 360 è un editor di montaggio per rendere interattivi video a 360 gradi.",
+  "description": "Prometeo 360 è un editor di montaggio per rendere interattivi video a 360 gradi.",
   "version": "0.1.0",
   "private": false,
-  "homepage" : "http://prometeo360.gabrielefusi.com",
-  "license" : "CC-BY-NC-SA-4.0",
-  "author" : {
-    "name" : "Gabriele Fusi",
+  "homepage": "http://prometeo360.gabrielefusi.com",
+  "license": "CC-BY-NC-SA-4.0",
+  "author": {
+    "name": "Gabriele Fusi",
     "email": "gabfusi@gmail.com"
   },
-  "repository" : {
-    "url" : "https://github.com/gabfusi/prometeo360-editor-client"
+  "repository": {
+    "url": "https://github.com/gabfusi/prometeo360-editor-client"
   },
   "main": "main.js",
   "scripts": {
@@ -18,11 +18,14 @@
     "dev": "electron . --enable-logging",
     "pack": "electron-builder --dir --mac --win",
     "dist": "electron-builder --mac --win",
-
+    "dist:mac": "electron-builder --mac",
+    "dist:win": "electron-builder --win",
     "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
     "debug": "~2.6.8",
+    "ffmpeg-static": "^2.0.0",
+    "ffprobe-static": "^2.0.0",
     "fluent-ffmpeg": "^2.1.0",
     "hbs": "~4.0.0",
     "lowdb": "^0.16.0",
@@ -42,30 +45,41 @@
     "electron-builder": "^19.16.0",
     "electron-icon-maker": "0.0.3",
     "electron-packager": "^8.7.2",
-    "electron-rebuild": "^1.5.7",
     "electron-reload": "^1.1.0"
   },
-
-  "build" : {
-    "appId" : "com.gabfusi.prometeo360",
-    "productName" : "Prometeo 360",
-    "compression" : "store",
-    "directories" : {
-      "output" : "../dist"
+  "build": {
+    "appId": "com.gabfusi.prometeo360",
+    "productName": "Prometeo 360",
+    "compression": "maximum",
+    "directories": {
+      "output": "../dist"
     },
-    "mac" : {
-      "category" : "public.app-category.video",
-      "target" : "dmg",
+    "asarUnpack": [
+      "**/app/node_modules/ffmpeg-static/*",
+      "**/app/node_modules/ffprobe-static/*"
+    ],
+    "mac": {
+      "category": "public.app-category.video",
+      "target": "dmg",
       "icon": "assets/icons/mac/icon.icns"
     },
-    "dmg" : {
+    "dmg": {
       "contents": [
-        { "x": 355, "y": 125, "type": "link", "path": "/Applications" },
-        { "x": 155, "y": 125, "type": "file" }
+        {
+          "x": 355,
+          "y": 125,
+          "type": "link",
+          "path": "/Applications"
+        },
+        {
+          "x": 155,
+          "y": 125,
+          "type": "file"
+        }
       ]
     },
-    "win" : {
-      "icon" : "assets/icons/win/icon.ico"
+    "win": {
+      "icon": "assets/icons/win/icon.ico"
     }
   }
 }

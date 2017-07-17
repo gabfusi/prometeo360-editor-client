@@ -5,6 +5,12 @@ const ffmpeg = require('fluent-ffmpeg');
 const path = require('path');
 const fs = require('fs');
 
+// set custom ffmpeg & ffprobe paths
+const ffmpegPath = require('ffmpeg-static').path.replace('app.asar', 'app.asar.unpacked');
+const ffprobePath = require('ffprobe-static').path.replace('app.asar', 'app.asar.unpacked');
+ffmpeg.setFfmpegPath(ffmpegPath);
+ffmpeg.setFfprobePath(ffprobePath);
+
 var VideoService = {
 
     db: new DatabaseService('video'),
@@ -71,6 +77,15 @@ var VideoService = {
                     //console.dir(metadata);
 
                     if(callback) {
+
+                        if(err) {
+                            console.log('Cannot process video: ' + err.message);
+
+                            if(callback) {
+                                callback(true, err.message);
+                            }
+                        }
+
                         callback(false, {
                             filename: mp4Filename,
                             duration: millisecondsToString(metadata.format.duration * 1000),

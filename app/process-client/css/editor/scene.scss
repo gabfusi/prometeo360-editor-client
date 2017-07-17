@@ -8,11 +8,12 @@
   transform: translateX(310px);
   transition: transform 218ms ease-in;
   background: #fafafa;
+  box-shadow: 0 0 8px 2px rgba(0,0,0,0.18);
+  height: 100%;
 
   &.active{
     transform: translateX(0);
   }
-
 
   .panel{
     width: 100%;

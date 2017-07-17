@@ -21,6 +21,8 @@ require('electron-reload')(__dirname, {
 const app = electron.app || electron.remote.app;
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow;
+// Electron Menu
+const Menu = electron.Menu;
 
 // user Videos folder on user home (cross-os)
 let userHome = path.join(app.getPath('videos'), "Prometeo360");
@@ -59,7 +61,7 @@ app.on('quit', function() { });
 // Logic
 
 /**
- * Create the client in a new BrowserWindow
+ * Creates the client in a new BrowserWindow
  */
 function createClient() {
 
@@ -73,8 +75,29 @@ function createClient() {
         icon: path.join(__dirname, 'assets', 'icons', 'png', '512x512.png')
     });
 
+    // Create the Application's main menu
+    let template = [{
+        label: "Prometeo 360",
+        submenu: [
+            { label: "About Application", selector: "orderFrontStandardAboutPanel:" },
+            { type: "separator" },
+            { label: "Quit", accelerator: "Command+Q", click: function() { app.quit(); }}
+        ]}, {
+        label: "Edit",
+        submenu: [
+            { label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
+            { label: "Redo", accelerator: "Shift+CmdOrCtrl+Z", selector: "redo:" },
+            { type: "separator" },
+            { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
+            { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
+            { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
+            { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" }
+        ]}
+    ];
+    Menu.setApplicationMenu(Menu.buildFromTemplate(template));
+
     // Hide the menu
-    mainWindow.setMenu(null);
+    //mainWindow.setMenu(null);
 
     // and load the index.html of the app.
     mainWindow.loadURL(url.format({
@@ -151,12 +174,6 @@ function startServer(additionalConfig) {
     const dbPath = additionalConfig.dbPath;
     DatabaseService.setGlobalFolder(dbPath);
 
-    // checks if everything is ok
-    if(!additionalConfig.vrdebug) {
-        const setup = require('./process-server/setup');
-        setup.check(additionalConfig);
-    }
-
     // setup ipc server 'routes'
     ipc.serve(
         function () {
@@ -173,16 +190,26 @@ function startServer(additionalConfig) {
 
 }
 
+
 // init user if not exists
 initUser();
 
-// start server
-startServer({
+const globalConfig = {
     "vrdebug" : vrdebug,
     "userId": userData.get("userId"),
+    "userHome" : userHome,
     "videosPath": videosPath,
     "screenshotsPath": screenshotsPath,
     "dbPath": app.getPath('userData')
-});
+};
+
+// setup required folders
+if(!vrdebug) {
+    const setup = require('./process-server/setup');
+    setup.check(globalConfig);
+}
+
+// start server
+startServer(globalConfig);
 
 
