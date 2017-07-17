@@ -71,7 +71,7 @@ function createClient() {
     mainWindow = new BrowserWindow({
         width: width,
         height: height,
-        title: "Prometeo360",
+        title: "Prometeo 360",
         icon: path.join(__dirname, 'assets', 'icons', 'png', '512x512.png')
     });
 
@@ -85,9 +85,6 @@ function createClient() {
         ]}, {
         label: "Edit",
         submenu: [
-            { label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
-            { label: "Redo", accelerator: "Shift+CmdOrCtrl+Z", selector: "redo:" },
-            { type: "separator" },
             { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
             { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
             { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },

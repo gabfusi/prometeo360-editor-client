@@ -21,7 +21,7 @@ define(function () {
         remoteMovieLink: remoteUrl + 'movie/',
         remoteEmbedLink: remoteUrl + 'embed/',
         userId: currentWindow.customOptions.userId,
-        assetsPath: currentWindow.customOptions.appPath + '/assets',
+        assetsPath: path.join(currentWindow.customOptions.appPath, 'assets'),
         videosPath: currentWindow.customOptions.videosPath,
         screenshotsPath: currentWindow.customOptions.screenshotsPath,
 

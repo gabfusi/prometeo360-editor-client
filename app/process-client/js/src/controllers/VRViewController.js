@@ -27,13 +27,12 @@ define([
                 this.$playPause = $('.play_pause');
 
                 vrView = new VRView.Player('#vrview', {
-                    image: 'blank.png',
-                    preview: 'blank.png',
+                    image: path.join(commonAssetsUrl, 'blank.png'),
+                    preview: path.join(commonAssetsUrl, 'blank.png'),
                     is_stereo: true,
                     is_autopan_off: true,
                     editor_mode:  editorMode
                 }, {
-                    assetsUrl: commonAssetsUrl,
                     autoplay: false
                 });
 
@@ -212,9 +211,8 @@ define([
                 this.pauseVideo();
 
                 var sceneParams = {
-                    assetsUrl: commonAssetsUrl,
                     video: false,
-                    preview: 'blank.png',
+                    preview: path.join(commonAssetsUrl, 'blank.png'),
                     is_stereo: false,
                     is_autopan_off: true,
                     editor_mode: editorMode

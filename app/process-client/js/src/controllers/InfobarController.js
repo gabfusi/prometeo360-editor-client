@@ -197,7 +197,7 @@ define([
                         alwaysOnTop: true,
                         fullscreenable: true,
                         skipTaskbar: true,
-                        title: "Prometeo360 preview"
+                        title: MovieController.getModel().getName() + " - Anteprima filmato"
                     });
                     previewWindow.setMenu(null);
                     previewWindow.loadURL(config.previewWindow);

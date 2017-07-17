@@ -5,6 +5,8 @@ define(['pnotify'], function(PNotify) {
     require(['pnotify.buttons']);
     require(['pnotify.callbacks']);
 
+    var notifier = nodeRequire('electron-notifications')
+
     PNotify.prototype.options.styling = "bootstrap3";
 
     function notify(type, title, text, duration) {
@@ -32,6 +34,7 @@ define(['pnotify'], function(PNotify) {
                 }
             }
         });
+
     }
 
     function dialog(title, content) {
