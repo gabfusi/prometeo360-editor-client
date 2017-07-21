@@ -620,7 +620,7 @@ ul, li {
           .editor .editbar .header .actions div:hover {
             color: #e6e6e6; }
     .editor .editbar .properties-wrap {
-      padding: 1em 0 50px; }
+      padding: 1em 0 5em; }
       .editor .editbar .properties-wrap .properties > .inner > div {
         padding: 0 1em; }
       .editor .editbar .properties-wrap .ui-slider {
