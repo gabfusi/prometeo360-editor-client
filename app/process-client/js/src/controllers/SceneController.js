@@ -60,6 +60,12 @@ define([
                     dispatcher.trigger(dispatcher.movieEdited);
                 });
 
+                $('.movie-wrapper').on('click', function() {
+                    if(self.$wrap.hasClass('active')) {
+                      self.edit();
+                    }
+                });
+
             },
 
             /**

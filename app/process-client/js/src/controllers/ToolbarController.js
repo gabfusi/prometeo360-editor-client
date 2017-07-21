@@ -2,11 +2,12 @@
 
 define([
         "jquery",
+        "dispatcher",
         "lib/notifications",
         "controller/MovieController"
 ],
 
-    function($, notification, MovieController) {
+    function($, dispatcher, notification, MovieController) {
 
     // Toolbar Controller
     var ToolbarController = {
@@ -32,9 +33,13 @@ define([
                         $(this).addClass('active');
                         MovieController.vrController.activateShapeTool();
                     }
-
                 }
 
+            });
+
+            dispatcher.on(dispatcher.shapeDrawn, function() {
+                self.$toolbar.find('li').removeClass('active');
+                MovieController.vrController.deactivateShapeTool();
             });
 
 

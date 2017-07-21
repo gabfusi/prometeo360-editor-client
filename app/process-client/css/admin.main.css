@@ -544,8 +544,8 @@ ul, li {
         font-size: 1.5em; }
       .editor .infobar .title-wrap .bt {
         position: absolute;
-        right: 12px;
-        top: 14px;
+        right: 2em;
+        top: 0.75em;
         opacity: .6;
         pointer-events: none;
         display: none; }

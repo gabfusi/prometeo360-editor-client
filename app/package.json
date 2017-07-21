@@ -1,7 +1,7 @@
 {
   "name": "Prometeo360",
   "description": "Prometeo 360 è un editor di montaggio per rendere interattivi video a 360 gradi.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": false,
   "homepage": "http://prometeo360.gabrielefusi.com",
   "license": "CC-BY-NC-SA-4.0",

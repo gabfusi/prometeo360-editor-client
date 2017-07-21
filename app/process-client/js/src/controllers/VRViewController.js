@@ -113,6 +113,8 @@ define([
                     end_frame: (elementModel.getFrame() + elementModel.getDuration()) / 1000
                 });
 
+                dispatcher.trigger(dispatcher.shapeDrawn);
+
             },
 
             /**

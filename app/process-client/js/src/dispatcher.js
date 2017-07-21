@@ -36,6 +36,7 @@ define(["jquery"], function($) {
         elementUpdatedInfo: 'elementUpdatedInfo',
         elementAddedKeyframe: 'elementAddedKeyframe',
         elementRemovedKeyframe: 'elementRemovedKeyframe',
+        shapeDrawn: 'shapeDrawn',
 
         elementSelected: 'elementSelected',
         elementsDeselected: 'elementsDeselected',
@@ -52,7 +53,7 @@ define(["jquery"], function($) {
         apiMovieUnpublishResponse: 'apiMovieUnpublishResponse',
         apiVideoListResponse: 'apiVideoListResponse',
         apiVideoUploadResponse: 'apiVideoUploadResponse',
-      apiVideoUploadedRemoteResponse: 'apiVideoUploadedRemoteResponse',
+        apiVideoUploadedRemoteResponse: 'apiVideoUploadedRemoteResponse',
 
         status: {
             saving: 'saving',

@@ -15,6 +15,7 @@ define([
 
         // open new browser window
         var BrowserWindow = window.nodeRequire('electron').remote.BrowserWindow;
+        var shell = window.nodeRequire('electron').shell;
 
 
         function getEmbedCode (movie_id) {
@@ -173,7 +174,7 @@ define([
                     var movie_id = MovieController.getModel().getId();
 
                     notification.popup("Codice per incorporare il filmato",
-                        '<p>Il filmato &eacute; disponibile a questo link:</p>' +
+                        '<p>Il filmato &eacute; disponibile a <a href="" rel="'+ getRemoteLink(movie_id) +'" class="open-browser">questo link</a>:</p>' +
                         '<div class="form-group">' +
                         '<input class="form-control" type="text" readonly value="' + getRemoteLink(movie_id) +
                             '" onclick="this.focus();this.select();">' +
@@ -185,6 +186,11 @@ define([
                         '<code>width</code> e <code>height</code> dell\'iframe.<br>'
                     );
 
+                });
+
+                $(document).on('click', '.open-browser', function (event) {
+                  event.preventDefault();
+                  shell.openExternal(event.target.rel);
                 });
 
                 // video preview
